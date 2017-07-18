@@ -19,7 +19,7 @@
 					  color: #000000;
 					}
 				</style>
-				<div class="mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet img-header-card mdl-card mdl-shadow--2dp">
+				<div class="mdl-cell--8-col mdl-cell--8-col-tablet img-header-card mdl-card mdl-shadow--2dp">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
 							VP Simulation
