@@ -13,7 +13,7 @@
 					<a href="http://grahamst.at">
 						Home
 					</a><br/>
-					<a href="http://grahamst.at/shiny/Simulation/">
+					<a href="http://grahamst.at/shiny-server/Simulation/">
 						Simulation
 					</a><br/>
 				</div>
