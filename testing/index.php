@@ -12,6 +12,7 @@
 			}
         </style>
 		<?php include("header.html");?>
+<<<<<<< HEAD
 			<main class="mdl-layout__content">
 				<div class="page-content">
 					<h1>Welcome to my Homepage yay!</h1>
@@ -36,5 +37,7 @@
 				</div>
 			</main>
 		</div>
+=======
+>>>>>>> 796713ac6b8cd381ebaa29428aa178d86a8ee534
     </body>
 </html>
