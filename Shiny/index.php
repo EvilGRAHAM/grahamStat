@@ -10,12 +10,9 @@
 					<h1>
 						Shiny Apps
 					</h1>
-					<a href="http://grahamst.at">
-						Home
-					</a><br/>
-					<a href="http://grahamst.at/shiny-server/Simulation/">
-						Simulation
-					</a><br/>
+					<p>
+						testing
+					</p>
 				</div>
 			</main>
 		</div>
