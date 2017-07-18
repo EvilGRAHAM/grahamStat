@@ -5,7 +5,8 @@
 			Homepage
 		</title>
 		<?php include("header.html");?>
-			<main class="mdl-layout__content">
+		<div class="mdl-grid">
+			<main class="mdl-layout__content mdl-cell mdl-cell--4-col">
 				<div class="page-content">
 					<h1>
 						Welcome!
@@ -15,7 +16,8 @@
 					</p>
 				</div>
 			</main>
-			<div class="mdl-card mdl-shadow--2dp">
+			
+			<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--8-col">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
 						Welcome
@@ -27,6 +29,7 @@
 					Fingers crossed that this appears in the form of a card...
 				</div>
 			</div>
+		</div>
 		</div>
     </body>
 </html>
