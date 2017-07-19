@@ -13,7 +13,7 @@
 					.img-header-card > .mdl-card__title {
 					  color: #000000;
 					  height: 176px;
-					  background: url('previews/vp_sim.PNG') center / cover;
+					  background: url('../images/previews/vp_sim.png') center / cover;
 					}
 					.img-header-card > .mdl-card__menu {
 					  color: #000000;
@@ -46,7 +46,7 @@
 						</h2>
 					</div>
 					<div class="mdl-card__media">
-						<img src="previews/vp_sim.PNG" width="220" height="140" border="0" alt="" style="padding:20px;">
+						<img src="../images/previews/vp_sim.png" width="220" height="140" border="0" alt="" style="padding:20px;">
 					</div>
 					<div class="mdl-card__supporting-text">
 						Simulate and Predict Vapour Pressure based on Density, Sulfur and Temperature.
