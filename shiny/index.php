@@ -19,7 +19,7 @@
 		<?php include("../header.html");?>
 			<div class="mdl-grid">
 			
-				<div class="mdl-cell--8-col mdl-cell--8-col-tablet img-header-card mdl-card mdl-shadow--2dp">
+				<div class="mdl-card mdl-shadow--2dp img-header-card mdl-cell mdl-cell--8-col">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
 							VP Simulation
@@ -30,7 +30,7 @@
 					</div>
 					<div class="mdl-card__actions mdl-card--border">
 						<a 
-							class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" 
+							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
 							href = "http://grahamst.at/shiny-server/Simulation/"
 							target = "_blank"
 						>
@@ -39,51 +39,26 @@
 					</div>
 				</div>
 				
-				<div class="mdl-card mdl-shadow--2dp">
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
-							VP Simulation
-						</h2>
-					</div>
-					<div class="mdl-card__media">
-						<img src="../images/previews/vp_sim.PNG" width="220" height="140" border="0" alt="" style="padding:20px;">
-					</div>
-					<div class="mdl-card__supporting-text">
-						Simulate and Predict Vapour Pressure based on Density, Sulfur and Temperature.
-					</div>
-					<div class="mdl-card__actions">
-						<a 
-							class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" 
-							href = "http://grahamst.at/shiny-server/Simulation/"
-							target = "_blank"
-						>
-							Get Started
-						</a>
-					</div>
-				</div>
-				
-				<div class="mdl-card mdl-shadow--2dp">
-					<div class="mdl-card__title">
-						<h2 class="mdl-card__title-text">
-							VP Simulation
+							More Stuff
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						Simulate and Predict Vapour Pressure based on Density, Sulfur and Temperature.
+						This doesn't go anywhere yet, I'm just testing out how well cards work!
 					</div>
-					<div class="mdl-card__actions">
+					<div class="mdl-card__actions mdl-card--border">
 						<a 
-							class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" 
-							href = "http://grahamst.at/shiny-server/Simulation/"
-							target = "_blank"
+							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
+							href = ""
 						>
-							Get Started
+							Go Nowhere!
 						</a>
 					</div>
 				</div>
 				
 			</div>
-		
 		
 		</div>
     </body>
