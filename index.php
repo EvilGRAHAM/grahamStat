@@ -10,7 +10,7 @@
 
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
-						<h2 class="mdl-card__title-text">
+						<h2 class="mdl-card__title-text mdl-card--border">
 							Welcome!
 						</h2>
 					</div>
@@ -21,7 +21,7 @@
 				
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
-						<h2 class="mdl-card__title-text">
+						<h2 class="mdl-card__title-text mdl-card--border">
 							Content:
 						</h2>
 					</div>
@@ -32,7 +32,7 @@
 				
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
-						<h2 class="mdl-card__title-text">
+						<h2 class="mdl-card__title-text mdl-card--border">
 							Education:
 						</h2>
 					</div>
@@ -43,12 +43,23 @@
 				
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
-						<h2 class="mdl-card__title-text">
+						<h2 class="mdl-card__title-text mdl-card--border">
 							Programming:
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						I do most of my work in R, with an emphasis on the <a href="http://tidyverse.org/">tidyverse</a> packages. As well I've played around with <a href="https://plot.ly/">Plotly</a> and <a href="https://shiny.rstudio.com/">Shiny</a>. Additionally I'm familiar with T-SQL, having built a data warehouse of sorts with it from scratch in Microsoft Azure, python3, some vba, and I'm learning html as I build this site.
+						I do most of my work in R, with an emphasis on the <a href="http://tidyverse.org/">tidyverse</a> packages. As well I've played around with <a href="https://plot.ly/">Plotly</a> and <a href="https://shiny.rstudio.com/">Shiny</a>. Additionally I'm familiar with T-SQL, having built a data warehouse of sorts with it from scratch in Microsoft Azure, Python 3, some VBA, and I'm learning HTML as I build this site. I don't know if you can really call Latex a language, but I've used that as well for school.
+					</div>
+				</div>
+				
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
+					<div class="mdl-card__title">
+						<h2 class="mdl-card__title-text mdl-card--border">
+							Backend:
+						</h2>
+					</div>
+					<div class="mdl-card__supporting-text">
+						This site is currently supported through the use of a "droplet" from <a href="https://www.digitalocean.com/">Digital Ocean</a>. They're super cheap and easy to run, so I'd highly recommend them if you need a low cost backend.
 					</div>
 				</div>
 			</div>
