@@ -8,7 +8,7 @@
 		
 			<div class="mdl-grid">
 
-				<div class="mdl-card mdl-card--border mdl-shadow--2dp mdl-cell">
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
 							Welcome!
@@ -19,7 +19,7 @@
 					</div>
 				</div>
 				
-					<div class="mdl-card mdl-card--border mdl-shadow--2dp mdl-cell">
+					<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
 							Content:
@@ -30,7 +30,7 @@
 					</div>
 				</div>
 				
-				<div class="mdl-card mdl-card--border mdl-shadow--2dp mdl-cell">
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
 							Education:
@@ -41,7 +41,7 @@
 					</div>
 				</div>
 				
-				<div class="mdl-card mdl-card--border mdl-shadow--2dp mdl-cell">
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
 							Programming:
@@ -52,7 +52,7 @@
 					</div>
 				</div>
 				
-				<div class="mdl-card mdl-card--border mdl-shadow--2dp mdl-cell">
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
 							Backend:
