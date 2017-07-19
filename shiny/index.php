@@ -4,21 +4,21 @@
 		<title>
 			Shiny Apps
 		</title>
+		<!-- Wide card with share menu button -->
+		<style>
+			.img-header-card.mdl-card {}
+			.img-header-card > .mdl-card__title {
+			  color: #000000;
+			  height: 176px;
+			  background: url('../images/previews/vp_sim.png') center / cover;
+			}
+			.img-header-card > .mdl-card__menu {
+			  color: #000000;
+			}
+		</style>
 		<?php include("../header.html");?>
 			<div class="mdl-grid">
 			
-				<!-- Wide card with share menu button -->
-				<style>
-					.img-header-card.mdl-card {}
-					.img-header-card > .mdl-card__title {
-					  color: #000000;
-					  height: 176px;
-					  background: url('../images/previews/vp_sim.png') center / cover;
-					}
-					.img-header-card > .mdl-card__menu {
-					  color: #000000;
-					}
-				</style>
 				<div class="mdl-cell--8-col mdl-cell--8-col-tablet img-header-card mdl-card mdl-shadow--2dp">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">

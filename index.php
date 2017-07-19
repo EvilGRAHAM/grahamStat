@@ -5,6 +5,7 @@
 			Homepage
 		</title>
 		<?php include("header.html");?>
+		
 		<div class="mdl-grid">
 			<main class="mdl-layout__content mdl-cell mdl-cell--4-col">
 				<div class="page-content">
