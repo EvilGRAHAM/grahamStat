@@ -48,7 +48,7 @@
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						I do most of my work in R, with an emphasis on the <a href="http://tidyverse.org/">tidyverse</a> packages. As well I've played around with <a href="https://plot.ly/">Plotly</a> and <a href="https://shiny.rstudio.com/">Shiny</a>. Additionally I'm familiar with T-SQL, having built a data warehouse of sorts with it from scratch in Microsoft Azure, python3, and I'm learning html as I build this site.
+						I do most of my work in R, with an emphasis on the <a href="http://tidyverse.org/">tidyverse</a> packages. As well I've played around with <a href="https://plot.ly/">Plotly</a> and <a href="https://shiny.rstudio.com/">Shiny</a>. Additionally I'm familiar with T-SQL, having built a data warehouse of sorts with it from scratch in Microsoft Azure, python3, some vba, and I'm learning html as I build this site.
 					</div>
 				</div>
 			</div>
