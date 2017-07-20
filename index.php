@@ -59,7 +59,7 @@
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						This site is currently supported through the use of a "droplet" from <a href="https://www.digitalocean.com/">Digital Ocean</a>. They're super cheap and easy to run, so I'd highly recommend them if you need a low cost backend.
+						This site is currently supported through the use of a "droplet" from <a href="https://m.do.co/c/71ac9cc4daaa">Digital Ocean</a>. They're super cheap and easy to run, so I'd highly recommend them if you need a low cost backend. If you use this link, we both get credits, so you should do that!
 					</div>
 				</div>
 			</div>
