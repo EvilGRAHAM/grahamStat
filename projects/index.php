@@ -52,6 +52,7 @@
 						<a 
 							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
 							href = "vp_analysis/"
+							target = "_blank"
 						>
 							Go
 						</a>
