@@ -42,18 +42,18 @@
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
-							More Stuff
+							VP Analysis
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						This doesn't go anywhere yet, I'm just testing out how well cards work!
+						R Markdown document containing some of the exploratory analysis being done on vapour pressure.
 					</div>
 					<div class="mdl-card__actions mdl-card--border">
 						<a 
 							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
-							href = ""
+							href = "vp_analysis/"
 						>
-							Go Nowhere!
+							Go
 						</a>
 					</div>
 				</div>
