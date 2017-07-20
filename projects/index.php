@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>
-			Shiny Apps
+			Projects
 		</title>
 		<!-- Wide card with share menu button -->
 		<style>
