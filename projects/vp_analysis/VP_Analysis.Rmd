@@ -1,0 +1,187 @@
+---
+title: "VP Analysis"
+author: "Scott Graham"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+---
+
+```{r setup, include = FALSE}
+  knitr::opts_chunk$set(echo = TRUE)
+  library(knitr, warn.conflicts = FALSE)
+  source("C:/Users/scott.graham/OneDrive - Tundra Energy Marketing Limited/Documents/Marketing/VP/Post Split/VP Charting.r")
+```
+
+
+
+# Exploratory Analysis
+## VP Timeline
+This is a plot of the VP over time, coloured by the type of crude. There's obvious cyclicality to it, as well one can begin to see how crude type affects VP.
+
+```{r VP Timeline, fig.height = 3, fig.width = 4.5}
+  ggplotly(a_timeline) %>% 
+  layout(
+    xaxis = list(
+      rangeselector = list(
+        buttons = list(
+          list(
+            count = 3,
+            label = "3 mo",
+            step = "month",
+            stepmode = "backward"),
+          list(
+            count = 6,
+            label = "6 mo",
+            step = "month",
+            stepmode = "backward"),
+          list(
+            count = 1,
+            label = "1 yr",
+            step = "year",
+            stepmode = "backward"),
+          list(
+            count = 1,
+            label = "YTD",
+            step = "year",
+            stepmode = "todate"),
+          list(step = "all"))),
+      
+      rangeslider = list(type = "date")
+    )
+  )
+```
+
+
+## VP Box Plot by Month
+VP is plotted as a series of Box Plots, and then is split by crude type and month. Unfortunately at the time of writing, we don't have a ton of good data (data w/ Density and Sulfur) for May onward, so it is hard to visualize seasonality. That being said, I'm guessing there will be more seasonality in some of the heavier crudes.
+
+```{r VP Box Plot by Month, fig.height = 10, fig.width = 9}
+  b_boxplot_facet
+```
+
+
+## VP vs. 7 Day Temperature Rolling Average Scatter Plot
+Here we can see how each of the different types of Crude are affected by changes in temperature. You may notice that for the most part they seem to be negatively correlated, with the exception of Medium SW. I'm guessing Medium SW is also negatively correlated, but I've only got 3 data points for it, which is not nearly enough to draw any meaningful conclusion.
+
+```{r VP Temp.Roll Scatter Plot, fig.height = 9, fig.width = 9}
+  d_scatter_facet
+```
+
+
+## VP Distributions
+One can see how the distributions change between crude types. There's a fair bit of multimodality going on in each of the plots. As well, the spread tends to increase as you move to the heavier crudes.
+
+```{r VP Violin Plot, fig.height = 8, fig.width = 9}
+  c_violin
+```
+
+```{r VP Histogram, fig.height = 4, fig.width = 4.5}
+  ggplotly(h_VP_kern)
+```
+
+
+## VP Producer Box Plot
+```{r VP Producer Box Plot, fig.height = 3, fig.width = 4.5}
+  ggplotly(e_VP_Prod)
+```
+
+
+
+# Simulation Analysis
+## Model:
+\[
+  \text{VP} = 
+  144.1139 + 0.0775x_{1} - 0.2842x_{2} - 0.1066x_{3} - 0.0685x_{4} + 10.7657x_{5} + 9.1914x_{6} + 7.7554x_{7} - 0.1218x_{8} - 
+\]
+\[
+  10.1773x_{9} - 13.4757x_{10} + \epsilon
+\]
+\[
+  \vec{x} =
+  \begin{bmatrix}
+    x_{1} \\
+    x_{2} \\
+    x_{3} \\
+    x_{4} \\
+    x_{5} \\
+    x_{6} \\
+    x_{7} \\
+    x_{8} \\
+    x_{9} \\
+    x_{10}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \text{Density} \\
+    \text{7 Day Temperature Rolling Average} \\
+    \text{Oxbow} \\
+    \text{Kipling} \\
+    \text{C5+} \\
+    \text{Light LSB} \\
+    \text{Light SW} \\
+    \text{Medium LSB} \\
+    \text{Medium SW} \\
+    \text{Midale}
+  \end{bmatrix}
+\]
+\[
+  MSE =
+  105.7478 \implies
+  \sqrt{MSE} =
+  10.2834\text{kPa}
+\]
+\[
+  MSE_{\text{VP.Rand.Split}} =
+  64.8653 \implies
+  \sqrt{MSE_{\text{VP.Rand.Split}}} =
+  8.0539\text{kPa}
+\]
+
+
+## VP Simulation Randomness
+The models with the ".Rand" added to them have a bit of noise added to the prediction via a normal distribution:
+\[
+  \text{VP.Rand} \sim \mathcal{N} \left( 0, \frac{\sigma^{2}}{\sqrt{2}} \right)
+\]
+\[
+  \text{VP.Rand.Split} \sim \mathcal{N} \left( 0, \frac{{\sigma_{i}}^{2}}{\sqrt{2}} \right), i = \{\text{C5+, Light LSB, ... , Heavy SW}\}
+\]
+
+
+## VP Simulation Kernel Estimation {.tabset}
+We are looking for a model that has very little space between the Bootstrapped output, and the model. What I've found is that the predictive model on its own is too deterministic, and while the overall shape of it isn't far off from what we want, it does not do a good job at predicting results in the tails of the distributions. By adding some noise to the output, I was able to improve the fit greatly.
+
+### Everything
+```{r VP Sim Kernel, fig.height = 4.5, fig.width = 4.5}
+ggplotly(i_kern_plotly)
+```
+
+### Split by Crude Type
+```{r VP Sim Kernel Marginal, fig.height = 9, fig.width = 9}
+i_kern_marginal
+```
+
+
+## VP Simulation ECDF {.tabset}
+I've checked the Empirical Cumulative Distribution Functions (ECDFs) as well as a means of validating my model:
+
+### Everything
+```{r VP Sim ECDF, fig.height = 9, fig.width = 9}
+i_ecdf
+```
+
+### Split by Crude Type
+```{r VP Sim ECDF Marginal, fig.height = 9, fig.width = 9}
+i_ecdf_marginal
+```
+
+
+## VP Simulation Violin Plots {.tabset}
+This provides a good idea at how well the model does at estimating the spread and skewness of the underlying distributions.
+
+### Everything
+```{r VP Sim Violin Plot, fig.height = 9, fig.width = 9}
+j_violin
+```
+
+### Split by Crude Type
+```{r VP Sim Violin Plot Marginal, fig.height = 9, fig.width = 9}
+j_violin_marginal
+```
