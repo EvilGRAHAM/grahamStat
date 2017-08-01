@@ -19,7 +19,27 @@
 		<?php include("../header.html");?>
 			<div class="mdl-grid">
 			
-				<div class="mdl-card mdl-shadow--2dp img-header-card mdl-cell mdl-cell--8-col">
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
+					<div class="mdl-card__title">
+						<h2 class="mdl-card__title-text">
+							Baseball Record Leaderboards
+						</h2>
+					</div>
+					<div class="mdl-card__supporting-text">
+						Track leaderboards for different statistic for each year.
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a 
+							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
+							href = "http://grahamst.at/shiny-server/Baseball_Leaders/"
+							target = "_blank"
+						>
+							Get Started
+						</a>
+					</div>
+				</div>
+				
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
 							VP Simulation
@@ -52,7 +72,6 @@
 						<a 
 							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
 							href = "vp_analysis/"
-							target = "_blank"
 						>
 							Go
 						</a>
