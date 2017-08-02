@@ -42,6 +42,26 @@
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
+							Finance Dashboard
+						</h2>
+					</div>
+					<div class="mdl-card__supporting-text">
+						Dashboard for analysing securities.
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a 
+							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
+							href = "http://grahamst.at/shiny-server/Finance_Dashboard/"
+							target = "_blank"
+						>
+							Get Started
+						</a>
+					</div>
+				</div>
+				
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
+					<div class="mdl-card__title">
+						<h2 class="mdl-card__title-text">
 							VP Simulation
 						</h2>
 					</div>
