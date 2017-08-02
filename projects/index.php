@@ -51,7 +51,7 @@
 					<div class="mdl-card__actions mdl-card--border">
 						<a 
 							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
-							href = "http://grahamst.at/shiny-server/Simulation/"
+							href = "http://grahamst.at/shiny-server/VP_Simulation/"
 							target = "_blank"
 						>
 							Get Started
