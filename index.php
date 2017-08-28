@@ -63,20 +63,6 @@
 					</div>
 				</div>
 				
-				<div class="mdl-card mdl-shadow--2dp mdl-cell">
-					<div class="mdl-card__title">
-						<h2 class="mdl-card__title-text">
-							Twitter:
-						</h2>
-					</div>
-					<div class="mdl-card__actions mdl-card--border">
-						<a href="https://twitter.com/Scott_Graham8" class="twitter-follow-button" data-show-count="false">
-							Follow @Scott_Graham8
-						</a>
-						<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-					</div>
-				</div>
-				
 			</div>
 		</div>
 		
