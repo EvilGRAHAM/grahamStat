@@ -62,6 +62,21 @@
 						This site is currently supported through the use of a "droplet" from <a href="https://m.do.co/c/71ac9cc4daaa">Digital Ocean</a>. They're super cheap and easy to run, so I'd highly recommend them if you need a low cost backend. If you use this link, we both get credits, so you should do that!
 					</div>
 				</div>
+				
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
+					<div class="mdl-card__title">
+						<h2 class="mdl-card__title-text">
+							Twitter:
+						</h2>
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a href="https://twitter.com/Scott_Graham8" class="twitter-follow-button" data-show-count="false">
+							Follow @Scott_Graham8
+						</a>
+						<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+					</div>
+				</div>
+				
 			</div>
 		</div>
 		
