@@ -4,7 +4,7 @@
 	    <title>
 			GrahamSt.at
 		</title>
-		<?php include("header.html");?>
+		<?php include("../header.html");?>
 		
 			<div class="mdl-grid">
 
