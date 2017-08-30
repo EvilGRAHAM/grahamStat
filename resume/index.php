@@ -15,6 +15,7 @@
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
+					
 						<p>
 							24 Mt Kidd Pt. SE
 							<br>
@@ -24,6 +25,33 @@
 							<br>
 							scott.grah95@gmail.com
 						</p>
+
+
+
+						<h1>
+							Scott Graham
+						</h1>
+
+
+						<h2>
+							Objective:
+						</h2>
+						<p>
+							To gain employment with Tundra Energy Marketing as a Marketing and Trading Summer Student.
+						</p>
+
+
+						<h2>
+							Education:
+						</h2> 
+						<p>
+							Sep. 2013 - Present
+							University of Calgary 
+							Finance/Statistics Programs
+							3.629 GPA
+							Calgary, Alberta 
+						</p>
+
 					</div>
 				</div>
 				
