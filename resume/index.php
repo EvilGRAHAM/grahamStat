@@ -17,16 +17,16 @@
 					<div class="mdl-card__supporting-text">
 						<p>
 							Sep. 2013 - Present
-							University of Calgary 
-							Finance/Statistics Programs
-							3.629 GPA
-							Calgary, Alberta 
-							
-							Sep. 2010 - Jun. 2013
-							Bishop O’Byrne High School
-							Grade 12
-							International Baccalaureate Programme
-							Calgary, Alberta
+							<br>University of Calgary 
+							<br>Finance/Statistics Programs
+							<br>3.629 GPA
+							<br>Calgary, Alberta 
+							<br>
+							<br>Sep. 2010 - Jun. 2013
+							<br>Bishop O’Byrne High School
+							<br>Grade 12
+							<br>International Baccalaureate Programme
+							<br>Calgary, Alberta
 						</p>
 					</div>
 				</div>
@@ -40,9 +40,14 @@
 					<div class="mdl-card__supporting-text">
 						<p>
 							May. 2016 – Sep. 2017
-							Marketing & Trading Summer Student
-							Tundra Energy Marketing Limited
-							Calgary, Alberta
+							<br>Marketing & Trading Summer Student
+							<br>Tundra Energy Marketing Limited
+							<br>Calgary, Alberta
+							<br>
+							<br>Jul. 2013 - Present
+							<br>Senior Sales Associate 
+							<br>Gap Canada, Chinook Centre 
+							<br>Calgary, Alberta 
 						</p>
 					</div>
 				</div>
