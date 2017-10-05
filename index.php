@@ -59,7 +59,16 @@
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						This site is currently supported through the use of a "droplet" from <a href="https://m.do.co/c/71ac9cc4daaa">Digital Ocean</a>. They're super cheap and easy to run, so I'd highly recommend them if you need a low cost backend. If you use this link, we both get credits, so you should do that!
+						This site is currently supported through the use of a "droplet" from Digital Ocean. They're super cheap and easy to run, so I'd highly recommend them if you need a low cost backend. If you use this link, we both get credits, so you should do that!
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a 
+							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
+							href = "https://m.do.co/c/71ac9cc4daaa"
+							target = "_blank"
+						>
+							Go
+						</a>
 					</div>
 				</div>
 				
