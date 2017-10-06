@@ -436,7 +436,8 @@ space_results %>%
     ,se = FALSE
   ) +
   labs(y = expression(hat(pi)))
-  ```
+```
+
 As temperature increase, on average the probability of TD decreases, based on the sample.
 
 ### b.
@@ -482,6 +483,7 @@ logit_reg_space_int <- glm(TD ~ 1, data = space_results, family = binomial)
 summary(logit_reg_space_int)
 anova(logit_reg_space_int, logit_reg_space, test = "Chisq")
 ```
+
 From above, our p-value for $H_{0}:\beta=0 \text{ vs. } H_{1}:\beta\neq0$ is 0.004804, so at $\alpha=0.05$, we reject the null hypothesis, and assume the alternative to be true based on the sample.
 
 
@@ -541,6 +543,7 @@ kyphosis <- tibble(
 logit_reg_kyph <- glm(Result ~ Age, data = kyphosis, family = binomial)
 summary(logit_reg_kyph)
 ```
+
 Since our p-value for age is $0.463>\alpha=0.05$, we fail to reject the null hypothesis, based on the sample, and assume age has no effect on the result.
 
 ### b.
@@ -560,6 +563,7 @@ kyphosis %>%
   ) +
   labs(y = expression(hat(pi)))
 ```
+
 As you can see, there seems to be no noticable difference in clustering at the tails for each response based on age. As such it'd ake sense we'd see such a low significance for the slope parameter. There is however some clustering near the middle for the Kyphosis results, so there may be an additional explanatory variable needed, or some polynomial term.
 
 ### c.
@@ -592,4 +596,5 @@ kyphosis %>%
   ) +
   labs(y = expression(hat(pi)))
 ```
+
 This function is maximized at $\approx 91.552$, so at Age in months increases up until that point, the probability on average increases, based on the sample. Afterwards as Age increases above that point, on average the probability decreases, based on the sample.
