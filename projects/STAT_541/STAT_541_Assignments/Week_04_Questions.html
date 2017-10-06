@@ -378,14 +378,10 @@ summary(poiss_reg_train)</code></pre>
 <div id="c.-3" class="section level3">
 <h3>c.</h3>
 <pre class="r"><code>prob &lt;- function(x){exp(-3.7771 + 0.1449*x)/(1 + exp(-3.7771 + 0.1449*x))}
-prob(9)-prob(8)</code></pre>
-<pre><code>## [1] 0.009777536</code></pre>
-<pre class="r"><code>prob(8)-prob(7)</code></pre>
-<pre><code>## [1] 0.008627442</code></pre>
-<pre class="r"><code>prob(27)-prob(26)</code></pre>
-<pre><code>## [1] 0.03617359</code></pre>
-<pre class="r"><code>prob(26)-prob(25)</code></pre>
-<pre><code>## [1] 0.03614822</code></pre>
+0.1449*prob(8)*(1-prob(8))</code></pre>
+<pre><code>## [1] 0.009182588</code></pre>
+<pre class="r"><code>0.1449*prob(26)*(1-prob(26))</code></pre>
+<pre><code>## [1] 0.03622415</code></pre>
 <pre class="r"><code>ggplot(data = tibble(x = c(0, 75)), aes(x)) + 
   stat_function(fun = prob) + 
   labs(y = expression(hat(pi)))</code></pre>

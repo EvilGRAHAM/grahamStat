@@ -325,10 +325,8 @@ $$
 ### c.
 ```{r 4.1c}
 prob <- function(x){exp(-3.7771 + 0.1449*x)/(1 + exp(-3.7771 + 0.1449*x))}
-prob(9)-prob(8)
-prob(8)-prob(7)
-prob(27)-prob(26)
-prob(26)-prob(25)
+0.1449*prob(8)*(1-prob(8))
+0.1449*prob(26)*(1-prob(26))
 ggplot(data = tibble(x = c(0, 75)), aes(x)) + 
   stat_function(fun = prob) + 
   labs(y = expression(hat(pi)))
