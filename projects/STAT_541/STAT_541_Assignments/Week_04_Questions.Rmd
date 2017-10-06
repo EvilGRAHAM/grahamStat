@@ -579,7 +579,7 @@ prob_kyph_poly_fun <- function(x){
     ,newdata = tibble(Age = x, Age2 = x^2)
     ,type = "response"
   )
-}
+} 
 
 kyphosis %>% 
   ggplot() +
