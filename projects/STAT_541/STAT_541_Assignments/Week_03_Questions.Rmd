@@ -1,0 +1,170 @@
+---
+title: "Week 03 Questions"
+author: "Scott Graham"
+date: "September 29, 2017"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
+library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+```
+\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]
+
+## 2.29
+Let $\alpha=0.05$, and:
+$$
+  H_{0}: OR = \frac{Odds_{Drug}}{Odds_{Control}} \leq 1
+$$
+$$
+  H_{1}: OR \frac{Odds_{Drug}}{Odds_{Control}} > 1
+$$
+```{r 2.29}
+results_mat <- matrix(nrow = 2, ncol = 2, c(7, 0, 8, 15))
+rownames(results_mat) <- c("Drug", "Control")
+colnames(results_mat) <- c("Normalized", "Not Normalized")
+results_mat
+fisher.test(results_mat, alternative = "greater")
+```
+Since our p-value (0.003161) is $<\alpha$, we reject our null hypothesis that the odd's ratios for the drug and the control $=1$, and assume that the odds ratio is greater than 1.
+
+
+## 2.31
+### a.
+Let $\alpha=0.05$, and:
+$$
+  H_{0}: OR = \frac{Odds_{Surgery}}{Odds_{Radiation}} = 1
+$$
+$$
+  H_{1}: OR \frac{Odds_{Surgery}}{Odds_{Radiation}} \neq 1
+$$
+```{r 2.31a}
+results_mat <- matrix(nrow = 2, ncol = 2, c(21, 15, 2, 3))
+rownames(results_mat) <- c("Surgey", "Radiation")
+colnames(results_mat) <- c(" Cancer Controlled", "Cancer Not Controlled")
+results_mat
+fisher.test(results_mat, alternative = "two.sided")
+1 - dhyper(
+  x = results_mat[1, 1] - 1
+  ,m = sum(results_mat[, 1])
+  ,n = sum(results_mat[, 2])
+  ,k = sum(results_mat[1, ])
+  )
+```
+Because our p-value (0.6384) $>\alpha$, we fail to reject our null hypothesis, and assume the odds of controlling cancer are the same if you have surgery or radiation based on the sample.
+$$
+  P-Value = 
+  \sum_{i=18}^{23}p_{i} \leq
+  \Prob\left( n_{11} = 21 \right)
+$$
+$$
+  P-Value =
+  \Prob\left( n_{11} = a \right) >
+  \Prob\left( n_{11} = 21 \right) \implies
+  1 - \Prob\left( n_{11} = 20 \right)
+$$
+
+### b.
+```{r 2.31b}
+1 -
+  phyper(
+    q = results_mat[1, 1]
+    ,m = sum(results_mat[, 1])
+    ,n = sum(results_mat[, 2])
+    ,k = sum(results_mat[1, ])) + 0.5*
+  dhyper(
+    x = results_mat[1, 1]
+    ,m = sum(results_mat[, 1])
+    ,n = sum(results_mat[, 2])
+    ,k = sum(results_mat[1, ]))
+```
+Because our p-value (0.2431) $>\alpha$, we fail to reject our null hypothesis, and assume the odds of controlling cancer are the same if you have surgery or radiation based on the sample.
+
+
+## 2.39
+### a.
+True
+
+### b.
+True
+
+### c.
+False
+
+### d.
+True
+
+### e.
+False
+
+
+## 3.3
+### a.
+$$
+  \E\left[ \Prob\left( Y = 1 \middle| X = x \right) \right] =
+  0.00255+0.00109x,
+  x = \{0, 0.5, 1.5, 4.0, 7.0\}
+$$
+That is, on average with no alcohol consumption, there is a $0.255\%$ probability of a sex organ malformation. And on average, for each unit increase in $x$ (alcohol consumption), there is a $0.108\%$ increase in the probability of sex organ malformation, based on the sample. 
+
+### b.
+$$
+  \Prob\left( Y = 1 \middle| X = (0, 7.0) \right)=
+  0.00255+0.00109x =
+  (0.00255+0.00109(0)), 0.00255+0.00109(7.0)) =
+  (0.00255, 0.01018) \implies
+$$
+$$
+  RR =
+  \frac{\Prob\left( Y = 1 \middle| X = 7.0 \right)}{\Prob\left( Y = 1 \middle| X = 0 \right)} =
+  \frac{0.01018}{0.00255} =
+  3.992157
+$$
+
+
+## 3.9
+```{r 3.9}
+income.credit <- read_csv("Week_03_Data_3.09.csv")
+income.credit
+income.credit.glm <- glm(Card ~ Inc, data = income.credit, family = "binomial")
+summary(income.credit.glm)
+```
+### a.
+$$
+  \ln \left( \frac{\Prob\left( Y = 1 \middle| X = x \right)}{1 - \Prob\left( Y = 1 \middle| X = x \right)} \right) =
+  -3.5561 + 0.0532x \implies
+$$
+$$
+  \Prob\left( Y = 1 \middle| X = x \right) = 
+  \frac{e^{-3.5561 + 0.0532x}}{1+e^{-3.5561 + 0.0532x}}
+$$
+
+### b.
+On average, as the annual income in Lira increase, the probability of owning at least one travel credit card increases as well, based on the sample.
+
+### c.
+$$
+  \ln \left( \frac{0.5}{1 - 0.5} \right) =
+  -3.5561 + 0.0532x \implies
+  0 =
+  -3.5561 + 0.0532x \implies
+  x =
+  66.84398 \approx
+  66.86
+$$
+When our LHS = 0, we can solve for $x$, which gives $x\approx 66.86$ million Lira. That is, on average there is a $50\%$ chance of possessing at least one travel credit card  when one's annual income is 66.86 million Lira, based on the sample.

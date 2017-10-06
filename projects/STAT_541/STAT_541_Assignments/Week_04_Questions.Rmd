@@ -1,0 +1,595 @@
+---
+title: "Week 04 Questions"
+author: "Scott Graham"
+date: "October 06, 2017"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
+library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+library(MASS, warn.conflicts = FALSE, quietly = TRUE)
+theme_minimal2 <- theme_minimal() %>%  theme_set()
+theme_minimal2 <-
+  theme_update(
+    panel.border = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+    ,strip.background = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+  )
+```
+\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]
+
+## 3.11
+```{r 3.11, include=FALSE}
+waifer_imperfections <- tibble(
+  Treatment = c(rep (c("A", "B"), each = 10))
+  ,Imperfections = c(
+    8
+    ,7
+    ,6
+    ,6
+    ,3
+    ,4
+    ,7
+    ,2
+    ,3
+    ,4
+    ,9
+    ,9
+    ,8
+    ,14
+    ,8
+    ,13
+    ,11
+    ,5
+    ,7
+    ,6
+  )
+)
+```
+### a.
+$$
+  \ln\left( \mu \right) =
+  \alpha + \beta x \implies
+  \begin{cases}
+    \stackrel{x=1}{\implies}
+    \ln\left( \mu_{B} \right) =
+    \alpha + \beta \\
+    \stackrel{x=0}{\implies}
+    \ln\left( \mu_{A} \right) =
+    \alpha
+  \end{cases} \implies
+  \ln\left( \mu_{B} \right) - \beta =
+  \ln\left( \mu_{A} \right) \implies
+$$
+$$
+  \beta =
+  \ln\left( \mu_{B} \right) - \ln\left( \mu_{A} \right) =
+  \ln\left( \frac{\mu_{B}}{\mu_{A}} \right) \implies
+  e^{\beta} =
+  \frac{\mu_{B}}{\mu_{A}}
+$$
+
+### b.
+```{r 3.11b}
+poiss_reg_imperfection <- 
+  waifer_imperfections %>% 
+  glm(Imperfections ~ Treatment, data = ., family = poisson)
+summary(poiss_reg_imperfection)
+```
+$$
+  \ln\left( \mu \right) =
+  1.6094 + 0.5878x \implies
+  \mu = 4.99981(1.800024)^{x}
+$$
+That is, on average for as you move from treatment A to B, $\ln\left( \mu \right)$ increases by 0.5878, or the mean number of imperfections increases by a multiplicative factor of 1.800024, based on the sample.
+
+### c.
+From above, we have a Wald P-Value of $0.000861 < \alpha = 0.05$, and therefore reject the null hypothesis of equal means, based on the sample, and accept that there is a difference in means between the two treatments.
+
+### d.
+```{r 3.11d}
+poiss_reg_imperfection %>% 
+  confint(parm = "TreatmentB", level = 0.95) %>% 
+  exp
+```
+That is, based on the sample, with 95\% confidence, the true value of $\frac{\mu_{B}}{\mu_{A}}$ lies somewhere between 1.28 and 2.56.
+
+
+## 3.15
+### a.
+$$
+  \hat{\mu}_{1} = 
+  e^{-2.38+1.733(1)} =
+  e^{-0.657} =
+  0.5236
+$$
+$$
+  \hat{\mu}_{2} = 
+  e^{-2.38+1.733(0)} =
+  e^{-2.38} =
+  0.0925
+$$
+
+### b.
+95\% CI for $\mu_{1}/\mu_{2}$:
+$$
+  e^{\hat{\beta}\mp z_{0.975}\se\left(\hat{\beta}\right)}
+$$
+```{r 3.15b}
+exp(1.733+qnorm(0.975)*0.147*c(-1, 1))
+```
+
+### c.
+The negative binomial model appears to be more believable. This is because we'd expect $\mu_i={\sigma_{i}}^{2}$, which may be true for whites, but definitely doe not hold for blacks.
+
+### d.
+If the Poisson model were appropriate, we'd expect to see $\hat{D}\approx 0$, but instead we observe a value of 4.94. Since 0 is close to 5 standard deviations away from the estimate, it'd be extremely unlikely this value is merely an outlier.
+
+
+## 3.19
+```{r 3.19, include=FALSE}
+train_collisions <- tibble(
+  Year = 1975:2003
+  ,Km = c(
+    436
+    ,426
+    ,425
+    ,430
+    ,426
+    ,430
+    ,417
+    ,372
+    ,401
+    ,389
+    ,418
+    ,414
+    ,397
+    ,443
+    ,436
+    ,431
+    ,439
+    ,430
+    ,425
+    ,415
+    ,423
+    ,437
+    ,463
+    ,487
+    ,505
+    ,503
+    ,508
+    ,516
+    ,518
+  )
+  ,Collisions = c(
+    5
+    ,2
+    ,1
+    ,2
+    ,3
+    ,2
+    ,2
+    ,2
+    ,2
+    ,5
+    ,0
+    ,2
+    ,1
+    ,2
+    ,4
+    ,1
+    ,2
+    ,1
+    ,0
+    ,2
+    ,1
+    ,2
+    ,1
+    ,0
+    ,1
+    ,1
+    ,0
+    ,1
+    ,0
+  )
+  ,Road_Collisions = c(
+    2
+    ,12
+    ,8
+    ,4
+    ,3
+    ,2
+    ,2
+    ,3
+    ,7
+    ,3
+    ,5
+    ,13
+    ,6
+    ,4
+    ,4
+    ,2
+    ,6
+    ,4
+    ,4
+    ,4
+    ,2
+    ,2
+    ,1
+    ,4
+    ,2
+    ,3
+    ,4
+    ,3
+    ,3
+  )
+)
+```
+### a.
+```{r 3.19a}
+train_collisions %<>%
+  mutate(
+    Collisions_Total = Collisions + Road_Collisions
+    ,Rate = (Collisions + Road_Collisions)/Km
+    ,Year_base = Year-min(Year)
+  )
+poiss_reg_train <- suppressWarnings(
+  train_collisions %>% 
+  glm(Rate ~ Year_base, data = ., family = poisson)
+)
+poiss_reg_train_int <- suppressWarnings(
+  train_collisions %>% 
+  glm(Rate ~ 1, data = ., family = poisson)
+)
+summary(poiss_reg_train)
+summary(poiss_reg_train_int)
+anova(poiss_reg_train_int, poiss_reg_train, test = "Chisq")
+```
+
+From our $\chi^{2}$ test, our p-value is $>\alpha=0.05$, so we fail to reject the null hypothesis, that the models explain the same amount of variance, based on the sample. As such, we conclude that the Year exhibits no effect, and our rates are constant.
+
+### b.
+$$
+  W =
+  \frac{-0.0337-0}{0.0130} =
+  -2.592308 \sim
+  \mathcal{N}(0,1) \implies
+  P-Value = 2\min\{\Prob(W \leq -2.592308), \Prob(W \geq -2.592308)\} =
+$$
+$$
+  2\min\{0.004766719, 0.9952333\} =
+  0.009533438
+$$
+Since this is $<\alpha=0.05$, we reject our null hypothesis of $\beta=0$, and assume the alternative to be true based on the sample.
+
+### c.
+95\% CI for $\beta$:
+$$
+  [-0.060,-0.008]
+$$
+95\% CI for $e^{\beta}$:
+$$
+  e^{[-0.060,-0.008]} =
+  [0.9417645,0.9920319]
+$$
+That is, with 95\% confidence, the true average multiplicative increase for the collision rate as the year increases by 1, is between 0.9417645 and 0.9920319, based on the sample.
+
+
+## 4.1
+### a.
+$$
+  \ln\left(\theta\right) =
+  -3.7771 + 0.1449x \stackrel{x=8}{\implies}
+  \ln\left(\theta\right) =
+  -2.6179 \implies
+  \hat{\pi} =
+  \frac{e^{-2.6179}}{1+e^{-2.6179}} =
+  0.068
+$$
+
+### b.
+$$
+  \ln\left(\theta\right) =
+  -3.7771 + 0.1449x \stackrel{x=26}{\implies}
+  \ln\left(\theta\right) =
+  -0.0097 \implies
+  \hat{\pi} =
+  \frac{e^{-0.0097}}{1+e^{-0.0097}} =
+  0.4975 \approx
+  0.5
+$$
+
+### c.
+```{r 4.1c}
+prob <- function(x){exp(-3.7771 + 0.1449*x)/(1 + exp(-3.7771 + 0.1449*x))}
+prob(9)-prob(8)
+prob(8)-prob(7)
+prob(27)-prob(26)
+prob(26)-prob(25)
+ggplot(data = tibble(x = c(0, 75)), aes(x)) + 
+  stat_function(fun = prob) + 
+  labs(y = expression(hat(pi)))
+```
+
+### d.
+```{r 4.1d}
+prob(28)
+prob(14)
+prob(28)-prob(14)
+```
+
+
+### e.
+$$
+  \frac{\theta(x)}{\theta(x-1)} =
+  \frac{e^{-3.7771 + 0.1449(x)}}{e^{-3.7771 + 0.1449(x-1)}} =
+  e^{0.1449} =
+  1.16
+$$
+
+
+## 4.3
+### a.
+For each new decade, the probability of a CG for a pitcher falls by 6.94\% on average in the NL, based on the sample.
+
+### b.
+$$
+  \hat{\pi}(12) = 
+  0.7578 - 0.0694(12) = 
+  -0.075
+$$
+This is not plausible, as $\pi\in[0,1]$, and -0.075 exists outside of it. As well, this year does not exists in the sample, so it is outside the scope of the regression.
+
+### c.
+$$
+  \hat{\pi}(12) = 
+  \frac{e^{1.148 - 0.315(12)}}{1 + e^{1.148 - 0.315(12)}} =
+  0.0671
+$$
+This is more plausible, as it satisfies our restraint on $\pi$. However, since 12 is not in the sample, this may not accurate.
+
+
+## 4.5
+```{r 4.5, include=FALSE}
+space_results <- tibble(
+  Flight = 1:23
+  ,Temp = c(
+    66
+    ,70
+    ,69
+    ,68
+    ,67
+    ,72
+    ,73
+    ,70
+    ,57
+    ,63
+    ,70
+    ,78
+    ,67
+    ,53
+    ,67
+    ,75
+    ,70
+    ,81
+    ,76
+    ,79
+    ,75
+    ,76
+    ,58
+  )
+  ,TD = c(
+    0
+    ,1
+    ,rep(0, times = 6)
+    ,rep(1, times = 3)
+    ,rep(0, times = 2)
+    ,1
+    ,rep(0, times = 6)
+    ,1
+    ,0
+    ,1
+  )
+)
+```
+### a.
+```{r 4.5a}
+logit_reg_space <- glm(TD ~ Temp, data = space_results, family = binomial)
+summary(logit_reg_space)
+prob_fun <- function(x){
+  predict.glm(logit_reg_space, newdata = data.frame(Temp = x), type = "response")
+}
+space_results %>% 
+  ggplot(
+    aes(
+      x = Temp
+      ,y = TD
+    )
+  ) +
+  geom_point() +
+  stat_smooth(
+    method = "glm"
+    ,method.args = list(family = "binomial")
+    ,se = FALSE
+  ) +
+  labs(y = expression(hat(pi)))
+  ```
+As temperature increase, on average the probability of TD decreases, based on the sample.
+
+### b.
+```{r 4.5b}
+prob_fun(31)
+```
+
+### c.
+$$
+  0.5 =
+  \frac{e^{15.0429-0.2322x}}{1+e^{15.0429-0.2322x}} \implies
+  \frac{1}{2} \left( 1+e^{15.0429-0.2322x} \right) =
+  e^{15.0429-0.2322x} \implies
+$$
+$$
+  1 =
+  e^{15.0429-0.2322x} \implies
+  0 =
+  15.0429-0.2322x \implies
+  x = 64.79464
+$$
+More generally:
+$$
+  x_{0.5} =
+  -\frac{\alpha}{\beta}
+$$
+```{r 4.5c}
+Temp_median <- -logit_reg_space$coefficients[[1]]/logit_reg_space$coefficients[[2]]
+Temp_median
+prob_fun(Temp_median)
+```
+
+### d.
+That is, on average, for every unit increase in temperature in Fahrenheit the log odds in favour decrease by -0.2322, or the odds in favour decrease by a multiplicative factor of 0.7927875, based on the sample.
+
+### e.
+#### i.
+From above, our p-value for $H_{0}:\beta=0 \text{ vs. } H_{1}:\beta\neq0$ is 0.0320, so at $\alpha=0.05$, we reject the null hypothesis, and assume the alternative to be true based on the sample.
+
+#### ii.
+```{r 4.5dii}
+logit_reg_space_int <- glm(TD ~ 1, data = space_results, family = binomial)
+summary(logit_reg_space_int)
+anova(logit_reg_space_int, logit_reg_space, test = "Chisq")
+```
+From above, our p-value for $H_{0}:\beta=0 \text{ vs. } H_{1}:\beta\neq0$ is 0.004804, so at $\alpha=0.05$, we reject the null hypothesis, and assume the alternative to be true based on the sample.
+
+
+## 4.7
+```{r 4.7, include=FALSE}
+kyphosis <- tibble(
+  Age = c(
+    12
+    ,15
+    ,42
+    ,52
+    ,59
+    ,73
+    ,82
+    ,91
+    ,96
+    ,105
+    ,114
+    ,120
+    ,121
+    ,128
+    ,130
+    ,139
+    ,139
+    ,157
+    ,1
+    ,1
+    ,2
+    ,8
+    ,11
+    ,18
+    ,22
+    ,31
+    ,37
+    ,61
+    ,72
+    ,81
+    ,97
+    ,112
+    ,118
+    ,127
+    ,131
+    ,140
+    ,151
+    ,159
+    ,177
+    ,206
+  )
+  ,Result = c(
+    rep(1, times = 18)
+    ,rep(0, times = 22)
+  )
+)
+```
+### a.
+```{r 4.7a}
+logit_reg_kyph <- glm(Result ~ Age, data = kyphosis, family = binomial)
+summary(logit_reg_kyph)
+```
+Since our p-value for age is $0.463>\alpha=0.05$, we fail to reject the null hypothesis, based on the sample, and assume age has no effect on the result.
+
+### b.
+```{r 4.7b}
+kyphosis %>%
+  ggplot(
+    aes(
+      x = Age
+      ,y = Result
+    )
+  ) +
+  geom_point() +
+  stat_smooth(
+    method = "glm"
+    ,method.args = list(family = "binomial")
+    ,se = FALSE
+  ) +
+  labs(y = expression(hat(pi)))
+```
+As you can see, there seems to be no noticable difference in clustering at the tails for each response based on age. As such it'd ake sense we'd see such a low significance for the slope parameter. There is however some clustering near the middle for the Kyphosis results, so there may be an additional explanatory variable needed, or some polynomial term.
+
+### c.
+```{r 4.7c}
+kyphosis %<>%
+  mutate(Age2 = Age^2)
+logit_reg_kyph_poly <- glm(Result ~ Age + Age2, data = kyphosis, family = binomial)
+summary(logit_reg_kyph_poly)
+
+prob_kyph_poly_fun <- function(x){
+  predict(
+    object = logit_reg_kyph_poly
+    ,newdata = tibble(Age = x, Age2 = x^2)
+    ,type = "response"
+  )
+}
+
+kyphosis %>% 
+  ggplot() +
+  geom_point(
+    aes(
+      x = Age
+      ,y = Result
+    )
+  ) +
+  stat_function(
+    data = tibble(x = c(0, 200))
+    ,aes(x)
+    ,fun = prob_kyph_poly_fun
+  ) +
+  labs(y = expression(hat(pi)))
+```
+This function is maximized at $\approx 91.552$, so at Age in months increases up until that point, the probability on average increases, based on the sample. Afterwards as Age increases above that point, on average the probability decreases, based on the sample.
