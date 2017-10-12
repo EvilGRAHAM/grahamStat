@@ -2,12 +2,19 @@
 title: "Week 05 Questions"
 author: "Scott Graham 10131323"
 date: "October 13, 2017"
+header-includes:
+  - \newcommand{\Prob}{\operatorname{P}}
+  - \newcommand{\E}{\operatorname{E}}
+  - \newcommand{\Var}{\operatorname{Var}}
+  - \newcommand{\Cov}{\operatorname{Cov}}
+  - \newcommand{\se}{\operatorname{se}}
+  - \newcommand{\re}{\operatorname{re}}
+  - \newcommand{\ybar}{{\overline{Y}}}
+  - \newcommand{\phat}{{\hat{p}}}
+  - \newcommand{\that}{{\hat{T}}}
+  - \newcommand{\med}{{\tilde{Y}}}
 output:
-  html_document:
-    toc: true
-    toc_depth: 2
-    toc_float: true
-    code_folding: hide
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -29,18 +36,6 @@ theme_minimal2 <-
     )
   )
 ```
-\[
-  \newcommand{\Prob}{\operatorname{P}}
-  \newcommand{\E}{\operatorname{E}}
-  \newcommand{\Var}{\operatorname{Var}}
-  \newcommand{\Cov}{\operatorname{Cov}}
-  \newcommand{\se}{\operatorname{se}}
-  \newcommand{\re}{\operatorname{re}}
-  \newcommand{\ybar}{{\overline{Y}}}
-  \newcommand{\phat}{{\hat{p}}}
-  \newcommand{\that}{{\hat{T}}}
-  \newcommand{\med}{{\tilde{Y}}}
-\]
 
 ## 4.9
 ```{r 4.09}
