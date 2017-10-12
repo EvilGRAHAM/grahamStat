@@ -254,10 +254,8 @@ div.tocify {
 <div id="section" class="section level2">
 <h2>4.9</h2>
 <pre class="r"><code>crabs_data &lt;- 
-  read_delim(
-    file = &quot;http://www.math.montana.edu/shancock/courses/stat539/data/horseshoe.txt&quot;
-    ,delim = &quot; &quot;
-    ,col_names = TRUE
+  read_csv(
+    file = &quot;http://grahamst.at/projects/STAT_541/STAT_541_Assignments/Week_05_Data_4.09.csv&quot;
   ) %&gt;% 
   mutate(
     satell_bool = if_else(satell &gt; 0, 1, 0)

@@ -2,19 +2,12 @@
 title: "Week 05 Questions"
 author: "Scott Graham 10131323"
 date: "October 13, 2017"
-header-includes:
-  - \newcommand{\Prob}{\operatorname{P}}
-  - \newcommand{\E}{\operatorname{E}}
-  - \newcommand{\Var}{\operatorname{Var}}
-  - \newcommand{\Cov}{\operatorname{Cov}}
-  - \newcommand{\se}{\operatorname{se}}
-  - \newcommand{\re}{\operatorname{re}}
-  - \newcommand{\ybar}{{\overline{Y}}}
-  - \newcommand{\phat}{{\hat{p}}}
-  - \newcommand{\that}{{\hat{T}}}
-  - \newcommand{\med}{{\tilde{Y}}}
 output:
-  pdf_document: default
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
@@ -36,14 +29,24 @@ theme_minimal2 <-
     )
   )
 ```
+\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]
 
 ## 4.9
 ```{r 4.09}
 crabs_data <- 
-  read_delim(
-    file = "http://www.math.montana.edu/shancock/courses/stat539/data/horseshoe.txt"
-    ,delim = " "
-    ,col_names = TRUE
+  read_csv(
+    file = "http://grahamst.at/projects/STAT_541/STAT_541_Assignments/Week_05_Data_4.09.csv"
   ) %>% 
   mutate(
     satell_bool = if_else(satell > 0, 1, 0)
