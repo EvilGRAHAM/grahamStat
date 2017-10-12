@@ -115,7 +115,7 @@ True
 False
 
 
-## 3.3
+## 3.03
 ### a.
 $$
   \E\left[ \Prob\left( Y = 1 \middle| X = x \right) \right] =
@@ -139,8 +139,8 @@ $$
 $$
 
 
-## 3.9
-```{r 3.9}
+## 3.09
+```{r 3.09}
 income.credit <- read_csv("http://grahamst.at/projects/STAT_541/STAT_541_Assignments/Week_03_Data_3.09.csv")
 income.credit
 income.credit.glm <- glm(Card ~ Inc, data = income.credit, family = "binomial")

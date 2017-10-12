@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
   \newcommand{\med}{{\tilde{Y}}}
 \]
 
-## 2.1
+## 2.01
 ### a.
 $$
   \Prob ( - | C ) = \frac{1}{4},
@@ -75,12 +75,12 @@ $$
   \frac{\Prob(+|C) \Prob(C)}{\Prob(+)} =
   \frac{\frac{3}{4} \times 0.1}{0.6675} =
 $$
-```{r 2.1e}
+```{r 2.01e}
   3/4*sum_rows[1]/sum_cols[1]
 ```
 
 
-## 2.5
+## 2.05
 ### a.
 Since we are dealing with likelihood, the 1.7 is the relative risk.
 
@@ -96,7 +96,7 @@ $$
 $$
 
 
-## 2.7
+## 2.07
 ### a.
 With an odds ratio, we aren't directly measuring the probability of an event, merely its odds. The correct iterpretation would be the odds of a female surviving is 11.4 times that of a male.
 

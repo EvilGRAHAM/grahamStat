@@ -42,7 +42,7 @@ theme_minimal2 <-
   \newcommand{\med}{{\tilde{Y}}}
 \]
 
-## 4.9
+## 4.09
 ```{r 4.09}
 crabs_data <- 
   read_csv(

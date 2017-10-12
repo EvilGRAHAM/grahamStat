@@ -300,7 +300,7 @@ $$
 That is, with 95\% confidence, the true average multiplicative increase for the collision rate as the year increases by 1, is between 0.9417645 and 0.9920319, based on the sample.
 
 
-## 4.1
+## 4.01
 ### a.
 $$
   \ln\left(\theta\right) =
@@ -325,7 +325,7 @@ $$
 $$
 
 ### c.
-```{r 4.1c}
+```{r 4.01c}
 prob <- function(x){exp(-3.7771 + 0.1449*x)/(1 + exp(-3.7771 + 0.1449*x))}
 0.1449*prob(8)*(1-prob(8))
 0.1449*prob(26)*(1-prob(26))
@@ -351,7 +351,7 @@ $$
 $$
 
 
-## 4.3
+## 4.03
 ### a.
 For each new decade, the probability of a CG for a pitcher falls by 6.94\% on average in the NL, based on the sample.
 
@@ -372,8 +372,8 @@ $$
 This is more plausible, as it satisfies our restraint on $\pi$. However, since 12 is not in the sample, this may not accurate.
 
 
-## 4.5
-```{r 4.5, include=FALSE}
+## 4.05
+```{r 4.05, include=FALSE}
 space_results <- tibble(
   Flight = 1:23
   ,Temp = c(
@@ -416,7 +416,7 @@ space_results <- tibble(
 )
 ```
 ### a.
-```{r 4.5a}
+```{r 4.05a}
 logit_reg_space <- glm(TD ~ Temp, data = space_results, family = binomial)
 summary(logit_reg_space)
 prob_fun <- function(x){
@@ -441,7 +441,7 @@ space_results %>%
 As temperature increase, on average the probability of TD decreases, based on the sample.
 
 ### b.
-```{r 4.5b}
+```{r 4.05b}
 prob_fun(31)
 ```
 
@@ -478,7 +478,7 @@ That is, on average, for every unit increase in temperature in Fahrenheit the lo
 From above, our p-value for $H_{0}:\beta=0 \text{ vs. } H_{1}:\beta\neq0$ is 0.0320, so at $\alpha=0.05$, we reject the null hypothesis, and assume the alternative to be true based on the sample.
 
 #### ii.
-```{r 4.5dii}
+```{r 4.05dii}
 logit_reg_space_int <- glm(TD ~ 1, data = space_results, family = binomial)
 summary(logit_reg_space_int)
 anova(logit_reg_space_int, logit_reg_space, test = "Chisq")
@@ -487,8 +487,8 @@ anova(logit_reg_space_int, logit_reg_space, test = "Chisq")
 From above, our p-value for $H_{0}:\beta=0 \text{ vs. } H_{1}:\beta\neq0$ is 0.004804, so at $\alpha=0.05$, we reject the null hypothesis, and assume the alternative to be true based on the sample.
 
 
-## 4.7
-```{r 4.7, include=FALSE}
+## 4.07
+```{r 4.07, include=FALSE}
 kyphosis <- tibble(
   Age = c(
     12
@@ -539,7 +539,7 @@ kyphosis <- tibble(
 )
 ```
 ### a.
-```{r 4.7a}
+```{r 4.07a}
 logit_reg_kyph <- glm(Result ~ Age, data = kyphosis, family = binomial)
 summary(logit_reg_kyph)
 ```
@@ -547,7 +547,7 @@ summary(logit_reg_kyph)
 Since our p-value for age is $0.463>\alpha=0.05$, we fail to reject the null hypothesis, based on the sample, and assume age has no effect on the result.
 
 ### b.
-```{r 4.7b}
+```{r 4.07b}
 kyphosis %>%
   ggplot(
     aes(
@@ -567,7 +567,7 @@ kyphosis %>%
 As you can see, there seems to be no noticable difference in clustering at the tails for each response based on age. As such it'd ake sense we'd see such a low significance for the slope parameter. There is however some clustering near the middle for the Kyphosis results, so there may be an additional explanatory variable needed, or some polynomial term.
 
 ### c.
-```{r 4.7c}
+```{r 4.07c}
 kyphosis %<>%
   mutate(Age2 = Age^2)
 logit_reg_kyph_poly <- glm(Result ~ Age + Age2, data = kyphosis, family = binomial)

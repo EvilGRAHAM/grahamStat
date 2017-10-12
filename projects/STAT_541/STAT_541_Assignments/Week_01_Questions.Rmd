@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
   \newcommand{\med}{{\tilde{Y}}}
 \]
 
-## 1.1
+## 1.01
 
 ### a.
 The explanatory variables are Gender (male, female), and Mother's education (high school, college). The response variable is Attitude towards gun control (favour, oppose).
@@ -41,7 +41,7 @@ The explanatory variables are Race (white, nonwhite), Religion (Catholic, Jewish
 The explanatory variable is Marital status (married, single, divorced, widowed). The response variable is Quality of life (excellent, good, fair, poor).
 
 
-## 1.3
+## 1.03
 
 ### a.
 Let $X=$ the number of correct answers by the student on the exam. Let $p=\frac{1}{4}$ be the probability of guessing the correct answer for a given question. Let $n=100$ be the number of questions on the exam. Then:
@@ -68,7 +68,7 @@ or equivalently in R:
 which is $<5\%$. As such we reject the null hypothesis that the student was merely guessing for each question, and assume that their probability of getting the correct answer is $>0.25$ based on the sample.
 
 
-## 1.5
+## 1.05
 We need to find $\phat$ s.t. we maximize $\Prob\left(Y = 0 \middle| n = 2 \right)$ subject to $p\in[0,1]$
 $$
   \Prob\left(Y = 0 \middle| n = 2 \right) =
@@ -94,7 +94,7 @@ Since our function is monotonic over this domain, $p = 0$ is our MLE.
 This may not be reasonable however, as this would require the coin to have both sides as tails. As well, we have a small sample size of $n=2$, which makes it hard to draw a reasonable conclusion. If we use the bayesian estimator as given in the text, $p=\frac{1}{4}$, which may be a more reasonable estimator for $p$ based on our limited data.
 
 
-## 1.7
+## 1.07
 
 ### a.
 Let $X$ be the bullet firing (a somewhat morbid success...), $n=6$, $p=\frac{1}{6}$:
