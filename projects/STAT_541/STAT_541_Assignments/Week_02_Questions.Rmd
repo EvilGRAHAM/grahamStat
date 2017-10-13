@@ -4,6 +4,7 @@ author: "Scott Graham"
 date: "Sepetember 22, 2017"
 output:
   html_document:
+    theme: lumen
     toc: true
     toc_depth: 2
     toc_float: true

@@ -1,9 +1,10 @@
 ---
 title: "Week 05 Questions"
-author: "Scott Graham 10131323"
+author: "Scott Graham"
 date: "October 13, 2017"
 output:
   html_document:
+    theme: lumen
     toc: true
     toc_depth: 2
     toc_float: true
