@@ -1,16 +1,16 @@
-name: "STAT_551_Questions"
+name: "STAT_541_Assignments"
 navbar:
   title: "STAT 541 Questions"
   left:
     - text: "Week 01"
       href: Week_01_Questions.html
     - text: "Week 02"
-	  href: Week_02_Questions.html
-	- text: "Week 03"
-	  href: Week_03_Questions.html
-	- text: "Week 04"
-	  href: Week_04_Questions.html
-	- text: "Week 05"
-	  href: Week_05_Questions.html
-	- text: "Week 06"
-	  href: Week_06_Questions.html
+      href: Week_02_Questions.html
+    - text: "Week 03"
+      href: Week_03_Questions.html
+    - text: "Week 04"
+      href: Week_04_Questions.html
+    - text: "Week 05"
+      href: Week_05_Questions.html
+    - text: "Week 06"
+      href: Week_06_Questions.html

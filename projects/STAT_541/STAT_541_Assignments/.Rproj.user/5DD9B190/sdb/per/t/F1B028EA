@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Home\"\nauthor: \"Scott Graham\"\noutput:\n  html_document:\n    theme: lumen\n    toc: true\n    toc_depth: 2\n    toc_float: true\n    code_folding: hide\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\\[`\n  \\newcommand{\\Prob}{\\operatorname{P}}\n  \\newcommand{\\E}{\\operatorname{E}}\n  \\newcommand{\\Var}{\\operatorname{Var}}\n  \\newcommand{\\Cov}{\\operatorname{Cov}}\n  \\newcommand{\\se}{\\operatorname{se}}\n  \\newcommand{\\re}{\\operatorname{re}}\n  \\newcommand{\\ybar}{{\\overline{Y}}}\n  \\newcommand{\\phat}{{\\hat{p}}}\n  \\newcommand{\\that}{{\\hat{T}}}\n  \\newcommand{\\med}{{\\tilde{Y}}}\n\\]\n",
+    "created" : 1508527876943.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2355956895",
+    "id" : "F1B028EA",
+    "lastKnownWriteTime" : 1508527918,
+    "last_content_update" : 1508527918203,
+    "path" : "~/GitHub/grahamStat/projects/STAT_541/STAT_541_Assignments/index.Rmd",
+    "project_path" : "index.Rmd",
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

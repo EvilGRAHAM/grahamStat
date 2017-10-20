@@ -14,7 +14,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-\[
+\[`
   \newcommand{\Prob}{\operatorname{P}}
   \newcommand{\E}{\operatorname{E}}
   \newcommand{\Var}{\operatorname{Var}}
