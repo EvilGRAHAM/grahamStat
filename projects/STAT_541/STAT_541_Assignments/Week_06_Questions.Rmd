@@ -1,0 +1,468 @@
+---
+title: "Week 06 Questions"
+author: "Scott Graham 10131323"
+date: "October 20, 2017"
+output:
+  html_document:
+    theme: lumen
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
+library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+theme_minimal2 <- theme_minimal() %>%  theme_set()
+theme_minimal2 <-
+  theme_update(
+    panel.border = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+    ,strip.background = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+  )
+```
+\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]
+
+## 4.23
+### a.
+$$
+  \ln(\theta) =
+  \begin{cases}
+    -7.00 + 0.10A + 1.20S \text{, if } R = 0  \\
+    -6.70 + 0.10A + 1.40S \text{, if } R = 1
+  \end{cases}
+$$
+$$
+  OR_{YS} =
+  \begin{cases}
+    e^{1.20} = 3.3201 \text{, if } R = 0  \\
+    e^{1.40} = 4.0552 \text{, if } R = 1
+  \end{cases}
+$$
+$$
+  \ln(\theta) =
+  \begin{cases}
+    -7.00 + 0.10A + 0.30R \text{, if } S = 0  \\
+    -5.80 + 0.10A + 0.50R \text{, if } S = 1
+  \end{cases}
+$$
+$$
+  OR_{YR} =
+  \begin{cases}
+    e^{0.30} = 1.3499 \text{, if } S = 0  \\
+    e^{0.50} = 1.6487 \text{, if } S = 1
+  \end{cases}
+$$
+
+### b.
+Those coefficients represent the average additive increase in the log odds in favour, when the other variable is set to 0, based on the sample. i.e. There is a 1.20 increase on average in the log odds in favour for a white person, when they smoke at least on pack a day, and a 0.30 increase on average in the log odds in favour for a person who smokes at lease one pack a day, when they are black. 
+
+The p-values are testing:
+$$
+  H_{0}: \beta_{i} = 0
+$$
+$$
+  H_{1}: \beta_{i} \neq 0
+$$
+for a given i.
+
+### c.
+$$
+  \ln(\theta) =
+  \begin{cases}
+    -7.00 + 0.10A + 1.20S \text{, if } R = 0  \\
+    -6.70 + 0.14A + 1.40S \text{, if } R = 1
+  \end{cases}
+$$
+
+
+## 4.26
+### a.
+$$
+  \ln(\theta) =
+  -12.715 + 1.106(1) + 0.468(20) =
+  -2.249 \implies
+  \Prob(Y = 1 | X) =
+  \frac{e^{-2.249}}{1 + e^{-2.249}} =
+  0.0954
+$$
+$$
+  \ln(\theta) =
+  -12.715 + 0.468(20) =
+  -3.355 \implies
+  \Prob(Y = 1 | X) =
+  \frac{e^{-3.355}}{1 + e^{-3.355}} =
+  0.0337
+$$
+$$
+  \implies
+  \frac{0.0954}{0.0337} =
+  2.8293
+$$
+
+### b.
+$$
+  \theta =
+  e^{-12.715 + 1.106(1) + 0.468(20)} =
+  0.1055
+$$
+$$
+  \theta =
+  e^{-12.715 + 0.468(20)} =
+  0.0349
+$$
+$$
+  \implies
+  OR =
+  \frac{0.1055}{0.0349} =
+  3.0222 \implies
+  \ln(3.0222) =
+  1.106
+$$
+
+Therefore the odds ratio is on average equal to the $e^{\beta_{i}}$ of the differing parameter between the two predictions.
+
+
+## 4.27
+### a.
+$$
+  \sigma_{c} = 
+  0.80 \implies
+  \sigma_{c} \hat{\beta}_{c} =
+  0.80(-0.509) =
+  -0.4072
+$$
+$$
+  \sigma_{x} = 
+  2.11 \implies
+  \sigma_{x} \hat{\beta}_{x} =
+  2.11(0.458) =
+  0.9664
+$$
+
+Thus for every 1 sd increase in colour, the odds in favour increase on average by a multiplicative factor of 0.6655. For every 1 sd increase in width, the odds in favour increase on average by a multiplicative factor of 2.6284. Both of these are based on the sample.
+
+### b.
+```{r 4.27b}
+logit_crab_4.27 <- function(colour, weight){
+  -10.071 - 0.509*colour + 0.458*weight
+}
+prob_crab_4.27 <- function(colour, weight){
+  exp(logit_crab_4.27(colour, weight))/(1 + exp(logit_crab_4.27(colour, weight)))
+}
+colour <- 1:4
+weight <- c(24.9, 27.7)
+results_crab <- tibble(
+  colour = as.numeric()
+  ,weight = as.numeric()
+  ,probability = as.numeric()
+)
+results_crab_row <- 1
+for (i in colour){
+  for (j in weight){
+    results_crab[results_crab_row,] <- cbind(i, j, prob_crab_4.27(colour = i, weight = j))
+    results_crab_row <- results_crab_row + 1
+  }
+}
+results_crab
+```
+
+For changes over the middle 50\% of width, there is a greater change on average in probability than there is for each unit increase in colour. 
+
+
+## 4.30
+```{r 4.30 01}
+grad_data_summary <- 
+  tibble(
+    Race = rep(c("W", "B"), each = 2)
+    ,Gender = rep(c("F", "M"), times = 2)
+    ,`Sample Size` = 
+      c(
+        796
+        ,1625
+        ,143
+        ,660
+      )
+    ,Graduates =
+      c(
+        498
+        ,878
+        ,54
+        ,197
+      )
+  ) %>% 
+  mutate(
+    `Drop Outs` = `Sample Size` - Graduates
+    ,Proportion = Graduates / `Sample Size`
+  )
+
+grad_data <- 
+  tibble(
+    Race = 
+      rep(
+        c("B", "W")
+        ,times =
+          (grad_data_summary %>%
+             group_by(Race) %>% 
+             select(-Gender) %>% 
+             summarise_all(sum)
+           )$`Sample Size`
+      )
+    ,Gender = 
+      c(
+        rep(
+          c("F", "M")
+          ,times =
+            (grad_data_summary %>%
+               filter(Race == "B")
+             )$`Sample Size`
+        )
+        ,rep(
+          c("F", "M")
+          ,times =
+            (grad_data_summary %>%
+               filter(Race == "W")
+             )$`Sample Size`
+        )
+      )
+    ,Graduated = 
+      c(
+        rep(
+          0:1
+          ,times =
+            c(
+              (grad_data_summary %>%
+                 filter(Race == "B", Gender == "F")
+               )$`Drop Outs`
+              ,(grad_data_summary %>%
+                 filter(Race == "B", Gender == "F")
+               )$Graduates
+            )
+        )
+        ,rep(
+          0:1
+          ,times =
+            c(
+              (grad_data_summary %>%
+                 filter(Race == "B", Gender == "M")
+               )$`Drop Outs`
+              ,(grad_data_summary %>%
+                 filter(Race == "B", Gender == "M")
+               )$Graduates
+            )
+        )
+        ,rep(
+          0:1
+          ,times =
+            c(
+              (grad_data_summary %>%
+                 filter(Race == "W", Gender == "F")
+               )$`Drop Outs`
+              ,(grad_data_summary %>%
+                 filter(Race == "W", Gender == "F")
+               )$Graduates
+            )
+        )
+        ,rep(
+          0:1
+          ,times =
+            c(
+              (grad_data_summary %>%
+                 filter(Race == "W", Gender == "M")
+               )$`Drop Outs`
+              ,(grad_data_summary %>%
+                 filter(Race == "W", Gender == "M")
+               )$Graduates
+            )
+        )
+    )
+  )
+logit_grads <- glm(Graduated ~ Race + Gender, data = grad_data, family = binomial)
+summary(logit_grads)
+```
+
+Let:
+$$
+  Y_{i} =
+  \begin{cases}
+    0 \text{, if i didn't graduate} \\
+    1 \text{, if i didn't graduate}
+  \end{cases}
+$$
+$$
+    R_{i} =
+  \begin{cases}
+    0 \text{, if i is black} \\
+    1 \text{, if i is white}
+  \end{cases}
+$$
+$$
+  G_{i} =
+  \begin{cases}
+    0 \text{, if i is female} \\
+    1 \text{, if i is male}
+  \end{cases}
+$$
+
+Then:
+$$
+  \ln\left( \theta_{i} \right) =
+  -0.5016 + 1.0155R_{i} - 0.3524G_{i}
+$$
+```{r 4.30 02}
+logit_grads %>% 
+  coef %>% 
+  exp %>% 
+  round(4)
+```
+On average, the odds increases by a multiplicative factor of $e^{1.0155}=2.7606$ if someone is white vs. black, based on the sample. On average, the odds decreases by a multiplicative factor of $e^{-0.3524}=0.7030$ if someone is male vs. female, based on the sample. All the coefficients are also deemed to be highly significant.
+```{r 4.30 03}
+grad_data_summary %<>% 
+  mutate(
+    `Predicted Proportion` =
+      predict(
+        logit_grads
+        ,newdata = 
+          grad_data_summary %>% 
+          select(Race, Gender)
+        ,type = "response"
+      )
+  )
+grad_data_summary %>% 
+  select(-c(`Sample Size`, Graduates, `Drop Outs`))
+```
+
+
+## 4.36
+```{r 4.36}
+logit_crab_4.36 <- function(weight){
+  -12.351 + 0.497*weight
+}
+prob_crab_4.36 <- function(weight){
+  exp(logit_crab_4.36(weight))/(1 + exp(logit_crab_4.36(weight)))
+}
+```
+### a.
+```{r 4.36a}
+ggplot(
+  data = tibble(weight = c(0, 50))
+  ,aes(weight)
+) +
+  stat_function(fun = prob_crab_4.36) +
+  labs(
+    x = "Weight"
+    ,y = expression(hat(pi))
+  )
+```
+$$
+  \mu =
+  -\frac{-12.351}{0.497} =
+  24.8511
+$$
+$$
+  \sigma =
+  \frac{1.814}{0.497} =
+  3.6499
+$$
+
+### b.
+$$
+  \mu \mp 2\sigma =
+  24.8511 \mp 2(3.6499) =
+  [17.5513, 32.1509]
+$$
+```{r 4.36b}
+(12.351/0.497 + 2 * 1.814/0.497*c(-1,1)) %>% 
+  prob_crab_4.36 %>% 
+  round(4)
+```
+
+
+## 5.01
+```{r 5.01}
+crabs_data <- 
+  read_csv(
+    file = "http://grahamst.at/projects/STAT_541/STAT_541_Assignments/Week_06_Data_5.01.csv"
+  ) %>%
+  mutate(
+    satell_bool = if_else(satell > 0, 1, 0)
+    ,weight = weight/1000
+  )
+```
+### a.
+```{r 5.01a}
+logit_crab_5.01 <- 
+  crabs_data %>% 
+  glm(
+    satell_bool ~ weight + width
+    ,data = .
+    ,family = binomial
+  )
+summary(logit_crab_5.01)
+```
+
+$$
+  \ln(\theta) =
+  -9.3547 + 0.8338Weight + 0.3068Width
+$$
+
+### b.
+```{r 5.01b}
+logit_crab_5.01b <- 
+  crabs_data %>% 
+  glm(
+    satell_bool ~ 1
+    ,data = .
+    ,family = binomial
+  )
+anova(logit_crab_5.01b, logit_crab_5.01, test = "Chisq")
+```
+$$
+  H_{0}: \beta_{i} = 0, \forall i = 1,2
+$$
+$$
+  H_{1}: \beta_{i} \neq 0, \exists i = 1,2
+$$
+And with a p-value of $7.296*10^{-8}$ under the null hypothesis, the null hypothesis is reject, and the alternative is accepted based on the sample.
+
+### c.
+```{r 5.01c}
+logit_crab_5.01weight <- 
+  crabs_data %>% 
+  glm(
+    satell_bool ~ weight
+    ,data = .
+    ,family = binomial
+  )
+logit_crab_5.01width <- 
+  crabs_data %>% 
+  glm(
+    satell_bool ~ width
+    ,data = .
+    ,family = binomial
+  )
+anova(logit_crab_5.01weight, logit_crab_5.01, test = "Chisq")
+anova(logit_crab_5.01width, logit_crab_5.01, test = "Chisq")
+cor(x = crabs_data$weight, crabs_data$width)
+```
+Because width and weight have a correlation of 88.69\%, a high degree of colinearity exists. When testing they both $=0$, vs at least one days, the test doesn't distinguish which one is a better predictor, just that at least one of them is non-zero. When we are testing whether or not we can remove one of them, without serverely impacting the explained variance, we are testing that the missing predictor $=0$, and because of this, we can remove one due to their high correlation.
