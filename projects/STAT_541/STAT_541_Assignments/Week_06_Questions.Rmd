@@ -1,6 +1,6 @@
 ---
 title: "Week 06 Questions"
-author: "Scott Graham 10131323"
+author: "Scott Graham"
 date: "October 20, 2017"
 output:
   html_document:
