@@ -454,7 +454,7 @@ $$
   \ln(\theta) = -4.1845 + 1.1279x_{1} - 0.1980x_{2} - 0.3803x_{3}
 $$
 
-The log odds in favour increase on average by 1.1279, if the person is 19 or older, decrease on average by 0.1980 is they are 13 or younger, and decrease on average by 0.3803 if they are male.
+The log odds in favour increase on average by 1.1279, if the person is 19 or older, decrease on average by 0.1980 if they are between 14 and 18, and decrease on average by 0.3803 if they are male.
 
 The Cochran-Mantel-Haenszel Test yields a p-value of $1.085\times10^{-5}<\alpha=0.05$, rejecting the null hypothesis of independence, contingent on Age. Based on the sample assume some dependency exists between Gender and Missing Status, contingent on Age.
 
