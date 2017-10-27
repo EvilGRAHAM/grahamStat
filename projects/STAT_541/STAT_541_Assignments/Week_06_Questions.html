@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Scott Graham" />
+
+<meta name="date" content="2017-10-20" />
+
+<title>Week 06 Questions</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">STAT 541 Questions</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Week_01_Questions.html">Week 01</a>
+</li>
+<li>
+  <a href="Week_02_Questions.html">Week 02</a>
+</li>
+<li>
+  <a href="Week_03_Questions.html">Week 03</a>
+</li>
+<li>
+  <a href="Week_04_Questions.html">Week 04</a>
+</li>
+<li>
+  <a href="Week_05_Questions.html">Week 05</a>
+</li>
+<li>
+  <a href="Week_06_Questions.html">Week 06</a>
+</li>
+<li>
+  <a href="Week_07_Questions.html">Week 07</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Week 06 Questions</h1>
+<h4 class="author"><em>Scott Graham</em></h4>
+<h4 class="date"><em>October 20, 2017</em></h4>
+
+</div>
+
+
+<p><span class="math display">\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]</span></p>
+<div id="section" class="section level2">
+<h2>4.23</h2>
+<div id="a." class="section level3">
+<h3>a.</h3>
+<p><span class="math display">\[
+  \ln(\theta) =
+  \begin{cases}
+    -7.00 + 0.10A + 1.20S \text{, if } R = 0  \\
+    -6.70 + 0.10A + 1.40S \text{, if } R = 1
+  \end{cases}
+\]</span> <span class="math display">\[
+  OR_{YS} =
+  \begin{cases}
+    e^{1.20} = 3.3201 \text{, if } R = 0  \\
+    e^{1.40} = 4.0552 \text{, if } R = 1
+  \end{cases}
+\]</span> <span class="math display">\[
+  \ln(\theta) =
+  \begin{cases}
+    -7.00 + 0.10A + 0.30R \text{, if } S = 0  \\
+    -5.80 + 0.10A + 0.50R \text{, if } S = 1
+  \end{cases}
+\]</span> <span class="math display">\[
+  OR_{YR} =
+  \begin{cases}
+    e^{0.30} = 1.3499 \text{, if } S = 0  \\
+    e^{0.50} = 1.6487 \text{, if } S = 1
+  \end{cases}
+\]</span></p>
+</div>
+<div id="b." class="section level3">
+<h3>b.</h3>
+<p>Those coefficients represent the average additive increase in the log odds in favour, when the other variable is set to 0, based on the sample. i.e. There is a 1.20 increase on average in the log odds in favour for a white person, when they smoke at least on pack a day, and a 0.30 increase on average in the log odds in favour for a person who smokes at lease one pack a day, when they are black.</p>
+<p>The p-values are testing: <span class="math display">\[
+  H_{0}: \beta_{i} = 0
+\]</span> <span class="math display">\[
+  H_{1}: \beta_{i} \neq 0
+\]</span> for a given i.</p>
+</div>
+<div id="c." class="section level3">
+<h3>c.</h3>
+<p><span class="math display">\[
+  \ln(\theta) =
+  \begin{cases}
+    -7.00 + 0.10A + 1.20S \text{, if } R = 0  \\
+    -6.70 + 0.14A + 1.40S \text{, if } R = 1
+  \end{cases}
+\]</span></p>
+</div>
+</div>
+<div id="section-1" class="section level2">
+<h2>4.26</h2>
+<div id="a.-1" class="section level3">
+<h3>a.</h3>
+<p><span class="math display">\[
+  \ln(\theta) =
+  -12.715 + 1.106(1) + 0.468(20) =
+  -2.249 \implies
+  \Prob(Y = 1 | X) =
+  \frac{e^{-2.249}}{1 + e^{-2.249}} =
+  0.0954
+\]</span> <span class="math display">\[
+  \ln(\theta) =
+  -12.715 + 0.468(20) =
+  -3.355 \implies
+  \Prob(Y = 1 | X) =
+  \frac{e^{-3.355}}{1 + e^{-3.355}} =
+  0.0337
+\]</span> <span class="math display">\[
+  \implies
+  \frac{0.0954}{0.0337} =
+  2.8293
+\]</span></p>
+</div>
+<div id="b.-1" class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+  \theta =
+  e^{-12.715 + 1.106(1) + 0.468(20)} =
+  0.1055
+\]</span> <span class="math display">\[
+  \theta =
+  e^{-12.715 + 0.468(20)} =
+  0.0349
+\]</span> <span class="math display">\[
+  \implies
+  OR =
+  \frac{0.1055}{0.0349} =
+  3.0222 \implies
+  \ln(3.0222) =
+  1.106
+\]</span></p>
+<p>Therefore the odds ratio is on average equal to the <span class="math inline">\(e^{\beta_{i}}\)</span> of the differing parameter between the two predictions.</p>
+</div>
+</div>
+<div id="section-2" class="section level2">
+<h2>4.27</h2>
+<div id="a.-2" class="section level3">
+<h3>a.</h3>
+<p><span class="math display">\[
+  \sigma_{c} = 
+  0.80 \implies
+  \sigma_{c} \hat{\beta}_{c} =
+  0.80(-0.509) =
+  -0.4072
+\]</span> <span class="math display">\[
+  \sigma_{x} = 
+  2.11 \implies
+  \sigma_{x} \hat{\beta}_{x} =
+  2.11(0.458) =
+  0.9664
+\]</span></p>
+<p>Thus for every 1 sd increase in colour, the odds in favour increase on average by a multiplicative factor of 0.6655. For every 1 sd increase in width, the odds in favour increase on average by a multiplicative factor of 2.6284. Both of these are based on the sample.</p>
+</div>
+<div id="b.-2" class="section level3">
+<h3>b.</h3>
+<pre class="r"><code>logit_crab_4.27 &lt;- function(colour, weight){
+  -10.071 - 0.509*colour + 0.458*weight
+}
+prob_crab_4.27 &lt;- function(colour, weight){
+  exp(logit_crab_4.27(colour, weight))/(1 + exp(logit_crab_4.27(colour, weight)))
+}
+colour &lt;- 1:4
+weight &lt;- c(24.9, 27.7)
+results_crab &lt;- tibble(
+  colour = as.numeric()
+  ,weight = as.numeric()
+  ,probability = as.numeric()
+)
+results_crab_row &lt;- 1
+for (i in colour){
+  for (j in weight){
+    results_crab[results_crab_row,] &lt;- cbind(i, j, prob_crab_4.27(colour = i, weight = j))
+    results_crab_row &lt;- results_crab_row + 1
+  }
+}
+results_crab</code></pre>
+<pre><code>## # A tibble: 8 x 3
+##   colour weight probability
+## *  &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;
+## 1      1   24.9   0.6951272
+## 2      1   27.7   0.8915430
+## 3      2   24.9   0.5781540
+## 4      2   27.7   0.8316827
+## 5      3   24.9   0.4517011
+## 6      3   27.7   0.7481180
+## 7      4   24.9   0.3311917
+## 8      4   27.7   0.6409754</code></pre>
+<p>For changes over the middle 50% of width, there is a greater change on average in probability than there is for each unit increase in colour.</p>
+</div>
+</div>
+<div id="section-3" class="section level2">
+<h2>4.30</h2>
+<pre class="r"><code>grad_data_summary &lt;- 
+  tibble(
+    Race = rep(c(&quot;W&quot;, &quot;B&quot;), each = 2)
+    ,Gender = rep(c(&quot;F&quot;, &quot;M&quot;), times = 2)
+    ,`Sample Size` = 
+      c(
+        796
+        ,1625
+        ,143
+        ,660
+      )
+    ,Graduates =
+      c(
+        498
+        ,878
+        ,54
+        ,197
+      )
+  ) %&gt;% 
+  mutate(
+    `Drop Outs` = `Sample Size` - Graduates
+    ,Proportion = Graduates / `Sample Size`
+  )
+
+grad_data &lt;- 
+  tibble(
+    Race = 
+      rep(
+        c(&quot;B&quot;, &quot;W&quot;)
+        ,times =
+          (grad_data_summary %&gt;%
+             group_by(Race) %&gt;% 
+             dplyr::select(
+               Race
+               ,`Sample Size`
+               ,Graduates
+               ,`Drop Outs`
+               ,Proportion
+             ) %&gt;%
+             summarise_all(sum)
+           )$`Sample Size`
+      )
+    ,Gender = 
+      c(
+        rep(
+          c(&quot;F&quot;, &quot;M&quot;)
+          ,times =
+            (grad_data_summary %&gt;%
+               filter(Race == &quot;B&quot;)
+             )$`Sample Size`
+        )
+        ,rep(
+          c(&quot;F&quot;, &quot;M&quot;)
+          ,times =
+            (grad_data_summary %&gt;%
+               filter(Race == &quot;W&quot;)
+             )$`Sample Size`
+        )
+      )
+    ,Graduated = 
+      c(
+        rep(
+          0:1
+          ,times =
+            c(
+              (grad_data_summary %&gt;%
+                 filter(Race == &quot;B&quot;, Gender == &quot;F&quot;)
+               )$`Drop Outs`
+              ,(grad_data_summary %&gt;%
+                 filter(Race == &quot;B&quot;, Gender == &quot;F&quot;)
+               )$Graduates
+            )
+        )
+        ,rep(
+          0:1
+          ,times =
+            c(
+              (grad_data_summary %&gt;%
+                 filter(Race == &quot;B&quot;, Gender == &quot;M&quot;)
+               )$`Drop Outs`
+              ,(grad_data_summary %&gt;%
+                 filter(Race == &quot;B&quot;, Gender == &quot;M&quot;)
+               )$Graduates
+            )
+        )
+        ,rep(
+          0:1
+          ,times =
+            c(
+              (grad_data_summary %&gt;%
+                 filter(Race == &quot;W&quot;, Gender == &quot;F&quot;)
+               )$`Drop Outs`
+              ,(grad_data_summary %&gt;%
+                 filter(Race == &quot;W&quot;, Gender == &quot;F&quot;)
+               )$Graduates
+            )
+        )
+        ,rep(
+          0:1
+          ,times =
+            c(
+              (grad_data_summary %&gt;%
+                 filter(Race == &quot;W&quot;, Gender == &quot;M&quot;)
+               )$`Drop Outs`
+              ,(grad_data_summary %&gt;%
+                 filter(Race == &quot;W&quot;, Gender == &quot;M&quot;)
+               )$Graduates
+            )
+        )
+    )
+  )
+logit_grads &lt;- glm(Graduated ~ Race + Gender, data = grad_data, family = binomial)
+summary(logit_grads)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Graduated ~ Race + Gender, family = binomial, data = grad_data)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.4020  -1.2467   0.9684   1.1097   1.5548  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -0.50161    0.10004  -5.014 5.33e-07 ***
+## RaceW        1.01547    0.08723  11.641  &lt; 2e-16 ***
+## GenderM     -0.35244    0.08044  -4.381 1.18e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 4469.1  on 3223  degrees of freedom
+## Residual deviance: 4289.1  on 3221  degrees of freedom
+## AIC: 4295.1
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Let: <span class="math display">\[
+  Y_{i} =
+  \begin{cases}
+    0 \text{, if i didn&#39;t graduate} \\
+    1 \text{, if i didn&#39;t graduate}
+  \end{cases}
+\]</span> <span class="math display">\[
+    R_{i} =
+  \begin{cases}
+    0 \text{, if i is black} \\
+    1 \text{, if i is white}
+  \end{cases}
+\]</span> <span class="math display">\[
+  G_{i} =
+  \begin{cases}
+    0 \text{, if i is female} \\
+    1 \text{, if i is male}
+  \end{cases}
+\]</span></p>
+<p>Then: <span class="math display">\[
+  \ln\left( \theta_{i} \right) =
+  -0.5016 + 1.0155R_{i} - 0.3524G_{i}
+\]</span></p>
+<pre class="r"><code>logit_grads %&gt;% 
+  coef %&gt;% 
+  exp %&gt;% 
+  round(4)</code></pre>
+<pre><code>## (Intercept)       RaceW     GenderM 
+##      0.6056      2.7607      0.7030</code></pre>
+<p>On average, the odds increases by a multiplicative factor of <span class="math inline">\(e^{1.0155}=2.7606\)</span> if someone is white vs. black, based on the sample. On average, the odds decreases by a multiplicative factor of <span class="math inline">\(e^{-0.3524}=0.7030\)</span> if someone is male vs. female, based on the sample. All the coefficients are also deemed to be highly significant.</p>
+<pre class="r"><code>grad_data_summary %&lt;&gt;% 
+  mutate(
+    `Predicted Proportion` =
+      predict(
+        logit_grads
+        ,newdata = 
+          grad_data_summary %&gt;% 
+          dplyr::select(Race, Gender)
+        ,type = &quot;response&quot;
+      )
+  )
+grad_data_summary %&gt;% 
+  dplyr::select(-c(`Sample Size`, Graduates, `Drop Outs`))</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##    Race Gender Proportion `Predicted Proportion`
+##   &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt;                  &lt;dbl&gt;
+## 1     W      F  0.6256281              0.6257107
+## 2     W      M  0.5403077              0.5402673
+## 3     B      F  0.3776224              0.3771629
+## 4     B      M  0.2984848              0.2985844</code></pre>
+</div>
+<div id="section-4" class="section level2">
+<h2>4.36</h2>
+<pre class="r"><code>logit_crab_4.36 &lt;- function(weight){
+  -12.351 + 0.497*weight
+}
+prob_crab_4.36 &lt;- function(weight){
+  exp(logit_crab_4.36(weight))/(1 + exp(logit_crab_4.36(weight)))
+}</code></pre>
+<div id="a.-3" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>ggplot(
+  data = tibble(weight = c(0, 50))
+  ,aes(weight)
+) +
+  stat_function(fun = prob_crab_4.36) +
+  labs(
+    x = &quot;Weight&quot;
+    ,y = expression(hat(pi))
+  )</code></pre>
+<p><img src="Week_06_Questions_files/figure-html/4.36a-1.png" width="672" /> <span class="math display">\[
+  \mu =
+  -\frac{-12.351}{0.497} =
+  24.8511
+\]</span> <span class="math display">\[
+  \sigma =
+  \frac{1.814}{0.497} =
+  3.6499
+\]</span></p>
+</div>
+<div id="b.-3" class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+  \mu \mp 2\sigma =
+  24.8511 \mp 2(3.6499) =
+  [17.5513, 32.1509]
+\]</span></p>
+<pre class="r"><code>(12.351/0.497 + 2 * 1.814/0.497*c(-1,1)) %&gt;% 
+  prob_crab_4.36 %&gt;% 
+  round(4)</code></pre>
+<pre><code>## [1] 0.0259 0.9741</code></pre>
+</div>
+</div>
+<div id="section-5" class="section level2">
+<h2>5.01</h2>
+<pre class="r"><code>crabs_data &lt;- 
+  read_csv(
+    file = &quot;http://grahamst.at/projects/STAT_541/STAT_541_Assignments/Week_06_Data_5.01.csv&quot;
+  ) %&gt;%
+  mutate(
+    satell_bool = if_else(satell &gt; 0, 1, 0)
+    ,weight = weight/1000
+  )</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   color = col_integer(),
+##   spine = col_integer(),
+##   width = col_double(),
+##   satell = col_integer(),
+##   weight = col_integer()
+## )</code></pre>
+<div id="a.-4" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>logit_crab_5.01 &lt;- 
+  crabs_data %&gt;% 
+  glm(
+    satell_bool ~ weight + width
+    ,data = .
+    ,family = binomial
+  )
+summary(logit_crab_5.01)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = satell_bool ~ weight + width, family = binomial, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1127  -1.0344   0.5304   0.9006   1.7207  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept)  -9.3547     3.5280  -2.652  0.00801 **
+## weight        0.8338     0.6716   1.241  0.21445   
+## width         0.3068     0.1819   1.686  0.09177 . 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 225.76  on 172  degrees of freedom
+## Residual deviance: 192.89  on 170  degrees of freedom
+## AIC: 198.89
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p><span class="math display">\[
+  \ln(\theta) =
+  -9.3547 + 0.8338Weight + 0.3068Width
+\]</span></p>
+</div>
+<div id="b.-4" class="section level3">
+<h3>b.</h3>
+<pre class="r"><code>logit_crab_5.01b &lt;- 
+  crabs_data %&gt;% 
+  glm(
+    satell_bool ~ 1
+    ,data = .
+    ,family = binomial
+  )
+anova(logit_crab_5.01b, logit_crab_5.01, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: satell_bool ~ 1
+## Model 2: satell_bool ~ weight + width
+##   Resid. Df Resid. Dev Df Deviance  Pr(&gt;Chi)    
+## 1       172     225.76                          
+## 2       170     192.89  2   32.867 7.296e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><span class="math display">\[
+  H_{0}: \beta_{i} = 0, \forall i = 1,2
+\]</span> <span class="math display">\[
+  H_{1}: \beta_{i} \neq 0, \exists i = 1,2
+\]</span> And with a p-value of <span class="math inline">\(7.296*10^{-8}\)</span> under the null hypothesis, the null hypothesis is reject, and the alternative is accepted based on the sample.</p>
+</div>
+<div id="c.-1" class="section level3">
+<h3>c.</h3>
+<pre class="r"><code>logit_crab_5.01weight &lt;- 
+  crabs_data %&gt;% 
+  glm(
+    satell_bool ~ weight
+    ,data = .
+    ,family = binomial
+  )
+logit_crab_5.01width &lt;- 
+  crabs_data %&gt;% 
+  glm(
+    satell_bool ~ width
+    ,data = .
+    ,family = binomial
+  )
+anova(logit_crab_5.01weight, logit_crab_5.01, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: satell_bool ~ weight
+## Model 2: satell_bool ~ weight + width
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)  
+## 1       171     195.74                       
+## 2       170     192.89  1   2.8453  0.09164 .
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(logit_crab_5.01width, logit_crab_5.01, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: satell_bool ~ width
+## Model 2: satell_bool ~ weight + width
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)
+## 1       171     194.45                     
+## 2       170     192.89  1   1.5608   0.2116</code></pre>
+<pre class="r"><code>cor(x = crabs_data$weight, crabs_data$width)</code></pre>
+<pre><code>## [1] 0.8868715</code></pre>
+<p>Because width and weight have a correlation of 88.69%, a high degree of colinearity exists. When testing they both <span class="math inline">\(=0\)</span>, vs at least one days, the test doesn’t distinguish which one is a better predictor, just that at least one of them is non-zero. When we are testing whether or not we can remove one of them, without serverely impacting the explained variance, we are testing that the missing predictor <span class="math inline">\(=0\)</span>, and because of this, we can remove one due to their high correlation.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

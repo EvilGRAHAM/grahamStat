@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Scott Graham" />
+
+<meta name="date" content="2017-10-27" />
+
+<title>Week 07 Questions</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">STAT 541 Questions</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Week_01_Questions.html">Week 01</a>
+</li>
+<li>
+  <a href="Week_02_Questions.html">Week 02</a>
+</li>
+<li>
+  <a href="Week_03_Questions.html">Week 03</a>
+</li>
+<li>
+  <a href="Week_04_Questions.html">Week 04</a>
+</li>
+<li>
+  <a href="Week_05_Questions.html">Week 05</a>
+</li>
+<li>
+  <a href="Week_06_Questions.html">Week 06</a>
+</li>
+<li>
+  <a href="Week_07_Questions.html">Week 07</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Week 07 Questions</h1>
+<h4 class="author"><em>Scott Graham</em></h4>
+<h4 class="date"><em>October 27, 2017</em></h4>
+
+</div>
+
+
+<p><span class="math display">\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]</span></p>
+<div id="section" class="section level2">
+<h2>4.13</h2>
+<pre class="r"><code>death_penalty_ct &lt;-
+  array(
+    data =
+      c(
+         6, 11, 103-6, 63-11
+        ,0, 19, 9-0, 151-19
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Victim = c(&quot;B&quot;, &quot;W&quot;)
+      ,Result = c(&quot;D&quot;, &quot;A&quot;)
+      ,Killer = c(&quot;B&quot;, &quot;W&quot;)
+    )
+  )
+death_penalty_ct</code></pre>
+<pre><code>## , , Killer = B
+## 
+##       Result
+## Victim  D  A
+##      B  6 97
+##      W 11 52
+## 
+## , , Killer = W
+## 
+##       Result
+## Victim  D   A
+##      B  0   9
+##      W 19 132</code></pre>
+<pre class="r"><code>mantelhaen.test(death_penalty_ct, correct = FALSE)</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  death_penalty_ct
+## Mantel-Haenszel X-squared = 6.9964, df = 1, p-value = 0.008168
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.08786514 0.71542455
+## sample estimates:
+## common odds ratio 
+##         0.2507207</code></pre>
+<div id="a." class="section level3">
+<h3>a.</h3>
+<p><span class="math display">\[
+  CMH \sim {\chi_{1}}^{2}
+\]</span></p>
+<pre class="r"><code>pchisq(q = 7, df = 1, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.008150972</code></pre>
+</div>
+<div id="b." class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+  O_{112} = 0
+\]</span></p>
+<pre class="r"><code>sum(death_penalty_ct[&quot;B&quot;,,&quot;W&quot;])*sum(death_penalty_ct[,&quot;D&quot;,&quot;W&quot;])/sum(death_penalty_ct[,,&quot;W&quot;])</code></pre>
+<pre><code>## [1] 1.06875</code></pre>
+<p>This, coupled with the results of the test, shows that what was observed was significantly different than what we’d expect to observe under the null hypothesis.</p>
+</div>
+</div>
+<div id="section-1" class="section level2">
+<h2>4.15</h2>
+<pre class="r"><code>agri_pay_ct &lt;- 
+  array(
+    data = 
+      c(
+         24, 47, 9, 12
+        ,10, 45, 3, 8
+        ,5, 57, 4, 9
+        ,16, 54, 7, 10
+        ,7, 59, 4, 12
+      )
+    ,dim = c(2, 2, 5)
+    ,dimnames = list(
+      Race = c(&quot;B&quot;, &quot;W&quot;)
+      ,Merit_Pay = c(&quot;Y&quot;, &quot;N&quot;)
+      ,District = c(&quot;NC&quot;, &quot;NE&quot;, &quot;NW&quot;, &quot;SE&quot;, &quot;SW&quot;)
+    )
+  )
+agri_pay_ct</code></pre>
+<pre><code>## , , District = NC
+## 
+##     Merit_Pay
+## Race  Y  N
+##    B 24  9
+##    W 47 12
+## 
+## , , District = NE
+## 
+##     Merit_Pay
+## Race  Y N
+##    B 10 3
+##    W 45 8
+## 
+## , , District = NW
+## 
+##     Merit_Pay
+## Race  Y N
+##    B  5 4
+##    W 57 9
+## 
+## , , District = SE
+## 
+##     Merit_Pay
+## Race  Y  N
+##    B 16  7
+##    W 54 10
+## 
+## , , District = SW
+## 
+##     Merit_Pay
+## Race  Y  N
+##    B  7  4
+##    W 59 12</code></pre>
+<div id="a.-1" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>mantelhaen.test(agri_pay_ct, correct = FALSE)</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  agri_pay_ct
+## Mantel-Haenszel X-squared = 7.8149, df = 1, p-value = 0.005182
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.2652676 0.8036854
+## sample estimates:
+## common odds ratio 
+##         0.4617269</code></pre>
+<p><span class="math display">\[
+  H_{0}: \text{Merit Pay is independent of Race, conditionally by district}
+\]</span> <span class="math display">\[
+  H_{1}: \text{Merit Pay is dependent on Race, conditionally by district}
+\]</span></p>
+<p>Since there is a p-value of 0.0052, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+</div>
+<div id="b.-1" class="section level3">
+<h3>b.</h3>
+<pre class="r"><code>agri_pay_data &lt;- 
+  tibble(
+    District = 
+      as.factor(
+        rep(
+          c(&quot;NC&quot;, &quot;NE&quot;, &quot;NW&quot;, &quot;SE&quot;, &quot;SW&quot;)
+          ,times = 
+            c(
+              sum(agri_pay_ct[,,&quot;NC&quot;])
+              ,sum(agri_pay_ct[,,&quot;NE&quot;])
+              ,sum(agri_pay_ct[,,&quot;NW&quot;])
+              ,sum(agri_pay_ct[,,&quot;SE&quot;])
+              ,sum(agri_pay_ct[,,&quot;SW&quot;])
+            )
+        )
+      )
+    ,Race =
+      as.factor(
+        rep(
+          rep(c(&quot;B&quot;, &quot;W&quot;), times = 5)
+          ,times =
+            c(
+              sum(agri_pay_ct[&quot;B&quot;,,&quot;NC&quot;])
+              ,sum(agri_pay_ct[&quot;W&quot;,,&quot;NC&quot;])
+              ,sum(agri_pay_ct[&quot;B&quot;,,&quot;NE&quot;])
+              ,sum(agri_pay_ct[&quot;W&quot;,,&quot;NE&quot;])
+              ,sum(agri_pay_ct[&quot;B&quot;,,&quot;NW&quot;])
+              ,sum(agri_pay_ct[&quot;W&quot;,,&quot;NW&quot;])
+              ,sum(agri_pay_ct[&quot;B&quot;,,&quot;SE&quot;])
+              ,sum(agri_pay_ct[&quot;W&quot;,,&quot;SE&quot;])
+              ,sum(agri_pay_ct[&quot;B&quot;,,&quot;SW&quot;])
+              ,sum(agri_pay_ct[&quot;W&quot;,,&quot;SW&quot;])
+            )
+        )
+      )
+    ,`Merit Pay` =
+      rep(
+        rep(c(1, 0), times = 10)
+        ,times =
+          c(
+            sum(agri_pay_ct[&quot;B&quot;,&quot;Y&quot;,&quot;NC&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;N&quot;,&quot;NC&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;Y&quot;,&quot;NC&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;N&quot;,&quot;NC&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;Y&quot;,&quot;NE&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;N&quot;,&quot;NE&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;Y&quot;,&quot;NE&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;N&quot;,&quot;NE&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;Y&quot;,&quot;NW&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;N&quot;,&quot;NW&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;Y&quot;,&quot;NW&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;N&quot;,&quot;NW&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;Y&quot;,&quot;SE&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;N&quot;,&quot;SE&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;Y&quot;,&quot;SE&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;N&quot;,&quot;SE&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;Y&quot;,&quot;SW&quot;])
+            ,sum(agri_pay_ct[&quot;B&quot;,&quot;N&quot;,&quot;SW&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;Y&quot;,&quot;SW&quot;])
+            ,sum(agri_pay_ct[&quot;W&quot;,&quot;N&quot;,&quot;SW&quot;])
+          )
+      )
+  )
+agri_pay_data %&gt;% 
+  group_by(District, Race) %&gt;% 
+  summarize(Yes = sum(`Merit Pay`))</code></pre>
+<pre><code>## # A tibble: 10 x 3
+## # Groups:   District [?]
+##    District   Race   Yes
+##      &lt;fctr&gt; &lt;fctr&gt; &lt;dbl&gt;
+##  1       NC      B    24
+##  2       NC      W    47
+##  3       NE      B    10
+##  4       NE      W    45
+##  5       NW      B     5
+##  6       NW      W    57
+##  7       SE      B    16
+##  8       SE      W    54
+##  9       SW      B     7
+## 10       SW      W    59</code></pre>
+<pre class="r"><code>logit_agri &lt;- 
+  agri_pay_data %&gt;% 
+  glm(
+    `Merit Pay` ~ District + Race
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_agri)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = `Merit Pay` ~ District + Race, family = binomial, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9760   0.5534   0.5896   0.6231   0.8798  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept)  0.74947    0.29581   2.534  0.01129 * 
+## DistrictNE   0.25837    0.42067   0.614  0.53909   
+## DistrictNW   0.13836    0.40517   0.341  0.73273   
+## DistrictSE   0.12087    0.37287   0.324  0.74581   
+## DistrictSW   0.00445    0.38486   0.012  0.99077   
+## RaceW        0.79129    0.28532   2.773  0.00555 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 395.58  on 401  degrees of freedom
+## Residual deviance: 386.99  on 396  degrees of freedom
+## AIC: 398.99
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>We can read the p-value from the table for Race (0.00555), which tests the same null and alternative hypothesis as stated in a. This is because that p-value represents: <span class="math display">\[
+  H_{0}: \beta_{Race} = 0
+\]</span> <span class="math display">\[
+  H_{1}: \beta_{Race} \neq 0
+\]</span></p>
+<p>Both of which are conditional on District (holding District constant).</p>
+</div>
+<div id="c." class="section level3">
+<h3>c.</h3>
+<p>The information we can glean from a model based analysis, is that we can determine the effect size and direction of Race, holding District constant, as opposed to whether or not an effect exists.</p>
+</div>
+</div>
+<div id="section-2" class="section level2">
+<h2>5.03</h2>
+<div id="a.-2" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>pchisq(q = 173.68 - 170.44, df = 155 - 152, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.3560812</code></pre>
+<p>Since this is <span class="math inline">\(&gt;\alpha=0.05\)</span>, we can remove the 2nd order interaction term from the model.</p>
+</div>
+<div id="b.-2" class="section level3">
+<h3>b.</h3>
+<p>Without seeing the regression output, I’d assume the <span class="math inline">\(S*W\)</span> term has the highest p-value, and therefore would be dropped next. As well, it has the highest AIC of the 3 models.</p>
+</div>
+<div id="c.-1" class="section level3">
+<h3>c.</h3>
+<p>I would go to model 4b <span class="math inline">\((W+C*S)\)</span> as it has the highest AIC of the two models.</p>
+</div>
+<div id="d." class="section level3">
+<h3>d.</h3>
+<pre class="r"><code>pchisq(q = 186.61 - 177.61, df = 166 - 160, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.1735781</code></pre>
+<p>Since this is <span class="math inline">\(&gt;\alpha=0.05\)</span>, we can remove the 1st order interaction term from the model.</p>
+</div>
+<div id="e." class="section level3">
+<h3>e.</h3>
+<p><span class="math inline">\(C+S+W\)</span> is preferred, as it has the smallest AIC.</p>
+</div>
+</div>
+<div id="section-3" class="section level2">
+<h2>5.05</h2>
+<p>The model with the 4 main predictors is the preferred model, as it has the smallest AIC (637.5), of the 4 models.</p>
+</div>
+<div id="section-4" class="section level2">
+<h2>5.07</h2>
+<div id="a.-3" class="section level3">
+<h3>a.</h3>
+<p>Let: <span class="math inline">\(\theta\)</span> be the odds in favor of smoking.</p>
+<span class="math display">\[\begin{equation}
+  \ln(\theta) =
+  \hat{\beta}_{0}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+  \ln(\theta) =
+  \hat{\beta}_{0} + \hat{\beta}_{1}E/I + \hat{\beta}_{2}S/N + \hat{\beta}_{3}T/F + \hat{\beta}_{4}J/P
+\end{equation}\]</span>
+<span class="math display">\[
+  \ln(\theta) =
+  \hat{\beta}_{0} + \hat{\beta}_{1}E/I + \hat{\beta}_{2}S/N + \hat{\beta}_{3}T/F + \hat{\beta}_{4}J/P +
+  \hat{\beta}_{5}E/I\times S/N + \hat{\beta}_{6}E/I\times T/F +
+\]</span>
+<span class="math display">\[\begin{equation}
+  \hat{\beta}_{7}E/I\times J/P + \hat{\beta}_{8}S/N\times T/F + \hat{\beta}_{9}S/N\times J/P + 
+  \hat{\beta}_{10}T/F\times J/P
+\end{equation}\]</span>
+<span class="math display">\[
+  \ln(\theta) =
+  \hat{\beta}_{0} + \hat{\beta}_{1}E/I + \hat{\beta}_{2}S/N + \hat{\beta}_{3}T/F + \hat{\beta}_{4}J/P +
+  \hat{\beta}_{5}E/I\times S/N + \hat{\beta}_{6}E/I\times T/F +
+\]</span> <span class="math display">\[
+  \hat{\beta}_{7}E/I\times J/P + \hat{\beta}_{8}S/N\times T/F + \hat{\beta}_{9}S/N\times J/P +
+  \hat{\beta}_{10}T/F\times J/P + \hat{\beta}_{11}E/I\times S/N\times T/F +
+  \hat{\beta}_{12}E/I\times S/N\times J/P +
+\]</span>
+<span class="math display">\[\begin{equation}
+  \hat{\beta}_{13}E/I\times T/F\times J/P + \hat{\beta}_{14}S/N\times T/F\times J/P
+\end{equation}\]</span>
+</div>
+<div id="b.-3" class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+  AIC_{(1)} = 2(1) + 1130.23 = 1132.23,
+  AIC_{(2)} = 2(5) + 1124.86 = 1134.86
+\]</span> <span class="math display">\[
+  AIC_{(3)} = 2(11) + 1119.87 = 1141.87,
+  AIC_{(4)} = 2(15) + 1116.47 = 1146.47
+\]</span></p>
+<p>Since (1) has the smallest AIC value, it is the preferred model.</p>
+</div>
+<div id="c.-2" class="section level3">
+<h3>c.</h3>
+<p>Probably not, as neither the sensitivity nor the specificity are particularly high, implying that the model doesn’t have a high True Positive Rate, or high True Negative Rate. As well, with an AUC of 0.55, our model is only slightly better than randomly guessing. As such, knowledge of a person’s personality type does not help you predict whether or not someone is a frequent smoker.</p>
+</div>
+</div>
+<div id="section-5" class="section level2">
+<h2>5.15</h2>
+<pre class="r"><code>miss_person_ct &lt;- 
+  array(
+    data =
+      c(
+        33, 38, 3271-33, 2486-38,
+        63, 108, 7256-63, 8877-108,
+        157, 159, 5065-157, 3520-159
+      )
+    ,dim = c(2, 2, 3)
+    ,dimnames = list(
+      Gender = c(&quot;M&quot;, &quot;F&quot;)
+      ,Result = c(&quot;Missing&quot;, &quot;Found&quot;)
+      ,Age = c(&quot;&lt;=13&quot;, &quot;14-18&quot;, &quot;&gt;=19&quot;)
+    )
+  )
+miss_person_ct</code></pre>
+<pre><code>## , , Age = &lt;=13
+## 
+##       Result
+## Gender Missing Found
+##      M      33  3238
+##      F      38  2448
+## 
+## , , Age = 14-18
+## 
+##       Result
+## Gender Missing Found
+##      M      63  7193
+##      F     108  8769
+## 
+## , , Age = &gt;=19
+## 
+##       Result
+## Gender Missing Found
+##      M     157  4908
+##      F     159  3361</code></pre>
+<pre class="r"><code>mantelhaen.test(miss_person_ct, correct = FALSE)</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  miss_person_ct
+## Mantel-Haenszel X-squared = 19.356, df = 1, p-value = 1.085e-05
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.5769935 0.8109987
+## sample estimates:
+## common odds ratio 
+##         0.6840621</code></pre>
+<pre class="r"><code>miss_person_data &lt;-
+  tibble(
+    Age =
+      as.factor(
+        rep(
+          x = c(&quot;&lt;=13&quot;, &quot;14-18&quot;, &quot;&gt;=19&quot;)
+          ,times =
+            c(
+              sum(miss_person_ct[,,&quot;&lt;=13&quot;])
+              ,sum(miss_person_ct[,,&quot;14-18&quot;])
+              ,sum(miss_person_ct[,,&quot;&gt;=19&quot;])
+            )
+        )
+      )
+    ,Gender =
+      as.factor(
+        rep(
+          x = 
+            rep(x = c(&quot;M&quot;, &quot;F&quot;), times = 3)
+          ,times = 
+            c(
+              sum(miss_person_ct[&quot;M&quot;,,&quot;&lt;=13&quot;])
+              ,sum(miss_person_ct[&quot;F&quot;,,&quot;&lt;=13&quot;])
+              ,sum(miss_person_ct[&quot;M&quot;,,&quot;14-18&quot;])
+              ,sum(miss_person_ct[&quot;F&quot;,,&quot;14-18&quot;])
+              ,sum(miss_person_ct[&quot;M&quot;,,&quot;&gt;=19&quot;])
+              ,sum(miss_person_ct[&quot;F&quot;,,&quot;&gt;=19&quot;])
+            )
+        )
+      )
+    ,Result =
+      rep(
+        x =
+          rep(x = c(1, 0), times = 6)
+        ,times =
+          c(
+            sum(miss_person_ct[&quot;M&quot;,&quot;Missing&quot;,&quot;&lt;=13&quot;])
+            ,sum(miss_person_ct[&quot;M&quot;,&quot;Found&quot;,&quot;&lt;=13&quot;])
+            ,sum(miss_person_ct[&quot;F&quot;,&quot;Missing&quot;,&quot;&lt;=13&quot;])
+            ,sum(miss_person_ct[&quot;F&quot;,&quot;Found&quot;,&quot;&lt;=13&quot;])
+            ,sum(miss_person_ct[&quot;M&quot;,&quot;Missing&quot;,&quot;14-18&quot;])
+            ,sum(miss_person_ct[&quot;M&quot;,&quot;Found&quot;,&quot;14-18&quot;])
+            ,sum(miss_person_ct[&quot;F&quot;,&quot;Missing&quot;,&quot;14-18&quot;])
+            ,sum(miss_person_ct[&quot;F&quot;,&quot;Found&quot;,&quot;14-18&quot;])
+            ,sum(miss_person_ct[&quot;M&quot;,&quot;Missing&quot;,&quot;&gt;=19&quot;])
+            ,sum(miss_person_ct[&quot;M&quot;,&quot;Found&quot;,&quot;&gt;=19&quot;])
+            ,sum(miss_person_ct[&quot;F&quot;,&quot;Missing&quot;,&quot;&gt;=19&quot;])
+            ,sum(miss_person_ct[&quot;F&quot;,&quot;Found&quot;,&quot;&gt;=19&quot;])
+          )
+      )
+  )
+
+miss_person_summary &lt;- 
+  miss_person_data %&gt;%
+  group_by(Age, Gender) %&gt;%
+  summarize(
+    Missing = sum(Result)
+    ,Found = length(Result) - sum(Result)
+    ,Total = length(Result)
+  ) %&gt;% 
+  mutate(Proportion = Missing/Total)
+miss_person_summary</code></pre>
+<pre><code>## # A tibble: 6 x 6
+## # Groups:   Age [3]
+##      Age Gender Missing Found Total Proportion
+##   &lt;fctr&gt; &lt;fctr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;
+## 1   &lt;=13      F      38  2448  2486 0.01528560
+## 2   &lt;=13      M      33  3238  3271 0.01008866
+## 3   &gt;=19      F     159  3361  3520 0.04517045
+## 4   &gt;=19      M     157  4908  5065 0.03099704
+## 5  14-18      F     108  8769  8877 0.01216627
+## 6  14-18      M      63  7193  7256 0.00868247</code></pre>
+<pre class="r"><code>logit_miss_person &lt;- 
+  miss_person_data %&gt;% 
+  glm(
+    Result ~ Age + Gender
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_miss_person)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Result ~ Age + Gender, family = binomial, data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.3032  -0.2516  -0.1576  -0.1304   3.0891  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -4.18451    0.12640 -33.105  &lt; 2e-16 ***
+## Age&gt;=19      1.12790    0.13252   8.511  &lt; 2e-16 ***
+## Age14-18    -0.19797    0.14241  -1.390    0.164    
+## GenderM     -0.38028    0.08689  -4.377 1.21e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 5570.1  on 30474  degrees of freedom
+## Residual deviance: 5348.4  on 30471  degrees of freedom
+## AIC: 5356.4
+## 
+## Number of Fisher Scoring iterations: 7</code></pre>
+<pre class="r"><code>miss_person_summary %&lt;&gt;% 
+  cbind(
+    phat = 
+      predict(
+        object = logit_miss_person
+        ,newdata = miss_person_summary %&gt;% dplyr::select(Age, Gender)
+        ,type = &quot;response&quot;
+      ) %&gt;% t
+  ) %&gt;% 
+  mutate(
+    Expected_Missing = Total*phat
+    ,Expected_Found = Total*(1-phat)
+  )
+miss_person_summary</code></pre>
+<pre><code>## # A tibble: 6 x 9
+## # Groups:   Age [3]
+##      Age Gender Missing Found Total Proportion        phat
+##   &lt;fctr&gt; &lt;fctr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;       &lt;dbl&gt;
+## 1   &lt;=13      F      38  2448  2486 0.01528560 0.015001191
+## 2   &lt;=13      M      33  3238  3271 0.01008866 0.010304812
+## 3   &gt;=19      F     159  3361  3520 0.04517045 0.044932746
+## 4   &gt;=19      M     157  4908  5065 0.03099704 0.031162237
+## 5  14-18      F     108  8769  8877 0.01216627 0.012340179
+## 6  14-18      M      63  7193  7256 0.00868247 0.008469712
+## # ... with 2 more variables: Expected_Missing &lt;dbl&gt;, Expected_Found &lt;dbl&gt;</code></pre>
+<pre class="r"><code>chisq_stat &lt;-
+  miss_person_summary %&gt;% 
+  ungroup %&gt;% 
+  mutate(
+    ChiSq_Missing = (Missing - Expected_Missing)^(2) / Expected_Missing
+    ,ChiSq_Found = (Found - Expected_Found)^(2) / Expected_Found
+  ) %&gt;% 
+  dplyr::select(
+    ChiSq_Missing
+    ,ChiSq_Found
+  ) %&gt;% 
+  sum
+chisq_stat</code></pre>
+<pre><code>## [1] 0.0989458</code></pre>
+<pre class="r"><code>pchisq(q = chisq_stat, df = (2-1)*(2-1)*(3-1), lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.951731</code></pre>
+<pre class="r"><code>gsq_stat &lt;-
+  miss_person_summary %&gt;% 
+  ungroup %&gt;% 
+  mutate(
+    GSq_Missing = 2*Missing*log(Missing/Expected_Missing)
+    ,GSq_Found = 2*Found*log(Found/Expected_Found)
+  ) %&gt;% 
+  dplyr::select(
+    GSq_Missing
+    ,GSq_Found
+  ) %&gt;% 
+  sum
+gsq_stat</code></pre>
+<pre><code>## [1] 0.09874901</code></pre>
+<pre class="r"><code>pchisq(q = gsq_stat, df = (2-1)*(2-1)*(3-1), lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.9518246</code></pre>
+<p>Let <span class="math inline">\(\theta:\)</span> be the odds in favour of staying missing after a year. <span class="math display">\[
+  x_{1} =
+  \begin{cases}
+    1, Age\geq19  \\
+    0, Age&lt;19
+  \end{cases}
+\]</span> <span class="math display">\[
+  x_{2} =
+  \begin{cases}
+    1, 14&lt;Age&lt;18 \\
+    0, Age&lt;14 \cup Age&gt;18
+  \end{cases}
+\]</span> <span class="math display">\[
+  x_{3} =
+  \begin{cases}
+    1, Male \\
+    0, Female
+  \end{cases}
+\]</span> <span class="math display">\[
+  \ln(\theta) = -4.1845 + 1.1279x_{1} - 0.1980x_{2} - 0.3803x_{3}
+\]</span></p>
+<p>The log odds in favour increase on average by 1.1279, if the person is 19 or older, decrease on average by 0.1980 is they are 13 or younger, and decrease on average by 0.3803 if they are male.</p>
+<p>The Cochran-Mantel-Haenszel Test yields a p-value of <span class="math inline">\(1.085\times10^{-5}&lt;\alpha=0.05\)</span>, rejecting the null hypothesis of independence, contingent on Age. Based on the sample assume some dependency exists between Gender and Missing Status, contingent on Age.</p>
+<p>Both the <span class="math inline">\(\chi^{2}\)</span> and <span class="math inline">\(G^{2}\)</span> yield values of <span class="math inline">\(\approx0.1\)</span>, giving p-values of <span class="math inline">\(&gt;0.95\)</span>, therefore failing to reject the null hypothesis that the model is a good fit for the data, based on the sample.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
