@@ -224,7 +224,13 @@ grad_data <-
         ,times =
           (grad_data_summary %>%
              group_by(Race) %>% 
-             select(-Gender) %>% 
+             dplyr::select(
+               Race
+               ,`Sample Size`
+               ,Graduates
+               ,`Drop Outs`
+               ,Proportion
+             ) %>%
              summarise_all(sum)
            )$`Sample Size`
       )
@@ -344,12 +350,12 @@ grad_data_summary %<>%
         logit_grads
         ,newdata = 
           grad_data_summary %>% 
-          select(Race, Gender)
+          dplyr::select(Race, Gender)
         ,type = "response"
       )
   )
 grad_data_summary %>% 
-  select(-c(`Sample Size`, Graduates, `Drop Outs`))
+  dplyr::select(-c(`Sample Size`, Graduates, `Drop Outs`))
 ```
 
 

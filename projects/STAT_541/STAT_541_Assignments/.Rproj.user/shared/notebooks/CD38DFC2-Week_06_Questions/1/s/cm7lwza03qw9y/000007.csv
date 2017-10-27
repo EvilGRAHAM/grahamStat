@@ -1,0 +1,17 @@
+"0"," (grad_data_summary %>%
+             group_by(Race) %>% 
+             select(
+               Race
+               ,`Sample Size`
+               ,Graduates
+               ,`Drop Outs`
+               ,Proportion
+             ) %>%
+             summarise_all(sum)
+           )$`Sample Size`
+"
+"1","[1]"
+"1","  803"
+"1"," 2421"
+"1","
+"
