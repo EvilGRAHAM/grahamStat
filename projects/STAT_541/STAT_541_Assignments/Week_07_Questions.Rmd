@@ -237,6 +237,7 @@ The model with the 4 main predictors is the preferred model, as it has the small
 
 
 ## 5.07
+### a.
 Let: $\theta$ be the odds in favor of smoking.
 
 \begin{equation}
