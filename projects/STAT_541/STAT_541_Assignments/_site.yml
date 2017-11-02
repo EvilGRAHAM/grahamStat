@@ -2,6 +2,8 @@ name: "STAT_541_Assignments"
 navbar:
   title: "STAT 541 Questions"
   left:
+    - text: "Home"
+      href: ../../index.php
     - text: "Week 01"
       href: Week_01_Questions.html
     - text: "Week 02"
