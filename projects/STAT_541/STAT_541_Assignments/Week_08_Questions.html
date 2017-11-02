@@ -476,6 +476,71 @@ sex_summary</code></pre>
 ## 2      B      M    29    23    52
 ## 3      W      F    26   149   175
 ## 4      W      M    43   134   177</code></pre>
+<pre class="r"><code>sex_plot_data &lt;- 
+  sex_summary %&gt;%
+  ungroup %&gt;% 
+  mutate(
+    Race = if_else(Race == &quot;W&quot;, &quot;White&quot;, &quot;Black&quot;)
+    ,Gender = if_else(Gender == &quot;M&quot;, &quot;Male&quot;, &quot;Female&quot;)
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %&gt;% 
+ dplyr::select(
+    -Total
+  ) %&gt;%
+  gather(
+    key = Intercourse
+    ,value = `Sample Proportion`
+    ,-Race
+    ,-Gender
+  )
+
+sex_plot_data %&gt;% 
+  ggplot(
+    aes(
+      x = Gender
+      ,y = `Sample Proportion`
+      ,fill = Intercourse
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Race
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Intercourse:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Persons who have had Intercourse by Gender&quot;
+    ,subtitle = &quot;Conditional on Race&quot;
+  )</code></pre>
+<p><img src="Week_08_Questions_files/figure-html/4.29%20Data-1.png" width="672" /></p>
+<pre class="r"><code>sex_plot_data %&gt;% 
+  ggplot(
+    aes(
+      x = Race
+      ,y = `Sample Proportion`
+      ,fill = Intercourse
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Gender
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Intercourse:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Persons who have had Intercourse by Race&quot;
+    ,subtitle = &quot;Conditional on Gender&quot;
+  )</code></pre>
+<p><img src="Week_08_Questions_files/figure-html/4.29%20Data-2.png" width="672" /></p>
 </div>
 <div id="cochran-mantel-haenszel-test" class="section level3">
 <h3>Cochran-Mantel-Haenszel Test</h3>
@@ -718,6 +783,75 @@ marijuana_summary</code></pre>
 ## 2       N         Y     3    43    46
 ## 3       Y         N    44   456   500
 ## 4       Y         Y   911   538  1449</code></pre>
+<pre class="r"><code>marijuana_plot_data &lt;- 
+  marijuana_summary %&gt;%
+  ungroup %&gt;% 
+  mutate(
+    `Alcohol Use` = if_else(Alcohol == &quot;Y&quot;, &quot;Yes&quot;, &quot;No&quot;)
+    ,`Cigarette Use` = if_else(Cigarette == &quot;Y&quot;, &quot;Yes&quot;, &quot;No&quot;)
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %&gt;% 
+ dplyr::select(
+    -c(
+      Alcohol
+      ,Cigarette
+      ,Total
+    )
+  ) %&gt;%
+  gather(
+    key = `Marijuana Use`
+    ,value = `Sample Proportion`
+    ,-`Alcohol Use`
+    ,-`Cigarette Use`
+  )
+
+marijuana_plot_data %&gt;% 
+  ggplot(
+    aes(
+      x = `Cigarette Use`
+      ,y = `Sample Proportion`
+      ,fill = `Marijuana Use`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ `Alcohol Use`
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Marijuana Use:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Persons with Marijuana Use by Cigarette Use&quot;
+    ,subtitle = &quot;Conditional on Alcohol Use&quot;
+  )</code></pre>
+<p><img src="Week_08_Questions_files/figure-html/4.31%20Data-1.png" width="672" /></p>
+<pre class="r"><code>marijuana_plot_data %&gt;% 
+  ggplot(
+    aes(
+      x = `Alcohol Use`
+      ,y = `Sample Proportion`
+      ,fill = `Marijuana Use`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ `Cigarette Use`
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Marijuana Use:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Persons with Marijuana Use by Alcohol Use&quot;
+    ,subtitle = &quot;Conditional on Cigarette Use&quot;
+  )</code></pre>
+<p><img src="Week_08_Questions_files/figure-html/4.31%20Data-2.png" width="672" /></p>
 </div>
 <div id="cochran-mantel-haenszel-test-1" class="section level3">
 <h3>Cochran-Mantel-Haenszel Test</h3>
@@ -930,6 +1064,71 @@ death_summary</code></pre>
 ## 2      B         W     0    16    16
 ## 3      W         B    11    37    48
 ## 4      W         W    53   414   467</code></pre>
+<pre class="r"><code>death_plot_data &lt;- 
+  death_summary %&gt;%
+  ungroup %&gt;% 
+  mutate(
+    Victim = if_else(Victim == &quot;W&quot;, &quot;White&quot;, &quot;Black&quot;)
+    ,Defendant = if_else(Defendant == &quot;W&quot;, &quot;White&quot;, &quot;Black&quot;)
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %&gt;% 
+ dplyr::select(
+    -Total
+  ) %&gt;%
+  gather(
+    key = `Death Penalty`
+    ,value = `Sample Proportion`
+    ,-Victim
+    ,-Defendant
+  )
+
+death_plot_data %&gt;% 
+  ggplot(
+    aes(
+      x = Defendant
+      ,y = `Sample Proportion`
+      ,fill = `Death Penalty`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Victim
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Death Penalty:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Defendants who Received the Death Penalty by Defendant&#39;s Race&quot;
+    ,subtitle = &quot;Conditional on Victim&#39;s Race&quot;
+  )</code></pre>
+<p><img src="Week_08_Questions_files/figure-html/5.17-1.png" width="672" /></p>
+<pre class="r"><code>death_plot_data %&gt;% 
+  ggplot(
+    aes(
+      x = Victim
+      ,y = `Sample Proportion`
+      ,fill = `Death Penalty`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Defendant
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Death Penalty:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Defendants who Received the Death Penalty by Victims&#39;s Race&quot;
+    ,subtitle = &quot;Conditional on Defendants&#39;s Race&quot;
+  )</code></pre>
+<p><img src="Week_08_Questions_files/figure-html/5.17-2.png" width="672" /></p>
 <div id="a." class="section level3">
 <h3>a.</h3>
 <pre class="r"><code>logit_death &lt;- 
@@ -1227,6 +1426,77 @@ lung_cancer_summary</code></pre>
 ## 14   Taiy       Y    60    99   159
 ## 15   Zhen       N    72    98   170
 ## 16   Zhen       Y   182   156   338</code></pre>
+<pre class="r"><code>lung_cancer_plot_data &lt;- 
+  lung_cancer_summary %&gt;%
+  ungroup %&gt;% 
+  mutate(
+    Smoking = if_else(Smoking == &quot;Y&quot;, &quot;Yes&quot;, &quot;No&quot;)
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %&gt;% 
+ dplyr::select(
+    -Total
+  ) %&gt;%
+  gather(
+    key = `Lung Cancer`
+    ,value = `Sample Proportion`
+    ,-City
+    ,-Smoking
+  )
+
+lung_cancer_plot_data %&gt;% 
+  ggplot(
+    aes(
+      x = Smoking
+      ,y = `Sample Proportion`
+      ,fill = `Lung Cancer`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ City
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Has Lung Cancer:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Persons with Lung Cancer by whether or not they Smoke&quot;
+    ,subtitle = &quot;Conditional on City&quot;
+  )</code></pre>
+<p><img src="Week_08_Questions_files/figure-html/5.18-1.png" width="672" /></p>
+<pre class="r"><code>lung_cancer_plot_data %&gt;% 
+  ggplot(
+    aes(
+      x = City
+      ,y = `Sample Proportion`
+      ,fill = `Lung Cancer`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Smoking
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Has Lung Cancer:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Persons with Lung Cancer by City&quot;
+    ,subtitle = &quot;Conditional on whether or not they Smoke&quot;
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45
+      ,hjust = 0.5
+      ,vjust = 0.5
+    )
+  )</code></pre>
+<p><img src="Week_08_Questions_files/figure-html/5.18-2.png" width="672" /></p>
 <div id="a.-1" class="section level3">
 <h3>a.</h3>
 <pre class="r"><code>logit_lung_cancer &lt;- 

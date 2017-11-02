@@ -131,6 +131,71 @@ sex_summary <-
     ,Total = Yes + No
   )
 sex_summary
+
+sex_plot_data <- 
+  sex_summary %>%
+  ungroup %>% 
+  mutate(
+    Race = if_else(Race == "W", "White", "Black")
+    ,Gender = if_else(Gender == "M", "Male", "Female")
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %>% 
+ dplyr::select(
+    -Total
+  ) %>%
+  gather(
+    key = Intercourse
+    ,value = `Sample Proportion`
+    ,-Race
+    ,-Gender
+  )
+
+sex_plot_data %>% 
+  ggplot(
+    aes(
+      x = Gender
+      ,y = `Sample Proportion`
+      ,fill = Intercourse
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Race
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Intercourse:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Persons who have had Intercourse by Gender"
+    ,subtitle = "Conditional on Race"
+  )
+
+sex_plot_data %>% 
+  ggplot(
+    aes(
+      x = Race
+      ,y = `Sample Proportion`
+      ,fill = Intercourse
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Gender
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Intercourse:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Persons who have had Intercourse by Race"
+    ,subtitle = "Conditional on Gender"
+  )
 ```
 
 ### Cochran-Mantel-Haenszel Test
@@ -273,6 +338,75 @@ marijuana_summary <-
     ,Total = Yes + No
   )
 marijuana_summary
+
+marijuana_plot_data <- 
+  marijuana_summary %>%
+  ungroup %>% 
+  mutate(
+    `Alcohol Use` = if_else(Alcohol == "Y", "Yes", "No")
+    ,`Cigarette Use` = if_else(Cigarette == "Y", "Yes", "No")
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %>% 
+ dplyr::select(
+    -c(
+      Alcohol
+      ,Cigarette
+      ,Total
+    )
+  ) %>%
+  gather(
+    key = `Marijuana Use`
+    ,value = `Sample Proportion`
+    ,-`Alcohol Use`
+    ,-`Cigarette Use`
+  )
+
+marijuana_plot_data %>% 
+  ggplot(
+    aes(
+      x = `Cigarette Use`
+      ,y = `Sample Proportion`
+      ,fill = `Marijuana Use`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ `Alcohol Use`
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Marijuana Use:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Persons with Marijuana Use by Cigarette Use"
+    ,subtitle = "Conditional on Alcohol Use"
+  )
+
+marijuana_plot_data %>% 
+  ggplot(
+    aes(
+      x = `Alcohol Use`
+      ,y = `Sample Proportion`
+      ,fill = `Marijuana Use`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ `Cigarette Use`
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Marijuana Use:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Persons with Marijuana Use by Alcohol Use"
+    ,subtitle = "Conditional on Cigarette Use"
+  )
 ```
 
 ### Cochran-Mantel-Haenszel Test
@@ -398,7 +532,73 @@ death_summary <-
     ,Total = Yes + No
   )
 death_summary
+
+death_plot_data <- 
+  death_summary %>%
+  ungroup %>% 
+  mutate(
+    Victim = if_else(Victim == "W", "White", "Black")
+    ,Defendant = if_else(Defendant == "W", "White", "Black")
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %>% 
+ dplyr::select(
+    -Total
+  ) %>%
+  gather(
+    key = `Death Penalty`
+    ,value = `Sample Proportion`
+    ,-Victim
+    ,-Defendant
+  )
+
+death_plot_data %>% 
+  ggplot(
+    aes(
+      x = Defendant
+      ,y = `Sample Proportion`
+      ,fill = `Death Penalty`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Victim
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Death Penalty:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Defendants who Received the Death Penalty by Defendant's Race"
+    ,subtitle = "Conditional on Victim's Race"
+  )
+
+death_plot_data %>% 
+  ggplot(
+    aes(
+      x = Victim
+      ,y = `Sample Proportion`
+      ,fill = `Death Penalty`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Defendant
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Death Penalty:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Defendants who Received the Death Penalty by Victims's Race"
+    ,subtitle = "Conditional on Defendants's Race"
+  )
 ```
+
 ### a.
 ```{r 5.17a}
 logit_death <- 
@@ -590,7 +790,79 @@ lung_cancer_summary <-
     ,Total = Yes + No
   )
 lung_cancer_summary
+
+lung_cancer_plot_data <- 
+  lung_cancer_summary %>%
+  ungroup %>% 
+  mutate(
+    Smoking = if_else(Smoking == "Y", "Yes", "No")
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %>% 
+ dplyr::select(
+    -Total
+  ) %>%
+  gather(
+    key = `Lung Cancer`
+    ,value = `Sample Proportion`
+    ,-City
+    ,-Smoking
+  )
+
+lung_cancer_plot_data %>% 
+  ggplot(
+    aes(
+      x = Smoking
+      ,y = `Sample Proportion`
+      ,fill = `Lung Cancer`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ City
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Has Lung Cancer:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Persons with Lung Cancer by whether or not they Smoke"
+    ,subtitle = "Conditional on City"
+  )
+
+lung_cancer_plot_data %>% 
+  ggplot(
+    aes(
+      x = City
+      ,y = `Sample Proportion`
+      ,fill = `Lung Cancer`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Smoking
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Has Lung Cancer:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Persons with Lung Cancer by City"
+    ,subtitle = "Conditional on whether or not they Smoke"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45
+      ,hjust = 0.5
+      ,vjust = 0.5
+    )
+  )
 ```
+
 ### a.
 ```{r 5.18a}
 logit_lung_cancer <- 
