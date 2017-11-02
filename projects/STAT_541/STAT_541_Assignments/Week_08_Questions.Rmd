@@ -245,7 +245,7 @@ summary(logit_sex_02)
 
 anova(logit_sex_02, logit_sex_01, test = "Chisq")
 ```
-By doing a Likielihood Ratio Test between the model with an interaction term, and the model without, a p-value of `r round(anova(logit_sex_02, logit_sex_01, test = "Chisq")$"Pr(>Chi)"[2], 4)` is found. This fails to reject the null hypothesis of explaining equal amounts of variance, based on the sample. As such we can use the more parsimonious model.
+By doing a Likelihood Ratio Test between the model with an interaction term, and the model without, a p-value of `r round(anova(logit_sex_02, logit_sex_01, test = "Chisq")$"Pr(>Chi)"[2], 4)` is found. This fails to reject the null hypothesis of explaining equal amounts of variance, based on the sample. As such we can use the more parsimonious model.
 
 Both the slope parameters are significant at $\alpha=0.05$, based on the sample. A White person on average has an increased log likelihood in favour of having intercourse of `r round(coefficients(logit_sex_02)[2], 4)` vs. a Black person, based on the sample. A Male on average has an increased log likelihood in favour of having intercourse of `r round(coefficients(logit_sex_02)[3], 4)` vs. a Female, based on the sample.
 
@@ -456,7 +456,7 @@ summary(logit_marijuana_02)
 
 anova(logit_marijuana_02, logit_marijuana_01, test = "Chisq")
 ```
-By doing a Likielihood Ratio Test between the model with an interaction term, and the model without, a p-value of `r round(anova(logit_marijuana_02, logit_marijuana_01, test = "Chisq")$"Pr(>Chi)"[2], 4)` is found. This fails to reject the null hypothesis of explaining equal amounts of variance, based on the sample. As such we can use the more parsimonious model.
+By doing a Likelihood Ratio Test between the model with an interaction term, and the model without, a p-value of `r round(anova(logit_marijuana_02, logit_marijuana_01, test = "Chisq")$"Pr(>Chi)"[2], 4)` is found. This fails to reject the null hypothesis of explaining equal amounts of variance, based on the sample. As such we can use the more parsimonious model.
 
 Both the slope parameters are significant at $\alpha=0.05$, based on the sample. A person with Alcohol Use on average has an increased log likelihood in favour of Marijuana Use of `r round(coefficients(logit_marijuana_02)[2], 4)` vs. a person without, based on the sample. A person with Cigarette Use on average has an increased log likelihood in favour of Marijuana Use of `r round(coefficients(logit_marijuana_02)[3], 4)` vs. a person without, based on the sample.
 
