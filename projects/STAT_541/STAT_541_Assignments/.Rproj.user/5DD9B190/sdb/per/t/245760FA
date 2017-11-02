@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Week 10 Questions\"\nauthor: \"Scott Graham\"\ndate: \"Novemeber 17, 2017\"\noutput:\n  html_document:\n    theme: lumen\n    toc: true\n    toc_depth: 2\n    toc_float: true\n    code_folding: hide\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\nlibrary(tidyverse, warn.conflicts = FALSE, quietly = TRUE)\nlibrary(magrittr, warn.conflicts = FALSE, quietly = TRUE)\ntheme_minimal2 <- theme_minimal() %>%  theme_set()\ntheme_minimal2 <-\n  theme_update(\n    panel.border = element_rect(\n      linetype = \"solid\"\n      ,colour = \"grey92\"\n      ,fill = NA\n    )\n    ,strip.background = element_rect(\n      linetype = \"solid\"\n      ,colour = \"grey92\"\n      ,fill = NA\n    )\n  )\n```\n\\[\n  \\newcommand{\\Prob}{\\operatorname{P}}\n  \\newcommand{\\E}{\\operatorname{E}}\n  \\newcommand{\\Var}{\\operatorname{Var}}\n  \\newcommand{\\Cov}{\\operatorname{Cov}}\n  \\newcommand{\\se}{\\operatorname{se}}\n  \\newcommand{\\re}{\\operatorname{re}}\n  \\newcommand{\\ybar}{{\\overline{Y}}}\n  \\newcommand{\\phat}{{\\hat{p}}}\n  \\newcommand{\\that}{{\\hat{T}}}\n  \\newcommand{\\med}{{\\tilde{Y}}}\n\\]",
+    "created" : 1509583160501.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1504011056",
+    "id" : "245760FA",
+    "lastKnownWriteTime" : 1509583162,
+    "last_content_update" : 1509583162503,
+    "path" : "~/GitHub/grahamStat/projects/STAT_541/STAT_541_Assignments/Week_10_Questions.Rmd",
+    "project_path" : "Week_10_Questions.Rmd",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -4,24 +4,8 @@ author: "Scott Graham"
 output:
   html_document:
     theme: lumen
-    toc: true
-    toc_depth: 2
-    toc_float: true
-    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-\[`
-  \newcommand{\Prob}{\operatorname{P}}
-  \newcommand{\E}{\operatorname{E}}
-  \newcommand{\Var}{\operatorname{Var}}
-  \newcommand{\Cov}{\operatorname{Cov}}
-  \newcommand{\se}{\operatorname{se}}
-  \newcommand{\re}{\operatorname{re}}
-  \newcommand{\ybar}{{\overline{Y}}}
-  \newcommand{\phat}{{\hat{p}}}
-  \newcommand{\that}{{\hat{T}}}
-  \newcommand{\med}{{\tilde{Y}}}
-\]
