@@ -42,3 +42,627 @@ theme_minimal2 <-
   \newcommand{\that}{{\hat{T}}}
   \newcommand{\med}{{\tilde{Y}}}
 \]
+
+## 4.29
+### Data
+```{r 4.29 Data}
+sex_ct <-
+  array(
+    data =
+      c(
+         43, 26, 134, 149
+        ,29, 22, 23, 36
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Gender = c("M", "F")
+      ,Intercourse = c("Y", "N")
+      ,Race = c("W", "B")
+    )
+  )
+sex_ct
+
+sex_ct_flip <-
+  array(
+    data =
+      c(
+         43, 29, 134, 23
+        ,26, 22, 149, 36
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Race = c("W", "B")
+      ,Intercourse = c("Y", "N")
+      ,Gender = c("M", "F")
+    )
+  )
+sex_ct_flip
+
+sex_data <- 
+  tibble(
+    Race = 
+      as.factor(
+        rep(
+          c("W", "B")
+        ,times = 
+          c(
+            sum(sex_ct[,,"W"])
+            ,sum(sex_ct[,,"B"])
+          )
+        )
+      )
+    ,Gender =
+      as.factor(
+        rep(
+          rep(c("M", "F"), times = dim(sex_ct)[3])
+          ,times =
+            c(
+              sum(sex_ct["M",,"W"])
+              ,sum(sex_ct["F",,"W"])
+              ,sum(sex_ct["M",,"B"])
+              ,sum(sex_ct["F",,"B"])
+            )
+        )
+      )
+    ,Intercourse =
+      as.numeric(
+        rep(
+          rep(c(1, 0), times = dim(sex_ct)[3]*dim(sex_ct)[1])
+          ,times =
+            c(
+              sum(sex_ct["M","Y","W"])
+              ,sum(sex_ct["M","N","W"])
+              ,sum(sex_ct["F","Y","W"])
+              ,sum(sex_ct["F","N","W"])
+              ,sum(sex_ct["M","Y","B"])
+              ,sum(sex_ct["M","N","B"])
+              ,sum(sex_ct["F","Y","B"])
+              ,sum(sex_ct["F","N","B"])
+            )
+        )
+      )
+  )
+sex_summary <- 
+  sex_data %>% 
+  group_by(Race, Gender) %>% 
+  summarize(
+    Yes = sum(Intercourse)
+    ,No = length(Intercourse) - Yes
+    ,Total = Yes + No
+  )
+sex_summary
+```
+
+### Cochran-Mantel-Haenszel Test
+$$
+  H_{0}:\text{ Intercourse is independent of Gender, conditional on Race}
+$$
+$$
+  H_{1}:\text{ Intercourse is dependent on Gender, conditional on Race}
+$$
+```{r 4.29 CMH}
+sex_cmh <- mantelhaen.test(sex_ct, correct = FALSE)
+sex_cmh
+```
+With a p-value of `r round(sex_cmh$p.value, 4)`, we reject the null hypothesis, and accept the alternative based on the sample.
+
+$$
+  H_{0}:\text{ Intercourse is independent of Race, conditional on Gender}
+$$
+$$
+  H_{1}:\text{ Intercourse is dependent on Race, conditional on Gender}
+$$
+```{r 4.29 CMH Flip}
+sex_cmh_flip <- mantelhaen.test(sex_ct_flip, correct = FALSE)
+sex_cmh_flip
+```
+With a p-value of `r round(sex_cmh_flip$p.value, 4)`, we reject the null hypothesis, and accept the alternative based on the sample.
+
+### Logistic Regression
+```{r 4.29 Logit}
+logit_sex_01 <- 
+  sex_data %>% 
+  glm(
+    Intercourse ~ Race + Gender + Race:Gender
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_sex_01)
+
+logit_sex_02 <-
+  sex_data %>% 
+  glm(
+    Intercourse ~ Race + Gender
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_sex_02)
+
+anova(logit_sex_02, logit_sex_01, test = "Chisq")
+```
+By doing a Likielihood Ratio Test between the model with an interaction term, and the model without, a p-value of `r round(anova(logit_sex_02, logit_sex_01, test = "Chisq")$"Pr(>Chi)"[2], 4)` is found. This fails to reject the null hypothesis of explaining equal amounts of variance, based on the sample. As such we can use the more parsimonious model.
+
+Both the slope parameters are significant at $\alpha=0.05$, based on the sample. A White person on average has an increased log likelihood in favour of having intercourse of `r round(coefficients(logit_sex_02)[2], 4)` vs. a Black person, based on the sample. A Male on average has an increased log likelihood in favour of having intercourse of `r round(coefficients(logit_sex_02)[3], 4)` vs. a Female, based on the sample.
+
+
+## 4.31
+### Data
+```{r 4.31 Data}
+marijuana_ct <-
+  array(
+    data =
+      c(
+         911, 44, 538, 456
+        ,3, 2, 43, 279
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Cigarette = c("Y", "N")
+      ,Marijuana = c("Y", "N")
+      ,Alcohol = c("Y", "N")
+    )
+  )
+marijuana_ct
+
+marijuana_ct_flip <-
+  array(
+    data =
+      c(
+         911, 3, 538, 43
+        ,44, 2, 456, 279
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Alcohol = c("Y", "N")
+      ,Marijuana = c("Y", "N")
+      ,Cigarette = c("Y", "N")
+    )
+  )
+marijuana_ct_flip
+
+marijuana_data <- 
+  tibble(
+    Alcohol = 
+      as.factor(
+        rep(
+          c("Y", "N")
+        ,times = 
+          c(
+            sum(marijuana_ct[,,"Y"])
+            ,sum(marijuana_ct[,,"N"])
+          )
+        )
+      )
+    ,Cigarette =
+      as.factor(
+        rep(
+          rep(c("Y", "N"), times = dim(marijuana_ct)[3])
+          ,times =
+            c(
+              sum(marijuana_ct["Y",,"Y"])
+              ,sum(marijuana_ct["N",,"Y"])
+              ,sum(marijuana_ct["Y",,"N"])
+              ,sum(marijuana_ct["N",,"N"])
+            )
+        )
+      )
+    ,Marijuana =
+      as.numeric(
+        rep(
+          rep(c(1, 0), times = dim(marijuana_ct)[3]*dim(marijuana_ct)[1])
+          ,times =
+            c(
+              sum(marijuana_ct["Y","Y","Y"])
+              ,sum(marijuana_ct["Y","N","Y"])
+              ,sum(marijuana_ct["N","Y","Y"])
+              ,sum(marijuana_ct["N","N","Y"])
+              ,sum(marijuana_ct["Y","Y","N"])
+              ,sum(marijuana_ct["Y","N","N"])
+              ,sum(marijuana_ct["N","Y","N"])
+              ,sum(marijuana_ct["N","N","N"])
+            )
+        )
+      )
+  )
+marijuana_summary <- 
+  marijuana_data %>% 
+  group_by(Alcohol, Cigarette) %>% 
+  summarize(
+    Yes = sum(Marijuana)
+    ,No = length(Marijuana) - Yes
+    ,Total = Yes + No
+  )
+marijuana_summary
+```
+
+### Cochran-Mantel-Haenszel Test
+$$
+  H_{0}:\text{ Marijuana Use is independent of Cigarette Use, conditional on Alcohol Use}
+$$
+$$
+  H_{1}:\text{ Marijuana Use is dependent on Cigarette Use, conditional on Alcohol Use}
+$$
+```{r 4.31 CMH}
+marijuana_cmh <- mantelhaen.test(marijuana_ct, correct = FALSE)
+marijuana_cmh
+```
+With a p-value of `r round(marijuana_cmh$p.value, 4)`, we reject the null hypothesis, and accept the alternative based on the sample.
+
+$$
+  H_{0}:\text{ Marijuana Use is independent of Alcohol Use, conditional on Cigarette Use}
+$$
+$$
+  H_{1}:\text{ Marijuana Use is dependent on Alcohol Use, conditional on Cigarette Use}
+$$
+```{r 4.31 CMH Flip}
+marijuana_cmh_flip <- mantelhaen.test(marijuana_ct_flip, correct = FALSE)
+marijuana_cmh_flip
+```
+With a p-value of `r round(marijuana_cmh_flip$p.value, 4)`, we reject the null hypothesis, and accept the alternative based on the sample.
+
+### Logistic Regression
+```{r 4.31 Logit}
+logit_marijuana_01 <- 
+  marijuana_data %>% 
+  glm(
+    Marijuana ~ Alcohol + Cigarette + Alcohol:Cigarette
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_marijuana_01)
+
+logit_marijuana_02 <-
+  marijuana_data %>% 
+  glm(
+    Marijuana ~ Alcohol + Cigarette
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_marijuana_02)
+
+anova(logit_marijuana_02, logit_marijuana_01, test = "Chisq")
+```
+By doing a Likielihood Ratio Test between the model with an interaction term, and the model without, a p-value of `r round(anova(logit_marijuana_02, logit_marijuana_01, test = "Chisq")$"Pr(>Chi)"[2], 4)` is found. This fails to reject the null hypothesis of explaining equal amounts of variance, based on the sample. As such we can use the more parsimonious model.
+
+Both the slope parameters are significant at $\alpha=0.05$, based on the sample. A person with Alcohol Use on average has an increased log likelihood in favour of Marijuana Use of `r round(coefficients(logit_marijuana_02)[2], 4)` vs. a person without, based on the sample. A person with Cigarette Use on average has an increased log likelihood in favour of Marijuana Use of `r round(coefficients(logit_marijuana_02)[3], 4)` vs. a person without, based on the sample.
+
+
+## 5.17
+```{r 5.17}
+death_ct <- 
+  array(
+    data =
+      c(
+         53, 11, 414, 37
+        ,0, 4, 16, 139
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Defendant = c("W", "B")
+      ,Death = c("Y", "N")
+      ,Victim = c("W", "B")
+    )
+  )
+death_ct
+
+death_data <- 
+  tibble(
+    Victim = 
+      as.factor(
+        rep(
+          c("W", "B")
+        ,times = 
+          c(
+            sum(death_ct[,,"W"])
+            ,sum(death_ct[,,"B"])
+          )
+        )
+      )
+    ,Defendant =
+      as.factor(
+        rep(
+          rep(c("W", "B"), times = dim(death_ct)[3])
+          ,times =
+            c(
+              sum(death_ct["W",,"W"])
+              ,sum(death_ct["B",,"W"])
+              ,sum(death_ct["W",,"B"])
+              ,sum(death_ct["B",,"B"])
+            )
+        )
+      )
+    ,Death =
+      as.numeric(
+        rep(
+          rep(c(1, 0), times = dim(death_ct)[3]*dim(death_ct)[1])
+          ,times =
+            c(
+              sum(death_ct["W","Y","W"])
+              ,sum(death_ct["W","N","W"])
+              ,sum(death_ct["B","Y","W"])
+              ,sum(death_ct["B","N","W"])
+              ,sum(death_ct["W","Y","B"])
+              ,sum(death_ct["W","N","B"])
+              ,sum(death_ct["B","Y","B"])
+              ,sum(death_ct["B","N","B"])
+            )
+        )
+      )
+  )
+death_summary <- 
+  death_data %>% 
+  group_by(Victim, Defendant) %>% 
+  summarize(
+    Yes = sum(Death)
+    ,No = length(Death) - Yes
+    ,Total = Yes + No
+  )
+death_summary
+```
+### a.
+```{r 5.17a}
+logit_death <- 
+  death_data %>% 
+  glm(
+    Death ~ Victim + Defendant
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_death)
+
+death_summary %<>% 
+  cbind(
+    phat = 
+      predict(
+        object = logit_death
+        ,newdata = death_summary %>% dplyr::select(Victim, Defendant)
+        ,type = "response"
+      ) %>% t
+  ) %>% 
+  mutate(
+    Expected_Yes = Total*phat
+    ,Expected_No = Total*(1-phat)
+  )
+death_summary
+
+death_chisq_stat <-
+  death_summary %>% 
+  ungroup %>% 
+  mutate(
+    ChiSq_Yes = (Yes - Expected_Yes)^(2) / Expected_Yes
+    ,ChiSq_No = (No - Expected_No)^(2) / Expected_No
+  ) %>% 
+  dplyr::select(
+    ChiSq_Yes
+    ,ChiSq_No
+  ) %>% 
+  sum
+death_chisq_stat
+death_chisq_p_value <- 
+  pchisq(
+    q = death_chisq_stat
+    ,df = prod(dim(death_ct)-1)
+    ,lower.tail = FALSE
+  )
+death_chisq_p_value
+```
+Based on the sample, and the logistic regression found above, doing a $\chi^{2}$ Goodness of Fit Test yields a p-value of `r round(death_chisq_p_value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true. A $G^{2}$ Goodness of Fit Test can't be used as no White Defendants with Black Victims were given the death penalty.
+
+### c.
+Both the slope parameters are significant at $\alpha=0.05$, based on the sample. A Defendant with a White Victim on average has an increased log likelihood in favour of getting the death penalty of `r round(coefficients(logit_death)[2], 4)` vs. a Black Victim, based on the sample. A White Defendant on average has an increased log likelihood in favour of getting the death penalty of `r round(coefficients(logit_death)[3], 4)` vs. a Black Defendant, based on the sample.
+
+
+## 5.18
+```{r 5.18}
+lung_cancer_ct <- 
+  array(
+    data =
+      c(
+         126, 35, 100, 61
+        ,908, 497, 688, 807
+        ,913, 336, 747, 598
+        ,235, 58, 172, 121
+        ,402, 121, 308, 215
+        ,182, 72, 156, 98
+        ,60, 11, 99, 43
+        ,104, 21, 89, 36
+      )
+    ,dim = c(2, 2, 8)
+    ,dimnames = list(
+      Smoking = c("Y", "N")
+      ,Lung = c("Y", "N")
+      ,City = 
+        c(
+          "Beij"
+          ,"Shan"
+          ,"Shen"
+          ,"Nanj"
+          ,"Harb"
+          ,"Zhen"
+          ,"Taiy"
+          ,"Nanc"
+        )
+    )
+  )
+lung_cancer_ct
+
+lung_cancer_data <- 
+  tibble(
+    City = 
+      as.factor(
+        rep(
+          c(
+            "Beij"
+            ,"Shan"
+            ,"Shen"
+            ,"Nanj"
+            ,"Harb"
+            ,"Zhen"
+            ,"Taiy"
+            ,"Nanc"
+          )
+        ,times = 
+          c(
+            sum(lung_cancer_ct[,,"Beij"])
+            ,sum(lung_cancer_ct[,,"Shan"])
+            ,sum(lung_cancer_ct[,,"Shen"])
+            ,sum(lung_cancer_ct[,,"Nanj"])
+            ,sum(lung_cancer_ct[,,"Harb"])
+            ,sum(lung_cancer_ct[,,"Zhen"])
+            ,sum(lung_cancer_ct[,,"Taiy"])
+            ,sum(lung_cancer_ct[,,"Nanc"])
+          )
+        )
+      )
+    ,Smoking =
+      as.factor(
+        rep(
+          rep(c("Y", "N"), times = dim(lung_cancer_ct)[3])
+          ,times =
+            c(
+              sum(lung_cancer_ct["Y",,"Beij"])
+              ,sum(lung_cancer_ct["N",,"Beij"])
+              ,sum(lung_cancer_ct["Y",,"Shan"])
+              ,sum(lung_cancer_ct["N",,"Shan"])
+              ,sum(lung_cancer_ct["Y",,"Shen"])
+              ,sum(lung_cancer_ct["N",,"Shen"])
+              ,sum(lung_cancer_ct["Y",,"Nanj"])
+              ,sum(lung_cancer_ct["N",,"Nanj"])
+              ,sum(lung_cancer_ct["Y",,"Harb"])
+              ,sum(lung_cancer_ct["N",,"Harb"])
+              ,sum(lung_cancer_ct["Y",,"Zhen"])
+              ,sum(lung_cancer_ct["N",,"Zhen"])
+              ,sum(lung_cancer_ct["Y",,"Taiy"])
+              ,sum(lung_cancer_ct["N",,"Taiy"])
+              ,sum(lung_cancer_ct["Y",,"Nanc"])
+              ,sum(lung_cancer_ct["N",,"Nanc"])
+            )
+        )
+      )
+    ,Lung =
+      as.numeric(
+        rep(
+          rep(c(1, 0), times = dim(lung_cancer_ct)[3]*dim(lung_cancer_ct)[1])
+          ,times =
+            c(
+              sum(lung_cancer_ct["Y","Y","Beij"])
+              ,sum(lung_cancer_ct["Y","N","Beij"])
+              ,sum(lung_cancer_ct["N","Y","Beij"])
+              ,sum(lung_cancer_ct["N","N","Beij"])
+              ,sum(lung_cancer_ct["Y","Y","Shan"])
+              ,sum(lung_cancer_ct["Y","N","Shan"])
+              ,sum(lung_cancer_ct["N","Y","Shan"])
+              ,sum(lung_cancer_ct["N","N","Shan"])
+              ,sum(lung_cancer_ct["Y","Y","Shen"])
+              ,sum(lung_cancer_ct["Y","N","Shen"])
+              ,sum(lung_cancer_ct["N","Y","Shen"])
+              ,sum(lung_cancer_ct["N","N","Shen"])
+              ,sum(lung_cancer_ct["Y","Y","Nanj"])
+              ,sum(lung_cancer_ct["Y","N","Nanj"])
+              ,sum(lung_cancer_ct["N","Y","Nanj"])
+              ,sum(lung_cancer_ct["N","N","Nanj"])
+              ,sum(lung_cancer_ct["Y","Y","Harb"])
+              ,sum(lung_cancer_ct["Y","N","Harb"])
+              ,sum(lung_cancer_ct["N","Y","Harb"])
+              ,sum(lung_cancer_ct["N","N","Harb"])
+              ,sum(lung_cancer_ct["Y","Y","Zhen"])
+              ,sum(lung_cancer_ct["Y","N","Zhen"])
+              ,sum(lung_cancer_ct["N","Y","Zhen"])
+              ,sum(lung_cancer_ct["N","N","Zhen"])
+              ,sum(lung_cancer_ct["Y","Y","Taiy"])
+              ,sum(lung_cancer_ct["Y","N","Taiy"])
+              ,sum(lung_cancer_ct["N","Y","Taiy"])
+              ,sum(lung_cancer_ct["N","N","Taiy"])
+              ,sum(lung_cancer_ct["Y","Y","Nanc"])
+              ,sum(lung_cancer_ct["Y","N","Nanc"])
+              ,sum(lung_cancer_ct["N","Y","Nanc"])
+              ,sum(lung_cancer_ct["N","N","Nanc"])
+            )
+        )
+      )
+  )
+lung_cancer_summary <- 
+  lung_cancer_data %>% 
+  group_by(City, Smoking) %>% 
+  summarize(
+    Yes = sum(Lung)
+    ,No = length(Lung) - Yes
+    ,Total = Yes + No
+  )
+lung_cancer_summary
+```
+### a.
+```{r 5.18a}
+logit_lung_cancer <- 
+  lung_cancer_data %>% 
+  glm(
+    Lung ~ City + Smoking
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_lung_cancer)
+```
+A Smoker on average has an increased log likelihood in favour of getting Lung Cancer of `r round(coefficients(logit_lung_cancer)[9], 4)` vs. a non-smoker, based on the sample.
+
+### b.
+```{r 5.18b}
+lung_cancer_summary %<>% 
+  cbind(
+    phat = 
+      predict(
+        object = logit_lung_cancer
+        ,newdata = lung_cancer_summary %>% dplyr::select(City, Smoking)
+        ,type = "response"
+      ) %>% t
+  ) %>% 
+  mutate(
+    Expected_Yes = Total*phat
+    ,Expected_No = Total*(1-phat)
+  )
+lung_cancer_summary
+
+lung_cancer_chisq_stat <-
+  lung_cancer_summary %>% 
+  ungroup %>% 
+  mutate(
+    ChiSq_Yes = (Yes - Expected_Yes)^(2) / Expected_Yes
+    ,ChiSq_No = (No - Expected_No)^(2) / Expected_No
+  ) %>% 
+  dplyr::select(
+    ChiSq_Yes
+    ,ChiSq_No
+  ) %>% 
+  sum
+lung_cancer_chisq_stat
+lung_cancer_chisq_p_value <- 
+  pchisq(
+    q = lung_cancer_chisq_stat
+    ,df = prod(dim(lung_cancer_ct)-1)
+    ,lower.tail = FALSE
+  )
+lung_cancer_chisq_p_value
+
+lung_cancer_gsq_stat <-
+  lung_cancer_summary %>% 
+  ungroup %>% 
+  mutate(
+    Gsq_Yes = 2*Yes*log(Yes/Expected_Yes)
+    ,Gsq_No = 2*No*log(No/Expected_No)
+  ) %>% 
+  dplyr::select(
+    Gsq_Yes
+    ,Gsq_No
+  ) %>% 
+  sum
+lung_cancer_gsq_stat
+lung_cancer_gsq_p_value <-
+  pchisq(
+    q = lung_cancer_gsq_stat
+    ,df = prod(dim(lung_cancer_ct)-1)
+    ,lower.tail = FALSE
+  )
+lung_cancer_gsq_p_value
+```
+Based on the sample, and the logistic regression found above, doing a $\chi^{2}$ Goodness of Fit Test yields a p-value of `r round(lung_cancer_chisq_p_value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.
+
+Based on the sample, and the logistic regression found above, doing a $G^{2}$ Goodness of Fit Test yields a p-value of `r round(lung_cancer_gsq_p_value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.

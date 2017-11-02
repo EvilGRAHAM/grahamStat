@@ -355,6 +355,1003 @@ div.tocify {
   \newcommand{\that}{{\hat{T}}}
   \newcommand{\med}{{\tilde{Y}}}
 \]</span></p>
+<div id="section" class="section level2">
+<h2>4.29</h2>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<pre class="r"><code>sex_ct &lt;-
+  array(
+    data =
+      c(
+         43, 26, 134, 149
+        ,29, 22, 23, 36
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Gender = c(&quot;M&quot;, &quot;F&quot;)
+      ,Intercourse = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Race = c(&quot;W&quot;, &quot;B&quot;)
+    )
+  )
+sex_ct</code></pre>
+<pre><code>## , , Race = W
+## 
+##       Intercourse
+## Gender  Y   N
+##      M 43 134
+##      F 26 149
+## 
+## , , Race = B
+## 
+##       Intercourse
+## Gender  Y  N
+##      M 29 23
+##      F 22 36</code></pre>
+<pre class="r"><code>sex_ct_flip &lt;-
+  array(
+    data =
+      c(
+         43, 29, 134, 23
+        ,26, 22, 149, 36
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Race = c(&quot;W&quot;, &quot;B&quot;)
+      ,Intercourse = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Gender = c(&quot;M&quot;, &quot;F&quot;)
+    )
+  )
+sex_ct_flip</code></pre>
+<pre><code>## , , Gender = M
+## 
+##     Intercourse
+## Race  Y   N
+##    W 43 134
+##    B 29  23
+## 
+## , , Gender = F
+## 
+##     Intercourse
+## Race  Y   N
+##    W 26 149
+##    B 22  36</code></pre>
+<pre class="r"><code>sex_data &lt;- 
+  tibble(
+    Race = 
+      as.factor(
+        rep(
+          c(&quot;W&quot;, &quot;B&quot;)
+        ,times = 
+          c(
+            sum(sex_ct[,,&quot;W&quot;])
+            ,sum(sex_ct[,,&quot;B&quot;])
+          )
+        )
+      )
+    ,Gender =
+      as.factor(
+        rep(
+          rep(c(&quot;M&quot;, &quot;F&quot;), times = dim(sex_ct)[3])
+          ,times =
+            c(
+              sum(sex_ct[&quot;M&quot;,,&quot;W&quot;])
+              ,sum(sex_ct[&quot;F&quot;,,&quot;W&quot;])
+              ,sum(sex_ct[&quot;M&quot;,,&quot;B&quot;])
+              ,sum(sex_ct[&quot;F&quot;,,&quot;B&quot;])
+            )
+        )
+      )
+    ,Intercourse =
+      as.numeric(
+        rep(
+          rep(c(1, 0), times = dim(sex_ct)[3]*dim(sex_ct)[1])
+          ,times =
+            c(
+              sum(sex_ct[&quot;M&quot;,&quot;Y&quot;,&quot;W&quot;])
+              ,sum(sex_ct[&quot;M&quot;,&quot;N&quot;,&quot;W&quot;])
+              ,sum(sex_ct[&quot;F&quot;,&quot;Y&quot;,&quot;W&quot;])
+              ,sum(sex_ct[&quot;F&quot;,&quot;N&quot;,&quot;W&quot;])
+              ,sum(sex_ct[&quot;M&quot;,&quot;Y&quot;,&quot;B&quot;])
+              ,sum(sex_ct[&quot;M&quot;,&quot;N&quot;,&quot;B&quot;])
+              ,sum(sex_ct[&quot;F&quot;,&quot;Y&quot;,&quot;B&quot;])
+              ,sum(sex_ct[&quot;F&quot;,&quot;N&quot;,&quot;B&quot;])
+            )
+        )
+      )
+  )
+sex_summary &lt;- 
+  sex_data %&gt;% 
+  group_by(Race, Gender) %&gt;% 
+  summarize(
+    Yes = sum(Intercourse)
+    ,No = length(Intercourse) - Yes
+    ,Total = Yes + No
+  )
+sex_summary</code></pre>
+<pre><code>## # A tibble: 4 x 5
+## # Groups:   Race [?]
+##     Race Gender   Yes    No Total
+##   &lt;fctr&gt; &lt;fctr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1      B      F    22    36    58
+## 2      B      M    29    23    52
+## 3      W      F    26   149   175
+## 4      W      M    43   134   177</code></pre>
+</div>
+<div id="cochran-mantel-haenszel-test" class="section level3">
+<h3>Cochran-Mantel-Haenszel Test</h3>
+<p><span class="math display">\[
+  H_{0}:\text{ Intercourse is independent of Gender, conditional on Race}
+\]</span> <span class="math display">\[
+  H_{1}:\text{ Intercourse is dependent on Gender, conditional on Race}
+\]</span></p>
+<pre class="r"><code>sex_cmh &lt;- mantelhaen.test(sex_ct, correct = FALSE)
+sex_cmh</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  sex_ct
+## Mantel-Haenszel X-squared = 8.3751, df = 1, p-value = 0.003804
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  1.229343 2.967939
+## sample estimates:
+## common odds ratio 
+##          1.910135</code></pre>
+<p>With a p-value of 0.0038, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+<p><span class="math display">\[
+  H_{0}:\text{ Intercourse is independent of Race, conditional on Gender}
+\]</span> <span class="math display">\[
+  H_{1}:\text{ Intercourse is dependent on Race, conditional on Gender}
+\]</span></p>
+<pre class="r"><code>sex_cmh_flip &lt;- mantelhaen.test(sex_ct_flip, correct = FALSE)
+sex_cmh_flip</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  sex_ct_flip
+## Mantel-Haenszel X-squared = 32.501, df = 1, p-value = 1.192e-08
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.1684817 0.4281210
+## sample estimates:
+## common odds ratio 
+##         0.2685713</code></pre>
+<p>With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+</div>
+<div id="logistic-regression" class="section level3">
+<h3>Logistic Regression</h3>
+<pre class="r"><code>logit_sex_01 &lt;- 
+  sex_data %&gt;% 
+  glm(
+    Intercourse ~ Race + Gender + Race:Gender
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_sex_01)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Intercourse ~ Race + Gender + Race:Gender, family = binomial, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.2773  -0.7461  -0.5672   1.0807   1.9528  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)    -0.4925     0.2706  -1.820  0.06878 .  
+## RaceW          -1.2534     0.3441  -3.642  0.00027 ***
+## GenderM         0.7243     0.3888   1.863  0.06251 .  
+## RaceW:GenderM  -0.1151     0.4765  -0.241  0.80919    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 529.25  on 461  degrees of freedom
+## Residual deviance: 491.74  on 458  degrees of freedom
+## AIC: 499.74
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>logit_sex_02 &lt;-
+  sex_data %&gt;% 
+  glm(
+    Intercourse ~ Race + Gender
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_sex_02)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Intercourse ~ Race + Gender, family = binomial, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.2601  -0.7511  -0.5611   1.0969   1.9628  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -0.4555     0.2221  -2.050  0.04032 *  
+## RaceW        -1.3135     0.2378  -5.524 3.32e-08 ***
+## GenderM       0.6478     0.2250   2.879  0.00399 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 529.25  on 461  degrees of freedom
+## Residual deviance: 491.79  on 459  degrees of freedom
+## AIC: 497.79
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>anova(logit_sex_02, logit_sex_01, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: Intercourse ~ Race + Gender
+## Model 2: Intercourse ~ Race + Gender + Race:Gender
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)
+## 1       459     491.79                     
+## 2       458     491.74  1 0.058349   0.8091</code></pre>
+<p>By doing a Likielihood Ratio Test between the model with an interaction term, and the model without, a p-value of 0.8091 is found. This fails to reject the null hypothesis of explaining equal amounts of variance, based on the sample. As such we can use the more parsimonious model.</p>
+<p>Both the slope parameters are significant at <span class="math inline">\(\alpha=0.05\)</span>, based on the sample. A White person on average has an increased log likelihood in favour of having intercourse of -1.3135 vs. a Black person, based on the sample. A Male on average has an increased log likelihood in favour of having intercourse of 0.6478 vs. a Female, based on the sample.</p>
+</div>
+</div>
+<div id="section-1" class="section level2">
+<h2>4.31</h2>
+<div id="data-1" class="section level3">
+<h3>Data</h3>
+<pre class="r"><code>marijuana_ct &lt;-
+  array(
+    data =
+      c(
+         911, 44, 538, 456
+        ,3, 2, 43, 279
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Cigarette = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Marijuana = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Alcohol = c(&quot;Y&quot;, &quot;N&quot;)
+    )
+  )
+marijuana_ct</code></pre>
+<pre><code>## , , Alcohol = Y
+## 
+##          Marijuana
+## Cigarette   Y   N
+##         Y 911 538
+##         N  44 456
+## 
+## , , Alcohol = N
+## 
+##          Marijuana
+## Cigarette Y   N
+##         Y 3  43
+##         N 2 279</code></pre>
+<pre class="r"><code>marijuana_ct_flip &lt;-
+  array(
+    data =
+      c(
+         911, 3, 538, 43
+        ,44, 2, 456, 279
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Alcohol = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Marijuana = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Cigarette = c(&quot;Y&quot;, &quot;N&quot;)
+    )
+  )
+marijuana_ct_flip</code></pre>
+<pre><code>## , , Cigarette = Y
+## 
+##        Marijuana
+## Alcohol   Y   N
+##       Y 911 538
+##       N   3  43
+## 
+## , , Cigarette = N
+## 
+##        Marijuana
+## Alcohol  Y   N
+##       Y 44 456
+##       N  2 279</code></pre>
+<pre class="r"><code>marijuana_data &lt;- 
+  tibble(
+    Alcohol = 
+      as.factor(
+        rep(
+          c(&quot;Y&quot;, &quot;N&quot;)
+        ,times = 
+          c(
+            sum(marijuana_ct[,,&quot;Y&quot;])
+            ,sum(marijuana_ct[,,&quot;N&quot;])
+          )
+        )
+      )
+    ,Cigarette =
+      as.factor(
+        rep(
+          rep(c(&quot;Y&quot;, &quot;N&quot;), times = dim(marijuana_ct)[3])
+          ,times =
+            c(
+              sum(marijuana_ct[&quot;Y&quot;,,&quot;Y&quot;])
+              ,sum(marijuana_ct[&quot;N&quot;,,&quot;Y&quot;])
+              ,sum(marijuana_ct[&quot;Y&quot;,,&quot;N&quot;])
+              ,sum(marijuana_ct[&quot;N&quot;,,&quot;N&quot;])
+            )
+        )
+      )
+    ,Marijuana =
+      as.numeric(
+        rep(
+          rep(c(1, 0), times = dim(marijuana_ct)[3]*dim(marijuana_ct)[1])
+          ,times =
+            c(
+              sum(marijuana_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Y&quot;])
+              ,sum(marijuana_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Y&quot;])
+              ,sum(marijuana_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Y&quot;])
+              ,sum(marijuana_ct[&quot;N&quot;,&quot;N&quot;,&quot;Y&quot;])
+              ,sum(marijuana_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;N&quot;])
+              ,sum(marijuana_ct[&quot;Y&quot;,&quot;N&quot;,&quot;N&quot;])
+              ,sum(marijuana_ct[&quot;N&quot;,&quot;Y&quot;,&quot;N&quot;])
+              ,sum(marijuana_ct[&quot;N&quot;,&quot;N&quot;,&quot;N&quot;])
+            )
+        )
+      )
+  )
+marijuana_summary &lt;- 
+  marijuana_data %&gt;% 
+  group_by(Alcohol, Cigarette) %&gt;% 
+  summarize(
+    Yes = sum(Marijuana)
+    ,No = length(Marijuana) - Yes
+    ,Total = Yes + No
+  )
+marijuana_summary</code></pre>
+<pre><code>## # A tibble: 4 x 5
+## # Groups:   Alcohol [?]
+##   Alcohol Cigarette   Yes    No Total
+##    &lt;fctr&gt;    &lt;fctr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1       N         N     2   279   281
+## 2       N         Y     3    43    46
+## 3       Y         N    44   456   500
+## 4       Y         Y   911   538  1449</code></pre>
+</div>
+<div id="cochran-mantel-haenszel-test-1" class="section level3">
+<h3>Cochran-Mantel-Haenszel Test</h3>
+<p><span class="math display">\[
+  H_{0}:\text{ Marijuana Use is independent of Cigarette Use, conditional on Alcohol Use}
+\]</span> <span class="math display">\[
+  H_{1}:\text{ Marijuana Use is dependent on Cigarette Use, conditional on Alcohol Use}
+\]</span></p>
+<pre class="r"><code>marijuana_cmh &lt;- mantelhaen.test(marijuana_ct, correct = FALSE)
+marijuana_cmh</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  marijuana_ct
+## Mantel-Haenszel X-squared = 441.83, df = 1, p-value &lt; 2.2e-16
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  12.58828 24.00445
+## sample estimates:
+## common odds ratio 
+##          17.38317</code></pre>
+<p>With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+<p><span class="math display">\[
+  H_{0}:\text{ Marijuana Use is independent of Alcohol Use, conditional on Cigarette Use}
+\]</span> <span class="math display">\[
+  H_{1}:\text{ Marijuana Use is dependent on Alcohol Use, conditional on Cigarette Use}
+\]</span></p>
+<pre class="r"><code>marijuana_cmh_flip &lt;- mantelhaen.test(marijuana_ct_flip, correct = FALSE)
+marijuana_cmh_flip</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  marijuana_ct_flip
+## Mantel-Haenszel X-squared = 76.464, df = 1, p-value &lt; 2.2e-16
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##   7.461745 46.632418
+## sample estimates:
+## common odds ratio 
+##          18.65367</code></pre>
+<p>With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+</div>
+<div id="logistic-regression-1" class="section level3">
+<h3>Logistic Regression</h3>
+<pre class="r"><code>logit_marijuana_01 &lt;- 
+  marijuana_data %&gt;% 
+  glm(
+    Marijuana ~ Alcohol + Cigarette + Alcohol:Cigarette
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_marijuana_01)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Marijuana ~ Alcohol + Cigarette + Alcohol:Cigarette, 
+##     family = binomial, data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.4077  -0.4292  -0.1195   0.9634   3.1449  
+## 
+## Coefficients:
+##                     Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)          -4.9381     0.7096  -6.959 3.42e-12 ***
+## AlcoholY              2.5998     0.7269   3.576 0.000348 ***
+## CigaretteY            2.2755     0.9274   2.454 0.014143 *  
+## AlcoholY:CigaretteY   0.5895     0.9423   0.626 0.531576    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 3099.3  on 2275  degrees of freedom
+## Residual deviance: 2255.5  on 2272  degrees of freedom
+## AIC: 2263.5
+## 
+## Number of Fisher Scoring iterations: 7</code></pre>
+<pre class="r"><code>logit_marijuana_02 &lt;-
+  marijuana_data %&gt;% 
+  glm(
+    Marijuana ~ Alcohol + Cigarette
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_marijuana_02)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Marijuana ~ Alcohol + Cigarette, family = binomial, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.4069  -0.4324  -0.0993   0.9641   3.2601  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -5.3090     0.4752 -11.172  &lt; 2e-16 ***
+## AlcoholY      2.9860     0.4647   6.426 1.31e-10 ***
+## CigaretteY    2.8479     0.1638  17.382  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 3099.3  on 2275  degrees of freedom
+## Residual deviance: 2255.8  on 2273  degrees of freedom
+## AIC: 2261.8
+## 
+## Number of Fisher Scoring iterations: 7</code></pre>
+<pre class="r"><code>anova(logit_marijuana_02, logit_marijuana_01, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: Marijuana ~ Alcohol + Cigarette
+## Model 2: Marijuana ~ Alcohol + Cigarette + Alcohol:Cigarette
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)
+## 1      2273     2255.8                     
+## 2      2272     2255.5  1  0.37399   0.5408</code></pre>
+<p>By doing a Likielihood Ratio Test between the model with an interaction term, and the model without, a p-value of 0.5408 is found. This fails to reject the null hypothesis of explaining equal amounts of variance, based on the sample. As such we can use the more parsimonious model.</p>
+<p>Both the slope parameters are significant at <span class="math inline">\(\alpha=0.05\)</span>, based on the sample. A person with Alcohol Use on average has an increased log likelihood in favour of Marijuana Use of 2.986 vs. a person without, based on the sample. A person with Cigarette Use on average has an increased log likelihood in favour of Marijuana Use of 2.8479 vs. a person without, based on the sample.</p>
+</div>
+</div>
+<div id="section-2" class="section level2">
+<h2>5.17</h2>
+<pre class="r"><code>death_ct &lt;- 
+  array(
+    data =
+      c(
+         53, 11, 414, 37
+        ,0, 4, 16, 139
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = list(
+      Defendant = c(&quot;W&quot;, &quot;B&quot;)
+      ,Death = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Victim = c(&quot;W&quot;, &quot;B&quot;)
+    )
+  )
+death_ct</code></pre>
+<pre><code>## , , Victim = W
+## 
+##          Death
+## Defendant  Y   N
+##         W 53 414
+##         B 11  37
+## 
+## , , Victim = B
+## 
+##          Death
+## Defendant Y   N
+##         W 0  16
+##         B 4 139</code></pre>
+<pre class="r"><code>death_data &lt;- 
+  tibble(
+    Victim = 
+      as.factor(
+        rep(
+          c(&quot;W&quot;, &quot;B&quot;)
+        ,times = 
+          c(
+            sum(death_ct[,,&quot;W&quot;])
+            ,sum(death_ct[,,&quot;B&quot;])
+          )
+        )
+      )
+    ,Defendant =
+      as.factor(
+        rep(
+          rep(c(&quot;W&quot;, &quot;B&quot;), times = dim(death_ct)[3])
+          ,times =
+            c(
+              sum(death_ct[&quot;W&quot;,,&quot;W&quot;])
+              ,sum(death_ct[&quot;B&quot;,,&quot;W&quot;])
+              ,sum(death_ct[&quot;W&quot;,,&quot;B&quot;])
+              ,sum(death_ct[&quot;B&quot;,,&quot;B&quot;])
+            )
+        )
+      )
+    ,Death =
+      as.numeric(
+        rep(
+          rep(c(1, 0), times = dim(death_ct)[3]*dim(death_ct)[1])
+          ,times =
+            c(
+              sum(death_ct[&quot;W&quot;,&quot;Y&quot;,&quot;W&quot;])
+              ,sum(death_ct[&quot;W&quot;,&quot;N&quot;,&quot;W&quot;])
+              ,sum(death_ct[&quot;B&quot;,&quot;Y&quot;,&quot;W&quot;])
+              ,sum(death_ct[&quot;B&quot;,&quot;N&quot;,&quot;W&quot;])
+              ,sum(death_ct[&quot;W&quot;,&quot;Y&quot;,&quot;B&quot;])
+              ,sum(death_ct[&quot;W&quot;,&quot;N&quot;,&quot;B&quot;])
+              ,sum(death_ct[&quot;B&quot;,&quot;Y&quot;,&quot;B&quot;])
+              ,sum(death_ct[&quot;B&quot;,&quot;N&quot;,&quot;B&quot;])
+            )
+        )
+      )
+  )
+death_summary &lt;- 
+  death_data %&gt;% 
+  group_by(Victim, Defendant) %&gt;% 
+  summarize(
+    Yes = sum(Death)
+    ,No = length(Death) - Yes
+    ,Total = Yes + No
+  )
+death_summary</code></pre>
+<pre><code>## # A tibble: 4 x 5
+## # Groups:   Victim [?]
+##   Victim Defendant   Yes    No Total
+##   &lt;fctr&gt;    &lt;fctr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1      B         B     4   139   143
+## 2      B         W     0    16    16
+## 3      W         B    11    37    48
+## 4      W         W    53   414   467</code></pre>
+<div id="a." class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>logit_death &lt;- 
+  death_data %&gt;% 
+  glm(
+    Death ~ Victim + Defendant
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_death)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Death ~ Victim + Defendant, family = binomial, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.7283  -0.4899  -0.4899  -0.2326   2.6919  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -3.5961     0.5069  -7.094 1.30e-12 ***
+## VictimW       2.4044     0.6006   4.003 6.25e-05 ***
+## DefendantW   -0.8678     0.3671  -2.364   0.0181 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 440.84  on 673  degrees of freedom
+## Residual deviance: 418.96  on 671  degrees of freedom
+## AIC: 424.96
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>death_summary %&lt;&gt;% 
+  cbind(
+    phat = 
+      predict(
+        object = logit_death
+        ,newdata = death_summary %&gt;% dplyr::select(Victim, Defendant)
+        ,type = &quot;response&quot;
+      ) %&gt;% t
+  ) %&gt;% 
+  mutate(
+    Expected_Yes = Total*phat
+    ,Expected_No = Total*(1-phat)
+  )
+death_summary</code></pre>
+<pre><code>## # A tibble: 4 x 8
+## # Groups:   Victim [2]
+##   Victim Defendant   Yes    No Total       phat Expected_Yes Expected_No
+##   &lt;fctr&gt;    &lt;fctr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+## 1      B         B     4   139   143 0.02669805    3.8178206   139.18218
+## 2      B         W     0    16    16 0.01138621    0.1821794    15.81782
+## 3      W         B    11    37    48 0.23296207   11.1821794    36.81782
+## 4      W         W    53   414   467 0.11310026   52.8178206   414.18218</code></pre>
+<pre class="r"><code>death_chisq_stat &lt;-
+  death_summary %&gt;% 
+  ungroup %&gt;% 
+  mutate(
+    ChiSq_Yes = (Yes - Expected_Yes)^(2) / Expected_Yes
+    ,ChiSq_No = (No - Expected_No)^(2) / Expected_No
+  ) %&gt;% 
+  dplyr::select(
+    ChiSq_Yes
+    ,ChiSq_No
+  ) %&gt;% 
+  sum
+death_chisq_stat</code></pre>
+<pre><code>## [1] 0.1977873</code></pre>
+<pre class="r"><code>death_chisq_p_value &lt;- 
+  pchisq(
+    q = death_chisq_stat
+    ,df = prod(dim(death_ct)-1)
+    ,lower.tail = FALSE
+  )
+death_chisq_p_value</code></pre>
+<pre><code>## [1] 0.6565128</code></pre>
+<p>Based on the sample, and the logistic regression found above, doing a <span class="math inline">\(\chi^{2}\)</span> Goodness of Fit Test yields a p-value of 0.6565. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true. A <span class="math inline">\(G^{2}\)</span> Goodness of Fit Test can’t be used as no White Defendants with Black Victims were given the death penalty.</p>
+</div>
+<div id="c." class="section level3">
+<h3>c.</h3>
+<p>Both the slope parameters are significant at <span class="math inline">\(\alpha=0.05\)</span>, based on the sample. A Defendant with a White Victim on average has an increased log likelihood in favour of getting the death penalty of 2.4044 vs. a Black Victim, based on the sample. A White Defendant on average has an increased log likelihood in favour of getting the death penalty of -0.8678 vs. a Black Defendant, based on the sample.</p>
+</div>
+</div>
+<div id="section-3" class="section level2">
+<h2>5.18</h2>
+<pre class="r"><code>lung_cancer_ct &lt;- 
+  array(
+    data =
+      c(
+         126, 35, 100, 61
+        ,908, 497, 688, 807
+        ,913, 336, 747, 598
+        ,235, 58, 172, 121
+        ,402, 121, 308, 215
+        ,182, 72, 156, 98
+        ,60, 11, 99, 43
+        ,104, 21, 89, 36
+      )
+    ,dim = c(2, 2, 8)
+    ,dimnames = list(
+      Smoking = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Lung = c(&quot;Y&quot;, &quot;N&quot;)
+      ,City = 
+        c(
+          &quot;Beij&quot;
+          ,&quot;Shan&quot;
+          ,&quot;Shen&quot;
+          ,&quot;Nanj&quot;
+          ,&quot;Harb&quot;
+          ,&quot;Zhen&quot;
+          ,&quot;Taiy&quot;
+          ,&quot;Nanc&quot;
+        )
+    )
+  )
+lung_cancer_ct</code></pre>
+<pre><code>## , , City = Beij
+## 
+##        Lung
+## Smoking   Y   N
+##       Y 126 100
+##       N  35  61
+## 
+## , , City = Shan
+## 
+##        Lung
+## Smoking   Y   N
+##       Y 908 688
+##       N 497 807
+## 
+## , , City = Shen
+## 
+##        Lung
+## Smoking   Y   N
+##       Y 913 747
+##       N 336 598
+## 
+## , , City = Nanj
+## 
+##        Lung
+## Smoking   Y   N
+##       Y 235 172
+##       N  58 121
+## 
+## , , City = Harb
+## 
+##        Lung
+## Smoking   Y   N
+##       Y 402 308
+##       N 121 215
+## 
+## , , City = Zhen
+## 
+##        Lung
+## Smoking   Y   N
+##       Y 182 156
+##       N  72  98
+## 
+## , , City = Taiy
+## 
+##        Lung
+## Smoking  Y  N
+##       Y 60 99
+##       N 11 43
+## 
+## , , City = Nanc
+## 
+##        Lung
+## Smoking   Y  N
+##       Y 104 89
+##       N  21 36</code></pre>
+<pre class="r"><code>lung_cancer_data &lt;- 
+  tibble(
+    City = 
+      as.factor(
+        rep(
+          c(
+            &quot;Beij&quot;
+            ,&quot;Shan&quot;
+            ,&quot;Shen&quot;
+            ,&quot;Nanj&quot;
+            ,&quot;Harb&quot;
+            ,&quot;Zhen&quot;
+            ,&quot;Taiy&quot;
+            ,&quot;Nanc&quot;
+          )
+        ,times = 
+          c(
+            sum(lung_cancer_ct[,,&quot;Beij&quot;])
+            ,sum(lung_cancer_ct[,,&quot;Shan&quot;])
+            ,sum(lung_cancer_ct[,,&quot;Shen&quot;])
+            ,sum(lung_cancer_ct[,,&quot;Nanj&quot;])
+            ,sum(lung_cancer_ct[,,&quot;Harb&quot;])
+            ,sum(lung_cancer_ct[,,&quot;Zhen&quot;])
+            ,sum(lung_cancer_ct[,,&quot;Taiy&quot;])
+            ,sum(lung_cancer_ct[,,&quot;Nanc&quot;])
+          )
+        )
+      )
+    ,Smoking =
+      as.factor(
+        rep(
+          rep(c(&quot;Y&quot;, &quot;N&quot;), times = dim(lung_cancer_ct)[3])
+          ,times =
+            c(
+              sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Beij&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Beij&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Shan&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Shan&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Shen&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Shen&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Nanj&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Nanj&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Harb&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Harb&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Zhen&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Zhen&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Taiy&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Taiy&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Nanc&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Nanc&quot;])
+            )
+        )
+      )
+    ,Lung =
+      as.numeric(
+        rep(
+          rep(c(1, 0), times = dim(lung_cancer_ct)[3]*dim(lung_cancer_ct)[1])
+          ,times =
+            c(
+              sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Beij&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Beij&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Beij&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Beij&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Shan&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Shan&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Shan&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Shan&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Shen&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Shen&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Shen&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Shen&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Nanj&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Nanj&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Nanj&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Nanj&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Harb&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Harb&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Harb&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Harb&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Zhen&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Zhen&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Zhen&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Zhen&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Taiy&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Taiy&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Taiy&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Taiy&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Nanc&quot;])
+              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Nanc&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Nanc&quot;])
+              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Nanc&quot;])
+            )
+        )
+      )
+  )
+lung_cancer_summary &lt;- 
+  lung_cancer_data %&gt;% 
+  group_by(City, Smoking) %&gt;% 
+  summarize(
+    Yes = sum(Lung)
+    ,No = length(Lung) - Yes
+    ,Total = Yes + No
+  )
+lung_cancer_summary</code></pre>
+<pre><code>## # A tibble: 16 x 5
+## # Groups:   City [?]
+##      City Smoking   Yes    No Total
+##    &lt;fctr&gt;  &lt;fctr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1   Beij       N    35    61    96
+##  2   Beij       Y   126   100   226
+##  3   Harb       N   121   215   336
+##  4   Harb       Y   402   308   710
+##  5   Nanc       N    21    36    57
+##  6   Nanc       Y   104    89   193
+##  7   Nanj       N    58   121   179
+##  8   Nanj       Y   235   172   407
+##  9   Shan       N   497   807  1304
+## 10   Shan       Y   908   688  1596
+## 11   Shen       N   336   598   934
+## 12   Shen       Y   913   747  1660
+## 13   Taiy       N    11    43    54
+## 14   Taiy       Y    60    99   159
+## 15   Zhen       N    72    98   170
+## 16   Zhen       Y   182   156   338</code></pre>
+<div id="a.-1" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>logit_lung_cancer &lt;- 
+  lung_cancer_data %&gt;% 
+  glm(
+    Lung ~ City + Smoking
+    ,family = binomial
+    ,data = .
+  )
+summary(logit_lung_cancer)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Lung ~ City + Smoking, family = binomial, data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.3001  -1.2637  -0.9444   1.0935   1.7530  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -0.548682   0.118022  -4.649 3.34e-06 ***
+## CityHarb     0.018187   0.129473   0.140    0.888    
+## CityNanc    -0.054906   0.170996  -0.321    0.748    
+## CityNanj     0.005764   0.140911   0.041    0.967    
+## CityShan     0.055618   0.119570   0.465    0.642    
+## CityShen    -0.027739   0.120071  -0.231    0.817    
+## CityTaiy    -0.745683   0.185519  -4.019 5.83e-05 ***
+## CityZhen     0.028782   0.144755   0.199    0.842    
+## SmokingY     0.777062   0.046775  16.613  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 11663  on 8418  degrees of freedom
+## Residual deviance: 11358  on 8410  degrees of freedom
+## AIC: 11376
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>A Smoker on average has an increased log likelihood in favour of getting Lung Cancer of 0.7771 vs. a non-smoker, based on the sample.</p>
+</div>
+<div id="b." class="section level3">
+<h3>b.</h3>
+<pre class="r"><code>lung_cancer_summary %&lt;&gt;% 
+  cbind(
+    phat = 
+      predict(
+        object = logit_lung_cancer
+        ,newdata = lung_cancer_summary %&gt;% dplyr::select(City, Smoking)
+        ,type = &quot;response&quot;
+      ) %&gt;% t
+  ) %&gt;% 
+  mutate(
+    Expected_Yes = Total*phat
+    ,Expected_No = Total*(1-phat)
+  )
+lung_cancer_summary</code></pre>
+<pre><code>## # A tibble: 16 x 8
+## # Groups:   City [8]
+##      City Smoking   Yes    No Total      phat Expected_Yes Expected_No
+##    &lt;fctr&gt;  &lt;fctr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+##  1   Beij       N    35    61    96 0.3661702     35.15234    60.84766
+##  2   Beij       Y   126   100   226 0.5568481    125.84766   100.15234
+##  3   Harb       N   121   215   336 0.3704013    124.45485   211.54515
+##  4   Harb       Y   402   308   710 0.5613312    398.54515   311.45485
+##  5   Nanc       N    21    36    57 0.3535232     20.15082    36.84918
+##  6   Nanc       Y   104    89   193 0.5432600    104.84918    88.15082
+##  7   Nanj       N    58   121   179 0.3675090     65.78412   113.21588
+##  8   Nanj       Y   235   172   407 0.5582700    227.21588   179.78412
+##  9   Shan       N   497   807  1304 0.3791720    494.44035   809.55965
+## 10   Shan       Y   908   688  1596 0.5705261    910.55965   685.44035
+## 11   Shen       N   336   598   934 0.3597564    336.01248   597.98752
+## 12   Shen       Y   913   747  1660 0.5499925    912.98752   747.01248
+## 13   Taiy       N    11    43    54 0.2151149     11.61620    42.38380
+## 14   Taiy       Y    60    99   159 0.3734830     59.38380    99.61620
+## 15   Zhen       N    72    98   170 0.3728755     63.38883   106.61117
+## 16   Zhen       Y   182   156   338 0.5639384    190.61117   147.38883</code></pre>
+<pre class="r"><code>lung_cancer_chisq_stat &lt;-
+  lung_cancer_summary %&gt;% 
+  ungroup %&gt;% 
+  mutate(
+    ChiSq_Yes = (Yes - Expected_Yes)^(2) / Expected_Yes
+    ,ChiSq_No = (No - Expected_No)^(2) / Expected_No
+  ) %&gt;% 
+  dplyr::select(
+    ChiSq_Yes
+    ,ChiSq_No
+  ) %&gt;% 
+  sum
+lung_cancer_chisq_stat</code></pre>
+<pre><code>## [1] 5.199866</code></pre>
+<pre class="r"><code>lung_cancer_chisq_p_value &lt;- 
+  pchisq(
+    q = lung_cancer_chisq_stat
+    ,df = prod(dim(lung_cancer_ct)-1)
+    ,lower.tail = FALSE
+  )
+lung_cancer_chisq_p_value</code></pre>
+<pre><code>## [1] 0.6355872</code></pre>
+<pre class="r"><code>lung_cancer_gsq_stat &lt;-
+  lung_cancer_summary %&gt;% 
+  ungroup %&gt;% 
+  mutate(
+    Gsq_Yes = 2*Yes*log(Yes/Expected_Yes)
+    ,Gsq_No = 2*No*log(No/Expected_No)
+  ) %&gt;% 
+  dplyr::select(
+    Gsq_Yes
+    ,Gsq_No
+  ) %&gt;% 
+  sum
+lung_cancer_gsq_stat</code></pre>
+<pre><code>## [1] 5.195802</code></pre>
+<pre class="r"><code>lung_cancer_gsq_p_value &lt;-
+  pchisq(
+    q = lung_cancer_gsq_stat
+    ,df = prod(dim(lung_cancer_ct)-1)
+    ,lower.tail = FALSE
+  )
+lung_cancer_gsq_p_value</code></pre>
+<pre><code>## [1] 0.6360822</code></pre>
+<p>Based on the sample, and the logistic regression found above, doing a <span class="math inline">\(\chi^{2}\)</span> Goodness of Fit Test yields a p-value of 0.6356. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.</p>
+<p>Based on the sample, and the logistic regression found above, doing a <span class="math inline">\(G^{2}\)</span> Goodness of Fit Test yields a p-value of 0.6361. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.</p>
+</div>
+</div>
 
 
 
