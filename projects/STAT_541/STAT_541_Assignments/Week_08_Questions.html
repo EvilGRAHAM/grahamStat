@@ -415,56 +415,15 @@ sex_ct_flip</code></pre>
 ## Race  Y   N
 ##    W 26 149
 ##    B 22  36</code></pre>
-<pre class="r"><code>sex_data &lt;- 
-  tibble(
-    Race = 
-      as.factor(
-        rep(
-          c(&quot;W&quot;, &quot;B&quot;)
-        ,times = 
-          c(
-            sum(sex_ct[,,&quot;W&quot;])
-            ,sum(sex_ct[,,&quot;B&quot;])
-          )
-        )
-      )
-    ,Gender =
-      as.factor(
-        rep(
-          rep(c(&quot;M&quot;, &quot;F&quot;), times = dim(sex_ct)[3])
-          ,times =
-            c(
-              sum(sex_ct[&quot;M&quot;,,&quot;W&quot;])
-              ,sum(sex_ct[&quot;F&quot;,,&quot;W&quot;])
-              ,sum(sex_ct[&quot;M&quot;,,&quot;B&quot;])
-              ,sum(sex_ct[&quot;F&quot;,,&quot;B&quot;])
-            )
-        )
-      )
-    ,Intercourse =
-      as.numeric(
-        rep(
-          rep(c(1, 0), times = dim(sex_ct)[3]*dim(sex_ct)[1])
-          ,times =
-            c(
-              sum(sex_ct[&quot;M&quot;,&quot;Y&quot;,&quot;W&quot;])
-              ,sum(sex_ct[&quot;M&quot;,&quot;N&quot;,&quot;W&quot;])
-              ,sum(sex_ct[&quot;F&quot;,&quot;Y&quot;,&quot;W&quot;])
-              ,sum(sex_ct[&quot;F&quot;,&quot;N&quot;,&quot;W&quot;])
-              ,sum(sex_ct[&quot;M&quot;,&quot;Y&quot;,&quot;B&quot;])
-              ,sum(sex_ct[&quot;M&quot;,&quot;N&quot;,&quot;B&quot;])
-              ,sum(sex_ct[&quot;F&quot;,&quot;Y&quot;,&quot;B&quot;])
-              ,sum(sex_ct[&quot;F&quot;,&quot;N&quot;,&quot;B&quot;])
-            )
-        )
-      )
-  )
+<pre class="r"><code>sex_data &lt;- flatr::flatten_ct(sex_ct)
+
 sex_summary &lt;- 
   sex_data %&gt;% 
   group_by(Race, Gender) %&gt;% 
+  mutate(Intercourse_Num = if_else(Intercourse == &quot;Y&quot;, 1, 0 )) %&gt;%
   summarize(
-    Yes = sum(Intercourse)
-    ,No = length(Intercourse) - Yes
+    Yes = sum(Intercourse_Num)
+    ,No = length(Intercourse_Num) - Yes
     ,Total = Yes + No
   )
 sex_summary</code></pre>
@@ -722,56 +681,15 @@ marijuana_ct_flip</code></pre>
 ## Alcohol  Y   N
 ##       Y 44 456
 ##       N  2 279</code></pre>
-<pre class="r"><code>marijuana_data &lt;- 
-  tibble(
-    Alcohol = 
-      as.factor(
-        rep(
-          c(&quot;Y&quot;, &quot;N&quot;)
-        ,times = 
-          c(
-            sum(marijuana_ct[,,&quot;Y&quot;])
-            ,sum(marijuana_ct[,,&quot;N&quot;])
-          )
-        )
-      )
-    ,Cigarette =
-      as.factor(
-        rep(
-          rep(c(&quot;Y&quot;, &quot;N&quot;), times = dim(marijuana_ct)[3])
-          ,times =
-            c(
-              sum(marijuana_ct[&quot;Y&quot;,,&quot;Y&quot;])
-              ,sum(marijuana_ct[&quot;N&quot;,,&quot;Y&quot;])
-              ,sum(marijuana_ct[&quot;Y&quot;,,&quot;N&quot;])
-              ,sum(marijuana_ct[&quot;N&quot;,,&quot;N&quot;])
-            )
-        )
-      )
-    ,Marijuana =
-      as.numeric(
-        rep(
-          rep(c(1, 0), times = dim(marijuana_ct)[3]*dim(marijuana_ct)[1])
-          ,times =
-            c(
-              sum(marijuana_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Y&quot;])
-              ,sum(marijuana_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Y&quot;])
-              ,sum(marijuana_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Y&quot;])
-              ,sum(marijuana_ct[&quot;N&quot;,&quot;N&quot;,&quot;Y&quot;])
-              ,sum(marijuana_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;N&quot;])
-              ,sum(marijuana_ct[&quot;Y&quot;,&quot;N&quot;,&quot;N&quot;])
-              ,sum(marijuana_ct[&quot;N&quot;,&quot;Y&quot;,&quot;N&quot;])
-              ,sum(marijuana_ct[&quot;N&quot;,&quot;N&quot;,&quot;N&quot;])
-            )
-        )
-      )
-  )
+<pre class="r"><code>marijuana_data &lt;- flatr::flatten_ct(marijuana_ct)
+
 marijuana_summary &lt;- 
   marijuana_data %&gt;% 
   group_by(Alcohol, Cigarette) %&gt;% 
+  mutate(Marijuana_Num = if_else(Marijuana == &quot;Y&quot;, 1, 0 )) %&gt;%
   summarize(
-    Yes = sum(Marijuana)
-    ,No = length(Marijuana) - Yes
+    Yes = sum(Marijuana_Num)
+    ,No = length(Marijuana_Num) - Yes
     ,Total = Yes + No
   )
 marijuana_summary</code></pre>
@@ -1003,68 +921,18 @@ death_ct</code></pre>
 ## Defendant Y   N
 ##         W 0  16
 ##         B 4 139</code></pre>
-<pre class="r"><code>death_data &lt;- 
-  tibble(
-    Victim = 
-      as.factor(
-        rep(
-          c(&quot;W&quot;, &quot;B&quot;)
-        ,times = 
-          c(
-            sum(death_ct[,,&quot;W&quot;])
-            ,sum(death_ct[,,&quot;B&quot;])
-          )
-        )
-      )
-    ,Defendant =
-      as.factor(
-        rep(
-          rep(c(&quot;W&quot;, &quot;B&quot;), times = dim(death_ct)[3])
-          ,times =
-            c(
-              sum(death_ct[&quot;W&quot;,,&quot;W&quot;])
-              ,sum(death_ct[&quot;B&quot;,,&quot;W&quot;])
-              ,sum(death_ct[&quot;W&quot;,,&quot;B&quot;])
-              ,sum(death_ct[&quot;B&quot;,,&quot;B&quot;])
-            )
-        )
-      )
-    ,Death =
-      as.numeric(
-        rep(
-          rep(c(1, 0), times = dim(death_ct)[3]*dim(death_ct)[1])
-          ,times =
-            c(
-              sum(death_ct[&quot;W&quot;,&quot;Y&quot;,&quot;W&quot;])
-              ,sum(death_ct[&quot;W&quot;,&quot;N&quot;,&quot;W&quot;])
-              ,sum(death_ct[&quot;B&quot;,&quot;Y&quot;,&quot;W&quot;])
-              ,sum(death_ct[&quot;B&quot;,&quot;N&quot;,&quot;W&quot;])
-              ,sum(death_ct[&quot;W&quot;,&quot;Y&quot;,&quot;B&quot;])
-              ,sum(death_ct[&quot;W&quot;,&quot;N&quot;,&quot;B&quot;])
-              ,sum(death_ct[&quot;B&quot;,&quot;Y&quot;,&quot;B&quot;])
-              ,sum(death_ct[&quot;B&quot;,&quot;N&quot;,&quot;B&quot;])
-            )
-        )
-      )
-  )
+<pre class="r"><code>death_data &lt;- flatr::flatten_ct(death_ct)
 death_summary &lt;- 
   death_data %&gt;% 
   group_by(Victim, Defendant) %&gt;% 
+  mutate(Death_Num = if_else(Death == &quot;Y&quot;, 1, 0 )) %&gt;% 
   summarize(
-    Yes = sum(Death)
-    ,No = length(Death) - Yes
+    Yes = sum(Death_Num)
+    ,No = length(Death_Num) - Yes
     ,Total = Yes + No
   )
-death_summary</code></pre>
-<pre><code>## # A tibble: 4 x 5
-## # Groups:   Victim [?]
-##   Victim Defendant   Yes    No Total
-##   &lt;fctr&gt;    &lt;fctr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1      B         B     4   139   143
-## 2      B         W     0    16    16
-## 3      W         B    11    37    48
-## 4      W         W    53   414   467</code></pre>
-<pre class="r"><code>death_plot_data &lt;- 
+
+death_plot_data &lt;- 
   death_summary %&gt;%
   ungroup %&gt;% 
   mutate(
@@ -1185,28 +1053,18 @@ death_summary</code></pre>
 ## 2      B         W     0    16    16 0.01138621    0.1821794    15.81782
 ## 3      W         B    11    37    48 0.23296207   11.1821794    36.81782
 ## 4      W         W    53   414   467 0.11310026   52.8178206   414.18218</code></pre>
-<pre class="r"><code>death_chisq_stat &lt;-
-  death_summary %&gt;% 
-  ungroup %&gt;% 
-  mutate(
-    ChiSq_Yes = (Yes - Expected_Yes)^(2) / Expected_Yes
-    ,ChiSq_No = (No - Expected_No)^(2) / Expected_No
-  ) %&gt;% 
-  dplyr::select(
-    ChiSq_Yes
-    ,ChiSq_No
-  ) %&gt;% 
-  sum
-death_chisq_stat</code></pre>
-<pre><code>## [1] 0.1977873</code></pre>
-<pre class="r"><code>death_chisq_p_value &lt;- 
-  pchisq(
-    q = death_chisq_stat
-    ,df = prod(dim(death_ct)-1)
-    ,lower.tail = FALSE
-  )
-death_chisq_p_value</code></pre>
-<pre><code>## [1] 0.6565128</code></pre>
+<pre class="r"><code>death_chisq_gof &lt;- flatr::goodness_of_fit(model = logit_death, response = &quot;Death&quot;, type = &quot;Chisq&quot;)
+death_chisq_gof</code></pre>
+<pre><code>## Chi-squared Goodness of Fit Test 
+## 
+## model: logit_death 
+## Chi-squared = 0.19779, df = 1, p-value = 0.65651</code></pre>
+<pre class="r"><code>death_gsq_gof &lt;- flatr::goodness_of_fit(model = logit_death, response = &quot;Death&quot;, type = &quot;Gsq&quot;)
+death_gsq_gof</code></pre>
+<pre><code>## G-squared Goodness of Fit Test 
+## 
+## model: logit_death 
+## G-squared = NA, df = 1, p-value = NA</code></pre>
 <p>Based on the sample, and the logistic regression found above, doing a <span class="math inline">\(\chi^{2}\)</span> Goodness of Fit Test yields a p-value of 0.6565. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true. A <span class="math inline">\(G^{2}\)</span> Goodness of Fit Test can’t be used as no White Defendants with Black Victims were given the death penalty.</p>
 </div>
 <div id="c." class="section level3">
@@ -1313,28 +1171,8 @@ lung_cancer_summary &lt;-
     ,No = length(Lung_Num) - Yes
     ,Total = Yes + No
   )
-lung_cancer_summary</code></pre>
-<pre><code>## # A tibble: 16 x 5
-## # Groups:   City [?]
-##      City Smoking   Yes    No Total
-##    &lt;fctr&gt;  &lt;fctr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1   Beij       N    35    61    96
-##  2   Beij       Y   126   100   226
-##  3   Harb       N   121   215   336
-##  4   Harb       Y   402   308   710
-##  5   Nanc       N    21    36    57
-##  6   Nanc       Y   104    89   193
-##  7   Nanj       N    58   121   179
-##  8   Nanj       Y   235   172   407
-##  9   Shan       N   497   807  1304
-## 10   Shan       Y   908   688  1596
-## 11   Shen       N   336   598   934
-## 12   Shen       Y   913   747  1660
-## 13   Taiy       N    11    43    54
-## 14   Taiy       Y    60    99   159
-## 15   Zhen       N    72    98   170
-## 16   Zhen       Y   182   156   338</code></pre>
-<pre class="r"><code>lung_cancer_plot_data &lt;- 
+
+lung_cancer_plot_data &lt;- 
   lung_cancer_summary %&gt;%
   ungroup %&gt;% 
   mutate(
@@ -1482,20 +1320,18 @@ lung_cancer_summary</code></pre>
 ## 14   Taiy       Y    60    99   159 0.3734830     59.38380    99.61620
 ## 15   Zhen       N    72    98   170 0.3728755     63.38883   106.61117
 ## 16   Zhen       Y   182   156   338 0.5639384    190.61117   147.38883</code></pre>
-<pre class="r"><code>chisq_gof &lt;- flatr::goodness_of_fit(model = logit_lung_cancer, response = &quot;Lung&quot;, type = &quot;Chisq&quot;)
-chisq_gof</code></pre>
-<pre><code>## [[1]]
-## [1] 5.199866
+<pre class="r"><code>lung_chisq_gof &lt;- flatr::goodness_of_fit(model = logit_lung_cancer, response = &quot;Lung&quot;, type = &quot;Chisq&quot;)
+lung_chisq_gof</code></pre>
+<pre><code>## Chi-squared Goodness of Fit Test 
 ## 
-## [[2]]
-## [1] 0.6355872</code></pre>
-<pre class="r"><code>gsq_gof &lt;- flatr::goodness_of_fit(model = logit_lung_cancer, response = &quot;Lung&quot;, type = &quot;Gsq&quot;)
-gsq_gof</code></pre>
-<pre><code>## [[1]]
-## [1] 5.195802
+## model: logit_lung_cancer 
+## Chi-squared = 5.19987, df = 7, p-value = 0.63559</code></pre>
+<pre class="r"><code>lung_gsq_gof &lt;- flatr::goodness_of_fit(model = logit_lung_cancer, response = &quot;Lung&quot;, type = &quot;Gsq&quot;)
+lung_gsq_gof</code></pre>
+<pre><code>## G-squared Goodness of Fit Test 
 ## 
-## [[2]]
-## [1] 0.6360822</code></pre>
+## model: logit_lung_cancer 
+## G-squared = 5.1958, df = 7, p-value = 0.63608</code></pre>
 <p>Based on the sample, and the logistic regression found above, doing a <span class="math inline">\(\chi^{2}\)</span> Goodness of Fit Test yields a p-value of 0.6356. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.</p>
 <p>Based on the sample, and the logistic regression found above, doing a <span class="math inline">\(G^{2}\)</span> Goodness of Fit Test yields a p-value of 0.6361. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.</p>
 </div>

@@ -79,56 +79,15 @@ sex_ct_flip <-
   )
 sex_ct_flip
 
-sex_data <- 
-  tibble(
-    Race = 
-      as.factor(
-        rep(
-          c("W", "B")
-        ,times = 
-          c(
-            sum(sex_ct[,,"W"])
-            ,sum(sex_ct[,,"B"])
-          )
-        )
-      )
-    ,Gender =
-      as.factor(
-        rep(
-          rep(c("M", "F"), times = dim(sex_ct)[3])
-          ,times =
-            c(
-              sum(sex_ct["M",,"W"])
-              ,sum(sex_ct["F",,"W"])
-              ,sum(sex_ct["M",,"B"])
-              ,sum(sex_ct["F",,"B"])
-            )
-        )
-      )
-    ,Intercourse =
-      as.numeric(
-        rep(
-          rep(c(1, 0), times = dim(sex_ct)[3]*dim(sex_ct)[1])
-          ,times =
-            c(
-              sum(sex_ct["M","Y","W"])
-              ,sum(sex_ct["M","N","W"])
-              ,sum(sex_ct["F","Y","W"])
-              ,sum(sex_ct["F","N","W"])
-              ,sum(sex_ct["M","Y","B"])
-              ,sum(sex_ct["M","N","B"])
-              ,sum(sex_ct["F","Y","B"])
-              ,sum(sex_ct["F","N","B"])
-            )
-        )
-      )
-  )
+sex_data <- flatr::flatten_ct(sex_ct)
+
 sex_summary <- 
   sex_data %>% 
   group_by(Race, Gender) %>% 
+  mutate(Intercourse_Num = if_else(Intercourse == "Y", 1, 0 )) %>%
   summarize(
-    Yes = sum(Intercourse)
-    ,No = length(Intercourse) - Yes
+    Yes = sum(Intercourse_Num)
+    ,No = length(Intercourse_Num) - Yes
     ,Total = Yes + No
   )
 sex_summary
@@ -286,56 +245,15 @@ marijuana_ct_flip <-
   )
 marijuana_ct_flip
 
-marijuana_data <- 
-  tibble(
-    Alcohol = 
-      as.factor(
-        rep(
-          c("Y", "N")
-        ,times = 
-          c(
-            sum(marijuana_ct[,,"Y"])
-            ,sum(marijuana_ct[,,"N"])
-          )
-        )
-      )
-    ,Cigarette =
-      as.factor(
-        rep(
-          rep(c("Y", "N"), times = dim(marijuana_ct)[3])
-          ,times =
-            c(
-              sum(marijuana_ct["Y",,"Y"])
-              ,sum(marijuana_ct["N",,"Y"])
-              ,sum(marijuana_ct["Y",,"N"])
-              ,sum(marijuana_ct["N",,"N"])
-            )
-        )
-      )
-    ,Marijuana =
-      as.numeric(
-        rep(
-          rep(c(1, 0), times = dim(marijuana_ct)[3]*dim(marijuana_ct)[1])
-          ,times =
-            c(
-              sum(marijuana_ct["Y","Y","Y"])
-              ,sum(marijuana_ct["Y","N","Y"])
-              ,sum(marijuana_ct["N","Y","Y"])
-              ,sum(marijuana_ct["N","N","Y"])
-              ,sum(marijuana_ct["Y","Y","N"])
-              ,sum(marijuana_ct["Y","N","N"])
-              ,sum(marijuana_ct["N","Y","N"])
-              ,sum(marijuana_ct["N","N","N"])
-            )
-        )
-      )
-  )
+marijuana_data <- flatr::flatten_ct(marijuana_ct)
+
 marijuana_summary <- 
   marijuana_data %>% 
   group_by(Alcohol, Cigarette) %>% 
+  mutate(Marijuana_Num = if_else(Marijuana == "Y", 1, 0 )) %>%
   summarize(
-    Yes = sum(Marijuana)
-    ,No = length(Marijuana) - Yes
+    Yes = sum(Marijuana_Num)
+    ,No = length(Marijuana_Num) - Yes
     ,Total = Yes + No
   )
 marijuana_summary
@@ -480,59 +398,16 @@ death_ct <-
   )
 death_ct
 
-death_data <- 
-  tibble(
-    Victim = 
-      as.factor(
-        rep(
-          c("W", "B")
-        ,times = 
-          c(
-            sum(death_ct[,,"W"])
-            ,sum(death_ct[,,"B"])
-          )
-        )
-      )
-    ,Defendant =
-      as.factor(
-        rep(
-          rep(c("W", "B"), times = dim(death_ct)[3])
-          ,times =
-            c(
-              sum(death_ct["W",,"W"])
-              ,sum(death_ct["B",,"W"])
-              ,sum(death_ct["W",,"B"])
-              ,sum(death_ct["B",,"B"])
-            )
-        )
-      )
-    ,Death =
-      as.numeric(
-        rep(
-          rep(c(1, 0), times = dim(death_ct)[3]*dim(death_ct)[1])
-          ,times =
-            c(
-              sum(death_ct["W","Y","W"])
-              ,sum(death_ct["W","N","W"])
-              ,sum(death_ct["B","Y","W"])
-              ,sum(death_ct["B","N","W"])
-              ,sum(death_ct["W","Y","B"])
-              ,sum(death_ct["W","N","B"])
-              ,sum(death_ct["B","Y","B"])
-              ,sum(death_ct["B","N","B"])
-            )
-        )
-      )
-  )
+death_data <- flatr::flatten_ct(death_ct)
 death_summary <- 
   death_data %>% 
   group_by(Victim, Defendant) %>% 
+  mutate(Death_Num = if_else(Death == "Y", 1, 0 )) %>% 
   summarize(
-    Yes = sum(Death)
-    ,No = length(Death) - Yes
+    Yes = sum(Death_Num)
+    ,No = length(Death_Num) - Yes
     ,Total = Yes + No
   )
-death_summary
 
 death_plot_data <- 
   death_summary %>%
@@ -626,28 +501,13 @@ death_summary %<>%
   )
 death_summary
 
-death_chisq_stat <-
-  death_summary %>% 
-  ungroup %>% 
-  mutate(
-    ChiSq_Yes = (Yes - Expected_Yes)^(2) / Expected_Yes
-    ,ChiSq_No = (No - Expected_No)^(2) / Expected_No
-  ) %>% 
-  dplyr::select(
-    ChiSq_Yes
-    ,ChiSq_No
-  ) %>% 
-  sum
-death_chisq_stat
-death_chisq_p_value <- 
-  pchisq(
-    q = death_chisq_stat
-    ,df = prod(dim(death_ct)-1)
-    ,lower.tail = FALSE
-  )
-death_chisq_p_value
+death_chisq_gof <- flatr::goodness_of_fit(model = logit_death, response = "Death", type = "Chisq")
+death_chisq_gof
+
+death_gsq_gof <- flatr::goodness_of_fit(model = logit_death, response = "Death", type = "Gsq")
+death_gsq_gof
 ```
-Based on the sample, and the logistic regression found above, doing a $\chi^{2}$ Goodness of Fit Test yields a p-value of `r round(death_chisq_p_value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true. A $G^{2}$ Goodness of Fit Test can't be used as no White Defendants with Black Victims were given the death penalty.
+Based on the sample, and the logistic regression found above, doing a $\chi^{2}$ Goodness of Fit Test yields a p-value of `r round(death_chisq_gof$p.value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true. A $G^{2}$ Goodness of Fit Test can't be used as no White Defendants with Black Victims were given the death penalty.
 
 ### c.
 Both the slope parameters are significant at $\alpha=0.05$, based on the sample. A Defendant with a White Victim on average has an increased log likelihood in favour of getting the death penalty of `r round(coefficients(logit_death)[2], 4)` vs. a Black Victim, based on the sample. A White Defendant on average has an increased log likelihood in favour of getting the death penalty of `r round(coefficients(logit_death)[3], 4)` vs. a Black Defendant, based on the sample.
@@ -698,7 +558,6 @@ lung_cancer_summary <-
     ,No = length(Lung_Num) - Yes
     ,Total = Yes + No
   )
-lung_cancer_summary
 
 lung_cancer_plot_data <- 
   lung_cancer_summary %>%
@@ -802,12 +661,12 @@ lung_cancer_summary %<>%
   )
 lung_cancer_summary
 
-chisq_gof <- flatr::goodness_of_fit(model = logit_lung_cancer, response = "Lung", type = "Chisq")
-chisq_gof
+lung_chisq_gof <- flatr::goodness_of_fit(model = logit_lung_cancer, response = "Lung", type = "Chisq")
+lung_chisq_gof
 
-gsq_gof <- flatr::goodness_of_fit(model = logit_lung_cancer, response = "Lung", type = "Gsq")
-gsq_gof
+lung_gsq_gof <- flatr::goodness_of_fit(model = logit_lung_cancer, response = "Lung", type = "Gsq")
+lung_gsq_gof
 ```
-Based on the sample, and the logistic regression found above, doing a $\chi^{2}$ Goodness of Fit Test yields a p-value of `r round(chisq_gof[[2]], 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.
+Based on the sample, and the logistic regression found above, doing a $\chi^{2}$ Goodness of Fit Test yields a p-value of `r round(lung_chisq_gof$p.value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.
 
-Based on the sample, and the logistic regression found above, doing a $G^{2}$ Goodness of Fit Test yields a p-value of `r round(gsq_gof[[2]], 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.
+Based on the sample, and the logistic regression found above, doing a $G^{2}$ Goodness of Fit Test yields a p-value of `r round(lung_gsq_gof$p.value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.
