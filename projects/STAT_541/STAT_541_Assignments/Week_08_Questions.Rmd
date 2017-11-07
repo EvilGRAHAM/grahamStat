@@ -15,6 +15,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
 library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+library(flatr, warn.conflicts = FALSE, quietly = TRUE)
 theme_minimal2 <- theme_minimal() %>%  theme_set()
 theme_minimal2 <-
   theme_update(
@@ -686,107 +687,15 @@ lung_cancer_ct <-
   )
 lung_cancer_ct
 
-lung_cancer_data <- 
-  tibble(
-    City = 
-      as.factor(
-        rep(
-          c(
-            "Beij"
-            ,"Shan"
-            ,"Shen"
-            ,"Nanj"
-            ,"Harb"
-            ,"Zhen"
-            ,"Taiy"
-            ,"Nanc"
-          )
-        ,times = 
-          c(
-            sum(lung_cancer_ct[,,"Beij"])
-            ,sum(lung_cancer_ct[,,"Shan"])
-            ,sum(lung_cancer_ct[,,"Shen"])
-            ,sum(lung_cancer_ct[,,"Nanj"])
-            ,sum(lung_cancer_ct[,,"Harb"])
-            ,sum(lung_cancer_ct[,,"Zhen"])
-            ,sum(lung_cancer_ct[,,"Taiy"])
-            ,sum(lung_cancer_ct[,,"Nanc"])
-          )
-        )
-      )
-    ,Smoking =
-      as.factor(
-        rep(
-          rep(c("Y", "N"), times = dim(lung_cancer_ct)[3])
-          ,times =
-            c(
-              sum(lung_cancer_ct["Y",,"Beij"])
-              ,sum(lung_cancer_ct["N",,"Beij"])
-              ,sum(lung_cancer_ct["Y",,"Shan"])
-              ,sum(lung_cancer_ct["N",,"Shan"])
-              ,sum(lung_cancer_ct["Y",,"Shen"])
-              ,sum(lung_cancer_ct["N",,"Shen"])
-              ,sum(lung_cancer_ct["Y",,"Nanj"])
-              ,sum(lung_cancer_ct["N",,"Nanj"])
-              ,sum(lung_cancer_ct["Y",,"Harb"])
-              ,sum(lung_cancer_ct["N",,"Harb"])
-              ,sum(lung_cancer_ct["Y",,"Zhen"])
-              ,sum(lung_cancer_ct["N",,"Zhen"])
-              ,sum(lung_cancer_ct["Y",,"Taiy"])
-              ,sum(lung_cancer_ct["N",,"Taiy"])
-              ,sum(lung_cancer_ct["Y",,"Nanc"])
-              ,sum(lung_cancer_ct["N",,"Nanc"])
-            )
-        )
-      )
-    ,Lung =
-      as.numeric(
-        rep(
-          rep(c(1, 0), times = dim(lung_cancer_ct)[3]*dim(lung_cancer_ct)[1])
-          ,times =
-            c(
-              sum(lung_cancer_ct["Y","Y","Beij"])
-              ,sum(lung_cancer_ct["Y","N","Beij"])
-              ,sum(lung_cancer_ct["N","Y","Beij"])
-              ,sum(lung_cancer_ct["N","N","Beij"])
-              ,sum(lung_cancer_ct["Y","Y","Shan"])
-              ,sum(lung_cancer_ct["Y","N","Shan"])
-              ,sum(lung_cancer_ct["N","Y","Shan"])
-              ,sum(lung_cancer_ct["N","N","Shan"])
-              ,sum(lung_cancer_ct["Y","Y","Shen"])
-              ,sum(lung_cancer_ct["Y","N","Shen"])
-              ,sum(lung_cancer_ct["N","Y","Shen"])
-              ,sum(lung_cancer_ct["N","N","Shen"])
-              ,sum(lung_cancer_ct["Y","Y","Nanj"])
-              ,sum(lung_cancer_ct["Y","N","Nanj"])
-              ,sum(lung_cancer_ct["N","Y","Nanj"])
-              ,sum(lung_cancer_ct["N","N","Nanj"])
-              ,sum(lung_cancer_ct["Y","Y","Harb"])
-              ,sum(lung_cancer_ct["Y","N","Harb"])
-              ,sum(lung_cancer_ct["N","Y","Harb"])
-              ,sum(lung_cancer_ct["N","N","Harb"])
-              ,sum(lung_cancer_ct["Y","Y","Zhen"])
-              ,sum(lung_cancer_ct["Y","N","Zhen"])
-              ,sum(lung_cancer_ct["N","Y","Zhen"])
-              ,sum(lung_cancer_ct["N","N","Zhen"])
-              ,sum(lung_cancer_ct["Y","Y","Taiy"])
-              ,sum(lung_cancer_ct["Y","N","Taiy"])
-              ,sum(lung_cancer_ct["N","Y","Taiy"])
-              ,sum(lung_cancer_ct["N","N","Taiy"])
-              ,sum(lung_cancer_ct["Y","Y","Nanc"])
-              ,sum(lung_cancer_ct["Y","N","Nanc"])
-              ,sum(lung_cancer_ct["N","Y","Nanc"])
-              ,sum(lung_cancer_ct["N","N","Nanc"])
-            )
-        )
-      )
-  )
+lung_cancer_data <- flatr::flatten_ct(lung_cancer_ct)
+
 lung_cancer_summary <- 
   lung_cancer_data %>% 
   group_by(City, Smoking) %>% 
+  mutate(Lung_Num = if_else(Lung == "Y", 1, 0 )) %>% 
   summarize(
-    Yes = sum(Lung)
-    ,No = length(Lung) - Yes
+    Yes = sum(Lung_Num)
+    ,No = length(Lung_Num) - Yes
     ,Total = Yes + No
   )
 lung_cancer_summary
@@ -893,48 +802,12 @@ lung_cancer_summary %<>%
   )
 lung_cancer_summary
 
-lung_cancer_chisq_stat <-
-  lung_cancer_summary %>% 
-  ungroup %>% 
-  mutate(
-    ChiSq_Yes = (Yes - Expected_Yes)^(2) / Expected_Yes
-    ,ChiSq_No = (No - Expected_No)^(2) / Expected_No
-  ) %>% 
-  dplyr::select(
-    ChiSq_Yes
-    ,ChiSq_No
-  ) %>% 
-  sum
-lung_cancer_chisq_stat
-lung_cancer_chisq_p_value <- 
-  pchisq(
-    q = lung_cancer_chisq_stat
-    ,df = prod(dim(lung_cancer_ct)-1)
-    ,lower.tail = FALSE
-  )
-lung_cancer_chisq_p_value
+chisq_gof <- flatr::goodness_of_fit(model = logit_lung_cancer, response = "Lung", type = "Chisq")
+chisq_gof
 
-lung_cancer_gsq_stat <-
-  lung_cancer_summary %>% 
-  ungroup %>% 
-  mutate(
-    Gsq_Yes = 2*Yes*log(Yes/Expected_Yes)
-    ,Gsq_No = 2*No*log(No/Expected_No)
-  ) %>% 
-  dplyr::select(
-    Gsq_Yes
-    ,Gsq_No
-  ) %>% 
-  sum
-lung_cancer_gsq_stat
-lung_cancer_gsq_p_value <-
-  pchisq(
-    q = lung_cancer_gsq_stat
-    ,df = prod(dim(lung_cancer_ct)-1)
-    ,lower.tail = FALSE
-  )
-lung_cancer_gsq_p_value
+gsq_gof <- flatr::goodness_of_fit(model = logit_lung_cancer, response = "Lung", type = "Gsq")
+gsq_gof
 ```
-Based on the sample, and the logistic regression found above, doing a $\chi^{2}$ Goodness of Fit Test yields a p-value of `r round(lung_cancer_chisq_p_value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.
+Based on the sample, and the logistic regression found above, doing a $\chi^{2}$ Goodness of Fit Test yields a p-value of `r round(chisq_gof[[2]], 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.
 
-Based on the sample, and the logistic regression found above, doing a $G^{2}$ Goodness of Fit Test yields a p-value of `r round(lung_cancer_gsq_p_value, 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.
+Based on the sample, and the logistic regression found above, doing a $G^{2}$ Goodness of Fit Test yields a p-value of `r round(gsq_gof[[2]], 4)`. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.

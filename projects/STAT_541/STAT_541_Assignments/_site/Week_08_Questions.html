@@ -1302,107 +1302,15 @@ lung_cancer_ct</code></pre>
 ## Smoking   Y  N
 ##       Y 104 89
 ##       N  21 36</code></pre>
-<pre class="r"><code>lung_cancer_data &lt;- 
-  tibble(
-    City = 
-      as.factor(
-        rep(
-          c(
-            &quot;Beij&quot;
-            ,&quot;Shan&quot;
-            ,&quot;Shen&quot;
-            ,&quot;Nanj&quot;
-            ,&quot;Harb&quot;
-            ,&quot;Zhen&quot;
-            ,&quot;Taiy&quot;
-            ,&quot;Nanc&quot;
-          )
-        ,times = 
-          c(
-            sum(lung_cancer_ct[,,&quot;Beij&quot;])
-            ,sum(lung_cancer_ct[,,&quot;Shan&quot;])
-            ,sum(lung_cancer_ct[,,&quot;Shen&quot;])
-            ,sum(lung_cancer_ct[,,&quot;Nanj&quot;])
-            ,sum(lung_cancer_ct[,,&quot;Harb&quot;])
-            ,sum(lung_cancer_ct[,,&quot;Zhen&quot;])
-            ,sum(lung_cancer_ct[,,&quot;Taiy&quot;])
-            ,sum(lung_cancer_ct[,,&quot;Nanc&quot;])
-          )
-        )
-      )
-    ,Smoking =
-      as.factor(
-        rep(
-          rep(c(&quot;Y&quot;, &quot;N&quot;), times = dim(lung_cancer_ct)[3])
-          ,times =
-            c(
-              sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Beij&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Beij&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Shan&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Shan&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Shen&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Shen&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Nanj&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Nanj&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Harb&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Harb&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Zhen&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Zhen&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Taiy&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Taiy&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,,&quot;Nanc&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,,&quot;Nanc&quot;])
-            )
-        )
-      )
-    ,Lung =
-      as.numeric(
-        rep(
-          rep(c(1, 0), times = dim(lung_cancer_ct)[3]*dim(lung_cancer_ct)[1])
-          ,times =
-            c(
-              sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Beij&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Beij&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Beij&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Beij&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Shan&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Shan&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Shan&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Shan&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Shen&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Shen&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Shen&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Shen&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Nanj&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Nanj&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Nanj&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Nanj&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Harb&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Harb&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Harb&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Harb&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Zhen&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Zhen&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Zhen&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Zhen&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Taiy&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Taiy&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Taiy&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Taiy&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;Y&quot;,&quot;Nanc&quot;])
-              ,sum(lung_cancer_ct[&quot;Y&quot;,&quot;N&quot;,&quot;Nanc&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;Y&quot;,&quot;Nanc&quot;])
-              ,sum(lung_cancer_ct[&quot;N&quot;,&quot;N&quot;,&quot;Nanc&quot;])
-            )
-        )
-      )
-  )
+<pre class="r"><code>lung_cancer_data &lt;- flatr::flatten_ct(lung_cancer_ct)
+
 lung_cancer_summary &lt;- 
   lung_cancer_data %&gt;% 
   group_by(City, Smoking) %&gt;% 
+  mutate(Lung_Num = if_else(Lung == &quot;Y&quot;, 1, 0 )) %&gt;% 
   summarize(
-    Yes = sum(Lung)
-    ,No = length(Lung) - Yes
+    Yes = sum(Lung_Num)
+    ,No = length(Lung_Num) - Yes
     ,Total = Yes + No
   )
 lung_cancer_summary</code></pre>
@@ -1574,50 +1482,20 @@ lung_cancer_summary</code></pre>
 ## 14   Taiy       Y    60    99   159 0.3734830     59.38380    99.61620
 ## 15   Zhen       N    72    98   170 0.3728755     63.38883   106.61117
 ## 16   Zhen       Y   182   156   338 0.5639384    190.61117   147.38883</code></pre>
-<pre class="r"><code>lung_cancer_chisq_stat &lt;-
-  lung_cancer_summary %&gt;% 
-  ungroup %&gt;% 
-  mutate(
-    ChiSq_Yes = (Yes - Expected_Yes)^(2) / Expected_Yes
-    ,ChiSq_No = (No - Expected_No)^(2) / Expected_No
-  ) %&gt;% 
-  dplyr::select(
-    ChiSq_Yes
-    ,ChiSq_No
-  ) %&gt;% 
-  sum
-lung_cancer_chisq_stat</code></pre>
-<pre><code>## [1] 5.199866</code></pre>
-<pre class="r"><code>lung_cancer_chisq_p_value &lt;- 
-  pchisq(
-    q = lung_cancer_chisq_stat
-    ,df = prod(dim(lung_cancer_ct)-1)
-    ,lower.tail = FALSE
-  )
-lung_cancer_chisq_p_value</code></pre>
-<pre><code>## [1] 0.6355872</code></pre>
-<pre class="r"><code>lung_cancer_gsq_stat &lt;-
-  lung_cancer_summary %&gt;% 
-  ungroup %&gt;% 
-  mutate(
-    Gsq_Yes = 2*Yes*log(Yes/Expected_Yes)
-    ,Gsq_No = 2*No*log(No/Expected_No)
-  ) %&gt;% 
-  dplyr::select(
-    Gsq_Yes
-    ,Gsq_No
-  ) %&gt;% 
-  sum
-lung_cancer_gsq_stat</code></pre>
-<pre><code>## [1] 5.195802</code></pre>
-<pre class="r"><code>lung_cancer_gsq_p_value &lt;-
-  pchisq(
-    q = lung_cancer_gsq_stat
-    ,df = prod(dim(lung_cancer_ct)-1)
-    ,lower.tail = FALSE
-  )
-lung_cancer_gsq_p_value</code></pre>
-<pre><code>## [1] 0.6360822</code></pre>
+<pre class="r"><code>chisq_gof &lt;- flatr::goodness_of_fit(model = logit_lung_cancer, response = &quot;Lung&quot;, type = &quot;Chisq&quot;)
+chisq_gof</code></pre>
+<pre><code>## [[1]]
+## [1] 5.199866
+## 
+## [[2]]
+## [1] 0.6355872</code></pre>
+<pre class="r"><code>gsq_gof &lt;- flatr::goodness_of_fit(model = logit_lung_cancer, response = &quot;Lung&quot;, type = &quot;Gsq&quot;)
+gsq_gof</code></pre>
+<pre><code>## [[1]]
+## [1] 5.195802
+## 
+## [[2]]
+## [1] 0.6360822</code></pre>
 <p>Based on the sample, and the logistic regression found above, doing a <span class="math inline">\(\chi^{2}\)</span> Goodness of Fit Test yields a p-value of 0.6356. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.</p>
 <p>Based on the sample, and the logistic regression found above, doing a <span class="math inline">\(G^{2}\)</span> Goodness of Fit Test yields a p-value of 0.6361. Therefore we fail to reject the null hypothesis that the model fits the data and assume it to be true.</p>
 </div>
