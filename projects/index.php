@@ -58,6 +58,7 @@
 						</a>
 					</div>
 				</div>
+				
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
@@ -70,13 +71,34 @@
 					<div class="mdl-card__actions mdl-card--border">
 						<a 
 							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
-							href = "http://grahamst.at/projects/STAT_541/STAT_541_Assignments/"
+							href = "STAT_541/STAT_541_Assignments/"
 							target = "_blank"
 						>
 							Go!
 						</a>
 					</div>
 				</div>
+				
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
+					<div class="mdl-card__title">
+						<h2 class="mdl-card__title-text">
+							Cumulative Logit_Models for Multi-Ordinal Responses
+						</h2>
+					</div>
+					<div class="mdl-card__supporting-text">
+						Presentation on Cumulative Logit_Models for Multi-Ordinal Responses
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a 
+							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
+							href = "STAT_541/Cumulative_Logit_Models_for_Multi-Ordinal_Responses/"
+							target = "_blank"
+						>
+							Go!
+						</a>
+					</div>
+				</div>
+				
 				<!---
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
