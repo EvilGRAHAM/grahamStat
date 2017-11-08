@@ -138,7 +138,7 @@ $$
 - However because all the $\beta_{j,i}$'s differ, we can't make a comparison to the baseline model!
 $$
   L_{j} =
-  \alpha_{j} + \sum_{i=1}^{p}\beta_{i}X_{i},
+  \alpha_{j} - \left( \sum_{i=1}^{p}\beta_{i}X_{i} \right),
   \forall j = 1,2,\dots, J-1
 $$
 
@@ -156,7 +156,7 @@ $$
 - Rearranging:
 $$
   \Prob\left( Y \leq j \middle| X_{i} = x_{i}, \forall i = 1, \dots, p \right) =
-  \frac{e^{\alpha_{j} + \sum_{i=1}^{p}\beta_{i}X_{i}}}{1 + e^{\alpha_{j} + \sum_{i=1}^{p}\beta_{i}X_{i}}}
+  \frac{e^{\alpha_{j} - \left( \sum_{i=1}^{p}\beta_{i}X_{i}\right)}}{1 + e^{\alpha_{j} - \left( \sum_{i=1}^{p}\beta_{i}X_{i}\right)}}
 $$
 $$
   \implies
@@ -166,7 +166,7 @@ $$
 $$
 $$
   =
-  \frac{1}{1 + e^{\alpha_{j-1} + \sum_{i=1}^{p}\beta_{i}X_{i}}} - \frac{1}{1 + e^{\alpha_{j} + \sum_{i=1}^{p}\beta_{i}X_{i}}}
+  \frac{1}{1 + e^{\alpha_{j} - \left( \sum_{i=1}^{p}\beta_{i}X_{i}\right)}} - \frac{1}{1 + e^{\alpha_{j} - \left( \sum_{i=1}^{p}\beta_{i}X_{i}\right)}}
 $$
 
 
