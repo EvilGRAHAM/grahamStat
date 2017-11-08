@@ -82,11 +82,11 @@
 				<div class="mdl-card mdl-shadow--2dp mdl-cell">
 					<div class="mdl-card__title">
 						<h2 class="mdl-card__title-text">
-							Cumulative Logit_Models for Multi-Ordinal Responses
+							Cumulative Logit Models for Multi-Ordinal Responses
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						Presentation on Cumulative Logit_Models for Multi-Ordinal Responses
+						Presentation on Cumulative Logit Models for Multi-Ordinal Responses
 					</div>
 					<div class="mdl-card__actions mdl-card--border">
 						<a 
