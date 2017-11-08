@@ -248,6 +248,8 @@ pol_pred <-
   group_by(Party) %>% 
   mutate(
     `Cumulative Probability` = cumsum(Probability)
+    ,Odds = `Cumulative Probability` / (1 - `Cumulative Probability`)
+    ,`Log Odds` = log(Odds)
   )
 
 pol_pred$Ideology <- 
@@ -266,7 +268,7 @@ pol_pred %>%
       ,group = Party
     )
   ) +
-  geom_line(size = 1.5) +
+  geom_line(size = 1) +
   scale_colour_brewer(
     type = "qual"
     ,name = "Party:"
@@ -287,7 +289,7 @@ pol_pred %>%
       ,group = Party
     )
   ) +
-  geom_line(size = 1.5) +
+  geom_line(size = 1) +
   scale_colour_brewer(
     type = "qual"
     ,name = "Party:"
@@ -297,10 +299,27 @@ pol_pred %>%
 ```
 
 
+##
+```{r Plot3, echo = FALSE}
+pol_pred %>% 
+  ggplot(
+    aes(
+      x = Party
+      ,y = `Log Odds`
+      ,colour = Ideology
+      ,group = Ideology
+    )
+  ) +
+  geom_line(size = 1) +
+  scale_colour_brewer(
+    type = "qual"
+    ,name = "Ideology:"
+    ,palette = "Set2"
+  ) + 
+  labs(title = expression(ln(frac("P(Y<=j)","P(Y>j)"))))
+```
+
 # References
 ##
 - Agresti, A. (2007). An Introduction to Categorical Data Analysis. Hoboken, NJ: Wiley-Interscience.
 - 8.4 - The Proportional-Odds Cumulative Logit Model. (n.d.). Retrieved November 07, 2017, from https://onlinecourses.science.psu.edu/stat504/node/176
-
-## Link to Presentation
-http://grahamst.at/projects/STAT_541/Cumulative_Logit_Models_for_Multi-Ordinal_Responses/
