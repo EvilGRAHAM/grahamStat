@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>
-			Blog
+			flatr
 		</title>
 		<?php include("../header.html");?>
 		
