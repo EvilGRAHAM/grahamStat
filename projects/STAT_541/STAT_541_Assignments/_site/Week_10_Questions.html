@@ -357,6 +357,229 @@ div.tocify {
   \newcommand{\that}{{\hat{T}}}
   \newcommand{\med}{{\tilde{Y}}}
 \]</span></p>
+<div id="section" class="section level2">
+<h2>6.01</h2>
+<div id="a." class="section level3">
+<h3>a.</h3>
+<p><span class="math display">\[
+  \ln\left( \frac{\hat{\pi}_{R}}{\hat{\pi}_{D}} \right) =
+   \ln\left( \frac{\hat{\pi}_{R}}{\hat{\pi}_{I}} \right) -  \ln\left( \frac{\hat{\pi}_{D}}{\hat{\pi}_{I}} \right) =
+   -2.3 + 0.5x
+\]</span></p>
+<p>For every $10,000 increase in annual income, the estimated log odds in favour of being a Republican vs. a Democrat increases by 0.5.</p>
+</div>
+<div id="b." class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+    -2.3 + 0.5x &gt; 0 \implies
+    0.5x &gt; 2.3 \implies
+    x &gt; 4.6
+\]</span></p>
+</div>
+<div id="c." class="section level3">
+<h3>c.</h3>
+<p><span class="math display">\[
+  \hat{\pi}_{I} = 
+  \frac{e^{0}}{e^{0} + e^{3.3 ??? 0.2x} + e^{1.0 + 0.3x}} =
+  \frac{1}{1 + e^{3.3 ??? 0.2x} + e^{1.0 + 0.3x}}
+\]</span></p>
+</div>
+</div>
+<div id="section-1" class="section level2">
+<h2>6.03</h2>
+<pre class="r"><code>gator_ct &lt;- 
+  array(
+    data =
+      c(
+        23, 7, 4, 0, 2, 1, 2, 3, 8, 5
+        ,5, 13, 11, 8, 1, 6, 0, 1, 3, 0
+        ,5, 8, 11, 7, 2, 6, 1, 3, 5, 5
+        ,16, 17, 19, 1, 1, 0, 2, 1, 3, 3
+      )
+    ,dim = c(2, 5, 4)
+    ,dimnames = list(
+      Size = c(&quot;&lt;=2.3&quot;, &quot;&gt;2.3&quot;)
+      ,Food = c(
+        &quot;Fish&quot;
+        ,&quot;Invertebrate&quot;
+        ,&quot;Reptile&quot;
+        ,&quot;Bird&quot;
+        ,&quot;People/Other&quot;
+      )
+      ,Lake = 
+        c(
+          &quot;Hancock&quot;
+          ,&quot;Oklawaha&quot;
+          ,&quot;Trafford&quot;
+          ,&quot;George&quot;
+        )
+    )
+  )
+gator_ct</code></pre>
+<pre><code>## , , Lake = Hancock
+## 
+##        Food
+## Size    Fish Invertebrate Reptile Bird People/Other
+##   &lt;=2.3   23            4       2    2            8
+##   &gt;2.3     7            0       1    3            5
+## 
+## , , Lake = Oklawaha
+## 
+##        Food
+## Size    Fish Invertebrate Reptile Bird People/Other
+##   &lt;=2.3    5           11       1    0            3
+##   &gt;2.3    13            8       6    1            0
+## 
+## , , Lake = Trafford
+## 
+##        Food
+## Size    Fish Invertebrate Reptile Bird People/Other
+##   &lt;=2.3    5           11       2    1            5
+##   &gt;2.3     8            7       6    3            5
+## 
+## , , Lake = George
+## 
+##        Food
+## Size    Fish Invertebrate Reptile Bird People/Other
+##   &lt;=2.3   16           19       1    2            3
+##   &gt;2.3    17            1       0    1            3</code></pre>
+<div id="a.-1" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>gator_logit &lt;- 
+  gator_ct %&gt;% 
+  flatten_ct() %&gt;% 
+  multinom(
+    Food ~ Size + Lake
+    ,data = .
+  )</code></pre>
+<pre><code>## # weights:  30 (20 variable)
+## initial  value 352.466903 
+## iter  10 value 272.246275
+## iter  20 value 270.046891
+## final  value 270.040139 
+## converged</code></pre>
+<pre class="r"><code>summary(gator_logit)</code></pre>
+<pre><code>## Call:
+## multinom(formula = Food ~ Size + Lake, data = .)
+## 
+## Coefficients:
+##              (Intercept)   Size&gt;2.3 LakeHancock LakeOklawaha LakeTrafford
+## Fish            2.723723 -0.6306971  -0.6950850    0.6531363  -1.08768971
+## Invertebrate    2.632914 -2.0888952  -2.3534487    1.5903438   0.03428501
+## People/Other    1.150998 -0.9622560   0.1311222    0.6587950   0.42869526
+## Reptile        -0.942082 -0.2794163   0.5476742    3.1120046   1.84756421
+## 
+## Std. Errors:
+##              (Intercept)  Size&gt;2.3 LakeHancock LakeOklawaha LakeTrafford
+## Fish           0.7103906 0.6424797   0.7812574     1.202038    0.8416676
+## Invertebrate   0.7266419 0.6939064   0.9337072     1.227725    0.8631499
+## People/Other   0.8059565 0.7127082   0.8919633     1.368529    0.9382990
+## Reptile        1.2411890 0.8062283   1.3715034     1.585983    1.3173183
+## 
+## Residual Deviance: 540.0803 
+## AIC: 580.0803</code></pre>
+<p><span class="math display">\[
+  \ln\left( \frac{\pi_{i}}{\pi_{Bird}} \right) =
+  \frac{e^{\alpha_{i} + \beta_{1i}Size + \beta_{2i}LakeHancock + \beta_{3i}LakeOklawaha + \beta_{4i}LakeTrafford}}{1 + \sum_{\forall i}e^{\alpha_{i} + \beta_{1i}Size + \beta_{2i}LakeHancock + \beta_{3i}LakeOklawaha + \beta_{4i}LakeTrafford}}
+\]</span> With the <span class="math inline">\(\alpha\)</span>s and <span class="math inline">\(\beta\)</span>s from above.</p>
+</div>
+<div id="b.-1" class="section level3">
+<h3>b.</h3>
+<pre class="r"><code>predict(
+  object = gator_logit
+  ,newdata = 
+    data.frame(
+      Lake = &quot;Oklawaha&quot;
+      ,Size = c(&quot;&lt;=2.3&quot;, &quot;&gt;2.3&quot;)
+    ),
+  type = &quot;probs&quot;
+)</code></pre>
+<pre><code>##          Bird      Fish Invertebrate People/Other    Reptile
+## 1 0.008818267 0.2581872    0.6018952   0.05387241 0.07722691
+## 2 0.029419560 0.4584368    0.2486441   0.06866206 0.19483754</code></pre>
+</div>
+</div>
+<div id="section-2" class="section level2">
+<h2>6.05</h2>
+<div id="a.-2" class="section level3">
+<h3>a.</h3>
+<p>As <span class="math inline">\(x_{1}\)</span> increases, you become more satisfied <span class="math inline">\((\beta_{1}&lt;0)\)</span>.</p>
+<p>As <span class="math inline">\(x_{2}\)</span> increases, you become less satisfied <span class="math inline">\((\beta_{2}&gt;0)\)</span>.</p>
+<p>As <span class="math inline">\(x_{3}\)</span> increases, you become less satisfied <span class="math inline">\((\beta_{3}&gt;0)\)</span>.</p>
+</div>
+<div id="b.-2" class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+  x_{1} = 4,
+  x_{2} = 1, 
+  x_{3} = 1 \implies
+  \operatorname{Logit}\left[ \hat{\Prob} \left( Y \leq j \right) \right] =
+  \hat{\alpha}_{j} - 2.16 + 0.60 + 1.19 =
+  \hat{\alpha}_{j} - 0.37
+\]</span></p>
+</div>
+</div>
+<div id="section-3" class="section level2">
+<h2>6.07</h2>
+<div id="a.-3" class="section level3">
+<h3>a.</h3>
+<p><span class="math inline">\(\beta\)</span> is held constant in a Cumulative Logit, and <span class="math inline">\(\alpha\)</span> varies.</p>
+</div>
+<div id="b.-3" class="section level3">
+<h3>b.</h3>
+<p>(I think this is SAS)</p>
+<p>For every unit inrease in income, the estimated log odds in favour of an unhappy marriage decrease to that of a happy marriage by 0.1117.</p>
+</div>
+<div id="c.-1" class="section level3">
+<h3>c.</h3>
+<p>Test Statistic <span class="math inline">\(=08976\)</span>, P-Value <span class="math inline">\(=0.3434\)</span>. We then fail to reject the null hypothesis that income doesn’t have an effect.</p>
+</div>
+<div id="d." class="section level3">
+<h3>d.</h3>
+<p>Yes as it has no statistically significant deviance.</p>
+</div>
+<div id="e." class="section level3">
+<h3>e.</h3>
+<p><span class="math display">\[
+  \Prob(\text{Very Happy Marriage}) = 
+  1 - \Prob(\text{Pretty Happy Marriage}) =
+  1- \frac{e^{-0.2378-0.1117(2)}}{1+e^{-0.2378-0.1117(2)}} = 0.6133
+\]</span></p>
+</div>
+</div>
+<div id="section-4" class="section level2">
+<h2>6.09</h2>
+<div id="a.-4" class="section level3">
+<h3>a.</h3>
+<p>Because there are <span class="math inline">\(5\)</span> categories, we only need to estimate <span class="math inline">\(5-1=4\)</span> categories.</p>
+</div>
+<div id="b.-4" class="section level3">
+<h3>b.</h3>
+<p>Most Liberal: None as it has the highest <span class="math inline">\(\beta=0\)</span> Most Conservative: Protestant as it has the smallest <span class="math inline">\(\beta=-1.27\)</span></p>
+</div>
+<div id="c.-2" class="section level3">
+<h3>c.</h3>
+<p><span class="math display">\[
+  \Prob\left( \text{Liberal} \middle | \text{Protestant} \right) =
+  \frac{e^{-1.03-1.27}}{1 + e^{-1.03-1.27}} = 
+  0.0911
+\]</span> <span class="math display">\[
+  \Prob\left( \text{Liberal} \middle | \text{None} \right) =
+  \frac{e^{-1.03}}{1 + e^{-1.03}} = 
+  0.2631
+\]</span></p>
+</div>
+<div id="d.-1" class="section level3">
+<h3>d.</h3>
+<p><span class="math display">\[
+  e^{-1.27} =
+  0.2808
+\]</span> The estimated odds of being more liberal for a protestant rather than none is 0.2808 times higher. <span class="math display">\[
+  e^{-1.27-(-1.22)} =
+  0.9512
+\]</span> The estimated odds of being more liberal for a protestant rather than catholic is 0.9512 times higher.</p>
+</div>
+</div>
 
 
 
