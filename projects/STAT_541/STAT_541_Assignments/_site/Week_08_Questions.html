@@ -346,17 +346,17 @@ div.tocify {
 
 
 <p><span class="math display">\[
-  \newcommand{\Prob}{\operatorname{P}}
-  \newcommand{\E}{\operatorname{E}}
-  \newcommand{\Var}{\operatorname{Var}}
-  \newcommand{\Cov}{\operatorname{Cov}}
-  \newcommand{\se}{\operatorname{se}}
-  \newcommand{\re}{\operatorname{re}}
-  \newcommand{\ybar}{{\overline{Y}}}
-  \newcommand{\phat}{{\hat{p}}}
-  \newcommand{\that}{{\hat{T}}}
-  \newcommand{\med}{{\tilde{Y}}}
-  \]</span></p>
+\newcommand{\Prob}{\operatorname{P}}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\se}{\operatorname{se}}
+\newcommand{\re}{\operatorname{re}}
+\newcommand{\ybar}{{\overline{Y}}}
+\newcommand{\phat}{{\hat{p}}}
+\newcommand{\that}{{\hat{T}}}
+\newcommand{\med}{{\tilde{Y}}}
+\]</span></p>
 <div id="section" class="section level2">
 <h2>4.29</h2>
 <div id="data" class="section level3">
@@ -506,19 +506,43 @@ sex_plot_data %&gt;%
 <div id="cochran-mantel-haenszel-test" class="section level3">
 <h3>Cochran-Mantel-Haenszel Test</h3>
 <p><span class="math display">\[
-  H_{0}:\text{ Intercourse is independent of Gender, conditional on Race}
+H_{0}:\text{ Intercourse is independent of Gender, conditional on Race}
 \]</span> <span class="math display">\[
-  H_{1}:\text{ Intercourse is dependent on Gender, conditional on Race}
+H_{1}:\text{ Intercourse is dependent on Gender, conditional on Race}
 \]</span></p>
-<p><code>r   sex_cmh &lt;- mantelhaen.test(sex_ct, correct = FALSE)   sex_cmh</code></p>
-<p><code>##    ##    Mantel-Haenszel chi-squared test without continuity correction   ##    ## data:  sex_ct   ## Mantel-Haenszel X-squared = 8.3751, df = 1, p-value = 0.003804   ## alternative hypothesis: true common odds ratio is not equal to 1   ## 95 percent confidence interval:   ##  1.229343 2.967939   ## sample estimates:   ## common odds ratio    ##          1.910135</code> With a p-value of 0.0038, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+<pre class="r"><code>sex_cmh &lt;- mantelhaen.test(sex_ct, correct = FALSE)
+sex_cmh</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  sex_ct
+## Mantel-Haenszel X-squared = 8.3751, df = 1, p-value = 0.003804
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  1.229343 2.967939
+## sample estimates:
+## common odds ratio 
+##          1.910135</code></pre>
+<p>With a p-value of 0.0038, we reject the null hypothesis, and accept the alternative based on the sample.</p>
 <p><span class="math display">\[
-  H_{0}:\text{ Intercourse is independent of Race, conditional on Gender}
+H_{0}:\text{ Intercourse is independent of Race, conditional on Gender}
 \]</span> <span class="math display">\[
-  H_{1}:\text{ Intercourse is dependent on Race, conditional on Gender}
+H_{1}:\text{ Intercourse is dependent on Race, conditional on Gender}
 \]</span></p>
-<p><code>r   sex_cmh_flip &lt;- mantelhaen.test(sex_ct_flip, correct = FALSE)   sex_cmh_flip</code></p>
-<p><code>##    ##    Mantel-Haenszel chi-squared test without continuity correction   ##    ## data:  sex_ct_flip   ## Mantel-Haenszel X-squared = 32.501, df = 1, p-value = 1.192e-08   ## alternative hypothesis: true common odds ratio is not equal to 1   ## 95 percent confidence interval:   ##  0.1684817 0.4281210   ## sample estimates:   ## common odds ratio    ##         0.2685713</code> With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+<pre class="r"><code>sex_cmh_flip &lt;- mantelhaen.test(sex_ct_flip, correct = FALSE)
+sex_cmh_flip</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  sex_ct_flip
+## Mantel-Haenszel X-squared = 32.501, df = 1, p-value = 1.192e-08
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.1684817 0.4281210
+## sample estimates:
+## common odds ratio 
+##         0.2685713</code></pre>
+<p>With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
 </div>
 <div id="logistic-regression" class="section level3">
 <h3>Logistic Regression</h3>
@@ -752,19 +776,43 @@ marijuana_plot_data %&gt;%
 <div id="cochran-mantel-haenszel-test-1" class="section level3">
 <h3>Cochran-Mantel-Haenszel Test</h3>
 <p><span class="math display">\[
-  H_{0}:\text{ Marijuana Use is independent of Cigarette Use, conditional on Alcohol Use}
+H_{0}:\text{ Marijuana Use is independent of Cigarette Use, conditional on Alcohol Use}
 \]</span> <span class="math display">\[
-  H_{1}:\text{ Marijuana Use is dependent on Cigarette Use, conditional on Alcohol Use}
+H_{1}:\text{ Marijuana Use is dependent on Cigarette Use, conditional on Alcohol Use}
 \]</span></p>
-<p><code>r   marijuana_cmh &lt;- mantelhaen.test(marijuana_ct, correct = FALSE)   marijuana_cmh</code></p>
-<p><code>##    ##    Mantel-Haenszel chi-squared test without continuity correction   ##    ## data:  marijuana_ct   ## Mantel-Haenszel X-squared = 441.83, df = 1, p-value &lt; 2.2e-16   ## alternative hypothesis: true common odds ratio is not equal to 1   ## 95 percent confidence interval:   ##  12.58828 24.00445   ## sample estimates:   ## common odds ratio    ##          17.38317</code> With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+<pre class="r"><code>marijuana_cmh &lt;- mantelhaen.test(marijuana_ct, correct = FALSE)
+marijuana_cmh</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  marijuana_ct
+## Mantel-Haenszel X-squared = 441.83, df = 1, p-value &lt; 2.2e-16
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  12.58828 24.00445
+## sample estimates:
+## common odds ratio 
+##          17.38317</code></pre>
+<p>With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
 <p><span class="math display">\[
-  H_{0}:\text{ Marijuana Use is independent of Alcohol Use, conditional on Cigarette Use}
+H_{0}:\text{ Marijuana Use is independent of Alcohol Use, conditional on Cigarette Use}
 \]</span> <span class="math display">\[
-  H_{1}:\text{ Marijuana Use is dependent on Alcohol Use, conditional on Cigarette Use}
+H_{1}:\text{ Marijuana Use is dependent on Alcohol Use, conditional on Cigarette Use}
 \]</span></p>
-<p><code>r   marijuana_cmh_flip &lt;- mantelhaen.test(marijuana_ct_flip, correct = FALSE)   marijuana_cmh_flip</code></p>
-<p><code>##    ##    Mantel-Haenszel chi-squared test without continuity correction   ##    ## data:  marijuana_ct_flip   ## Mantel-Haenszel X-squared = 76.464, df = 1, p-value &lt; 2.2e-16   ## alternative hypothesis: true common odds ratio is not equal to 1   ## 95 percent confidence interval:   ##   7.461745 46.632418   ## sample estimates:   ## common odds ratio    ##          18.65367</code> With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
+<pre class="r"><code>marijuana_cmh_flip &lt;- mantelhaen.test(marijuana_ct_flip, correct = FALSE)
+marijuana_cmh_flip</code></pre>
+<pre><code>## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  marijuana_ct_flip
+## Mantel-Haenszel X-squared = 76.464, df = 1, p-value &lt; 2.2e-16
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##   7.461745 46.632418
+## sample estimates:
+## common odds ratio 
+##          18.65367</code></pre>
+<p>With a p-value of 0, we reject the null hypothesis, and accept the alternative based on the sample.</p>
 </div>
 <div id="logistic-regression-1" class="section level3">
 <h3>Logistic Regression</h3>
@@ -1031,35 +1079,35 @@ death_gsq_gof</code></pre>
 <div id="section-3" class="section level2">
 <h2>5.18</h2>
 <pre class="r"><code>lung_cancer_ct &lt;- 
-array(
-data =
-c(
-126, 35, 100, 61
-,908, 497, 688, 807
-,913, 336, 747, 598
-,235, 58, 172, 121
-,402, 121, 308, 215
-,182, 72, 156, 98
-,60, 11, 99, 43
-,104, 21, 89, 36
-)
-,dim = c(2, 2, 8)
-,dimnames = list(
-Smoking = c(&quot;Y&quot;, &quot;N&quot;)
-,Lung = c(&quot;Y&quot;, &quot;N&quot;)
-,City = 
-c(
-&quot;Beij&quot;
-,&quot;Shan&quot;
-,&quot;Shen&quot;
-,&quot;Nanj&quot;
-,&quot;Harb&quot;
-,&quot;Zhen&quot;
-,&quot;Taiy&quot;
-,&quot;Nanc&quot;
-)
-)
-)
+  array(
+    data =
+      c(
+        126, 35, 100, 61
+        ,908, 497, 688, 807
+        ,913, 336, 747, 598
+        ,235, 58, 172, 121
+        ,402, 121, 308, 215
+        ,182, 72, 156, 98
+        ,60, 11, 99, 43
+        ,104, 21, 89, 36
+      )
+    ,dim = c(2, 2, 8)
+    ,dimnames = list(
+      Smoking = c(&quot;Y&quot;, &quot;N&quot;)
+      ,Lung = c(&quot;Y&quot;, &quot;N&quot;)
+      ,City = 
+        c(
+          &quot;Beij&quot;
+          ,&quot;Shan&quot;
+          ,&quot;Shen&quot;
+          ,&quot;Nanj&quot;
+          ,&quot;Harb&quot;
+          ,&quot;Zhen&quot;
+          ,&quot;Taiy&quot;
+          ,&quot;Nanc&quot;
+        )
+    )
+  )
 lung_cancer_ct</code></pre>
 <pre><code>## , , City = Beij
 ## 
@@ -1119,95 +1167,95 @@ lung_cancer_ct</code></pre>
 <pre class="r"><code>lung_cancer_data &lt;- flatr::flatten_ct(lung_cancer_ct)
 
 lung_cancer_summary &lt;- 
-lung_cancer_data %&gt;% 
-group_by(City, Smoking) %&gt;% 
-mutate(Lung_Num = if_else(Lung == &quot;Y&quot;, 1, 0 )) %&gt;% 
-summarize(
-Yes = sum(Lung_Num)
-,No = length(Lung_Num) - Yes
-,Total = Yes + No
-)
+  lung_cancer_data %&gt;% 
+  group_by(City, Smoking) %&gt;% 
+  mutate(Lung_Num = if_else(Lung == &quot;Y&quot;, 1, 0 )) %&gt;% 
+  summarize(
+    Yes = sum(Lung_Num)
+    ,No = length(Lung_Num) - Yes
+    ,Total = Yes + No
+  )
 
 lung_cancer_plot_data &lt;- 
-lung_cancer_summary %&gt;%
-ungroup %&gt;% 
-mutate(
-Smoking = if_else(Smoking == &quot;Y&quot;, &quot;Yes&quot;, &quot;No&quot;)
-,Yes = Yes/Total
-,No = 1 - Yes
-) %&gt;% 
-dplyr::select(
--Total
-) %&gt;%
-gather(
-key = `Lung Cancer`
-,value = `Sample Proportion`
-,-City
-,-Smoking
-)
+  lung_cancer_summary %&gt;%
+  ungroup %&gt;% 
+  mutate(
+    Smoking = if_else(Smoking == &quot;Y&quot;, &quot;Yes&quot;, &quot;No&quot;)
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %&gt;% 
+  dplyr::select(
+    -Total
+  ) %&gt;%
+  gather(
+    key = `Lung Cancer`
+    ,value = `Sample Proportion`
+    ,-City
+    ,-Smoking
+  )
 
 lung_cancer_plot_data %&gt;% 
-ggplot(
-aes(
-x = Smoking
-,y = `Sample Proportion`
-,fill = `Lung Cancer`
-)
-) +
-geom_col(alpha = 0.75) +
-facet_wrap(
-~ City
-,nrow = 1
-) +
-scale_fill_brewer(
-type = &quot;qual&quot;
-,name = &quot;Has Lung Cancer:&quot;
-,palette = &quot;Set2&quot;
-) +
-labs(
-title = &quot;Proportion of Persons with Lung Cancer by whether or not they Smoke&quot;
-,subtitle = &quot;Conditional on City&quot;
-)</code></pre>
+  ggplot(
+    aes(
+      x = Smoking
+      ,y = `Sample Proportion`
+      ,fill = `Lung Cancer`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ City
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Has Lung Cancer:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Persons with Lung Cancer by whether or not they Smoke&quot;
+    ,subtitle = &quot;Conditional on City&quot;
+  )</code></pre>
 <p><img src="Week_08_Questions_files/figure-html/5.18-1.png" width="672" /></p>
 <pre class="r"><code>lung_cancer_plot_data %&gt;% 
-ggplot(
-aes(
-x = City
-,y = `Sample Proportion`
-,fill = `Lung Cancer`
-)
-) +
-geom_col(alpha = 0.75) +
-facet_wrap(
-~ Smoking
-,nrow = 1
-) +
-scale_fill_brewer(
-type = &quot;qual&quot;
-,name = &quot;Has Lung Cancer:&quot;
-,palette = &quot;Set2&quot;
-) +
-labs(
-title = &quot;Proportion of Persons with Lung Cancer by City&quot;
-,subtitle = &quot;Conditional on whether or not they Smoke&quot;
-) +
-theme(
-axis.text.x = element_text(
-angle = 45
-,hjust = 0.5
-,vjust = 0.5
-)
-)</code></pre>
+  ggplot(
+    aes(
+      x = City
+      ,y = `Sample Proportion`
+      ,fill = `Lung Cancer`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Smoking
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,name = &quot;Has Lung Cancer:&quot;
+    ,palette = &quot;Set2&quot;
+  ) +
+  labs(
+    title = &quot;Proportion of Persons with Lung Cancer by City&quot;
+    ,subtitle = &quot;Conditional on whether or not they Smoke&quot;
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45
+      ,hjust = 0.5
+      ,vjust = 0.5
+    )
+  )</code></pre>
 <p><img src="Week_08_Questions_files/figure-html/5.18-2.png" width="672" /></p>
 <div id="a.-1" class="section level3">
 <h3>a.</h3>
 <pre class="r"><code>logit_lung_cancer &lt;- 
-lung_cancer_data %&gt;% 
-glm(
-Lung ~ City + Smoking
-,family = binomial
-,data = .
-)
+  lung_cancer_data %&gt;% 
+  glm(
+    Lung ~ City + Smoking
+    ,family = binomial
+    ,data = .
+  )
 summary(logit_lung_cancer)</code></pre>
 <pre><code>## 
 ## Call:
@@ -1243,18 +1291,18 @@ summary(logit_lung_cancer)</code></pre>
 <div id="b." class="section level3">
 <h3>b.</h3>
 <pre class="r"><code>lung_cancer_summary %&lt;&gt;% 
-cbind(
-phat = 
-predict(
-object = logit_lung_cancer
-,newdata = lung_cancer_summary %&gt;% dplyr::select(City, Smoking)
-,type = &quot;response&quot;
-) %&gt;% t
-) %&gt;% 
-mutate(
-Expected_Yes = Total*phat
-,Expected_No = Total*(1-phat)
-)
+  cbind(
+    phat = 
+      predict(
+        object = logit_lung_cancer
+        ,newdata = lung_cancer_summary %&gt;% dplyr::select(City, Smoking)
+        ,type = &quot;response&quot;
+      ) %&gt;% t
+  ) %&gt;% 
+  mutate(
+    Expected_Yes = Total*phat
+    ,Expected_No = Total*(1-phat)
+  )
 lung_cancer_summary</code></pre>
 <pre><code>## # A tibble: 16 x 8
 ## # Groups:   City [8]

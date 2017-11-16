@@ -10,7 +10,7 @@ output:
     toc_depth: 2
     toc_float: yes
 ---
-  
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
@@ -32,17 +32,17 @@ theme_minimal2 <-
   )
 ```
 \[
-  \newcommand{\Prob}{\operatorname{P}}
-  \newcommand{\E}{\operatorname{E}}
-  \newcommand{\Var}{\operatorname{Var}}
-  \newcommand{\Cov}{\operatorname{Cov}}
-  \newcommand{\se}{\operatorname{se}}
-  \newcommand{\re}{\operatorname{re}}
-  \newcommand{\ybar}{{\overline{Y}}}
-  \newcommand{\phat}{{\hat{p}}}
-  \newcommand{\that}{{\hat{T}}}
-  \newcommand{\med}{{\tilde{Y}}}
-  \]
+\newcommand{\Prob}{\operatorname{P}}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\se}{\operatorname{se}}
+\newcommand{\re}{\operatorname{re}}
+\newcommand{\ybar}{{\overline{Y}}}
+\newcommand{\phat}{{\hat{p}}}
+\newcommand{\that}{{\hat{T}}}
+\newcommand{\med}{{\tilde{Y}}}
+\]
 
 ## 4.29
 ### Data
@@ -160,24 +160,24 @@ sex_plot_data %>%
 
 ### Cochran-Mantel-Haenszel Test
 $$
-  H_{0}:\text{ Intercourse is independent of Gender, conditional on Race}
+H_{0}:\text{ Intercourse is independent of Gender, conditional on Race}
 $$
-  $$
-  H_{1}:\text{ Intercourse is dependent on Gender, conditional on Race}
 $$
-  ```{r 4.29 CMH}
+H_{1}:\text{ Intercourse is dependent on Gender, conditional on Race}
+$$
+```{r 4.29 CMH}
 sex_cmh <- mantelhaen.test(sex_ct, correct = FALSE)
 sex_cmh
 ```
 With a p-value of `r round(sex_cmh$p.value, 4)`, we reject the null hypothesis, and accept the alternative based on the sample.
 
 $$
-  H_{0}:\text{ Intercourse is independent of Race, conditional on Gender}
+H_{0}:\text{ Intercourse is independent of Race, conditional on Gender}
 $$
-  $$
-  H_{1}:\text{ Intercourse is dependent on Race, conditional on Gender}
 $$
-  ```{r 4.29 CMH Flip}
+H_{1}:\text{ Intercourse is dependent on Race, conditional on Gender}
+$$
+```{r 4.29 CMH Flip}
 sex_cmh_flip <- mantelhaen.test(sex_ct_flip, correct = FALSE)
 sex_cmh_flip
 ```
@@ -330,24 +330,24 @@ marijuana_plot_data %>%
 
 ### Cochran-Mantel-Haenszel Test
 $$
-  H_{0}:\text{ Marijuana Use is independent of Cigarette Use, conditional on Alcohol Use}
+H_{0}:\text{ Marijuana Use is independent of Cigarette Use, conditional on Alcohol Use}
 $$
-  $$
-  H_{1}:\text{ Marijuana Use is dependent on Cigarette Use, conditional on Alcohol Use}
 $$
-  ```{r 4.31 CMH}
+H_{1}:\text{ Marijuana Use is dependent on Cigarette Use, conditional on Alcohol Use}
+$$
+```{r 4.31 CMH}
 marijuana_cmh <- mantelhaen.test(marijuana_ct, correct = FALSE)
 marijuana_cmh
 ```
 With a p-value of `r round(marijuana_cmh$p.value, 4)`, we reject the null hypothesis, and accept the alternative based on the sample.
 
 $$
-  H_{0}:\text{ Marijuana Use is independent of Alcohol Use, conditional on Cigarette Use}
+H_{0}:\text{ Marijuana Use is independent of Alcohol Use, conditional on Cigarette Use}
 $$
-  $$
-  H_{1}:\text{ Marijuana Use is dependent on Alcohol Use, conditional on Cigarette Use}
 $$
-  ```{r 4.31 CMH Flip}
+H_{1}:\text{ Marijuana Use is dependent on Alcohol Use, conditional on Cigarette Use}
+$$
+```{r 4.31 CMH Flip}
 marijuana_cmh_flip <- mantelhaen.test(marijuana_ct_flip, correct = FALSE)
 marijuana_cmh_flip
 ```
@@ -516,130 +516,130 @@ Both the slope parameters are significant at $\alpha=0.05$, based on the sample.
 ## 5.18
 ```{r 5.18}
 lung_cancer_ct <- 
-array(
-data =
-c(
-126, 35, 100, 61
-,908, 497, 688, 807
-,913, 336, 747, 598
-,235, 58, 172, 121
-,402, 121, 308, 215
-,182, 72, 156, 98
-,60, 11, 99, 43
-,104, 21, 89, 36
-)
-,dim = c(2, 2, 8)
-,dimnames = list(
-Smoking = c("Y", "N")
-,Lung = c("Y", "N")
-,City = 
-c(
-"Beij"
-,"Shan"
-,"Shen"
-,"Nanj"
-,"Harb"
-,"Zhen"
-,"Taiy"
-,"Nanc"
-)
-)
-)
+  array(
+    data =
+      c(
+        126, 35, 100, 61
+        ,908, 497, 688, 807
+        ,913, 336, 747, 598
+        ,235, 58, 172, 121
+        ,402, 121, 308, 215
+        ,182, 72, 156, 98
+        ,60, 11, 99, 43
+        ,104, 21, 89, 36
+      )
+    ,dim = c(2, 2, 8)
+    ,dimnames = list(
+      Smoking = c("Y", "N")
+      ,Lung = c("Y", "N")
+      ,City = 
+        c(
+          "Beij"
+          ,"Shan"
+          ,"Shen"
+          ,"Nanj"
+          ,"Harb"
+          ,"Zhen"
+          ,"Taiy"
+          ,"Nanc"
+        )
+    )
+  )
 lung_cancer_ct
 
 lung_cancer_data <- flatr::flatten_ct(lung_cancer_ct)
 
 lung_cancer_summary <- 
-lung_cancer_data %>% 
-group_by(City, Smoking) %>% 
-mutate(Lung_Num = if_else(Lung == "Y", 1, 0 )) %>% 
-summarize(
-Yes = sum(Lung_Num)
-,No = length(Lung_Num) - Yes
-,Total = Yes + No
-)
+  lung_cancer_data %>% 
+  group_by(City, Smoking) %>% 
+  mutate(Lung_Num = if_else(Lung == "Y", 1, 0 )) %>% 
+  summarize(
+    Yes = sum(Lung_Num)
+    ,No = length(Lung_Num) - Yes
+    ,Total = Yes + No
+  )
 
 lung_cancer_plot_data <- 
-lung_cancer_summary %>%
-ungroup %>% 
-mutate(
-Smoking = if_else(Smoking == "Y", "Yes", "No")
-,Yes = Yes/Total
-,No = 1 - Yes
-) %>% 
-dplyr::select(
--Total
-) %>%
-gather(
-key = `Lung Cancer`
-,value = `Sample Proportion`
-,-City
-,-Smoking
-)
+  lung_cancer_summary %>%
+  ungroup %>% 
+  mutate(
+    Smoking = if_else(Smoking == "Y", "Yes", "No")
+    ,Yes = Yes/Total
+    ,No = 1 - Yes
+  ) %>% 
+  dplyr::select(
+    -Total
+  ) %>%
+  gather(
+    key = `Lung Cancer`
+    ,value = `Sample Proportion`
+    ,-City
+    ,-Smoking
+  )
 
 lung_cancer_plot_data %>% 
-ggplot(
-aes(
-x = Smoking
-,y = `Sample Proportion`
-,fill = `Lung Cancer`
-)
-) +
-geom_col(alpha = 0.75) +
-facet_wrap(
-~ City
-,nrow = 1
-) +
-scale_fill_brewer(
-type = "qual"
-,name = "Has Lung Cancer:"
-,palette = "Set2"
-) +
-labs(
-title = "Proportion of Persons with Lung Cancer by whether or not they Smoke"
-,subtitle = "Conditional on City"
-)
+  ggplot(
+    aes(
+      x = Smoking
+      ,y = `Sample Proportion`
+      ,fill = `Lung Cancer`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ City
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Has Lung Cancer:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Persons with Lung Cancer by whether or not they Smoke"
+    ,subtitle = "Conditional on City"
+  )
 
 lung_cancer_plot_data %>% 
-ggplot(
-aes(
-x = City
-,y = `Sample Proportion`
-,fill = `Lung Cancer`
-)
-) +
-geom_col(alpha = 0.75) +
-facet_wrap(
-~ Smoking
-,nrow = 1
-) +
-scale_fill_brewer(
-type = "qual"
-,name = "Has Lung Cancer:"
-,palette = "Set2"
-) +
-labs(
-title = "Proportion of Persons with Lung Cancer by City"
-,subtitle = "Conditional on whether or not they Smoke"
-) +
-theme(
-axis.text.x = element_text(
-angle = 45
-,hjust = 0.5
-,vjust = 0.5
-)
-)
+  ggplot(
+    aes(
+      x = City
+      ,y = `Sample Proportion`
+      ,fill = `Lung Cancer`
+    )
+  ) +
+  geom_col(alpha = 0.75) +
+  facet_wrap(
+    ~ Smoking
+    ,nrow = 1
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Has Lung Cancer:"
+    ,palette = "Set2"
+  ) +
+  labs(
+    title = "Proportion of Persons with Lung Cancer by City"
+    ,subtitle = "Conditional on whether or not they Smoke"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45
+      ,hjust = 0.5
+      ,vjust = 0.5
+    )
+  )
 ```
 
 ### a.
 ```{r 5.18a}
 logit_lung_cancer <- 
-lung_cancer_data %>% 
-glm(
-Lung ~ City + Smoking
-,family = binomial
-,data = .
-)
+  lung_cancer_data %>% 
+  glm(
+    Lung ~ City + Smoking
+    ,family = binomial
+    ,data = .
+  )
 summary(logit_lung_cancer)
 ```
 A Smoker on average has an increased log likelihood in favour of getting Lung Cancer of `r round(coefficients(logit_lung_cancer)[9], 4)` vs. a non-smoker, based on the sample.
@@ -647,18 +647,18 @@ A Smoker on average has an increased log likelihood in favour of getting Lung Ca
 ### b.
 ```{r 5.18b}
 lung_cancer_summary %<>% 
-cbind(
-phat = 
-predict(
-object = logit_lung_cancer
-,newdata = lung_cancer_summary %>% dplyr::select(City, Smoking)
-,type = "response"
-) %>% t
-) %>% 
-mutate(
-Expected_Yes = Total*phat
-,Expected_No = Total*(1-phat)
-)
+  cbind(
+    phat = 
+      predict(
+        object = logit_lung_cancer
+        ,newdata = lung_cancer_summary %>% dplyr::select(City, Smoking)
+        ,type = "response"
+      ) %>% t
+  ) %>% 
+  mutate(
+    Expected_Yes = Total*phat
+    ,Expected_No = Total*(1-phat)
+  )
 lung_cancer_summary
 
 lung_chisq_gof <- flatr::goodness_of_fit(model = logit_lung_cancer, type = "Chisq")
