@@ -408,7 +408,7 @@ $$
 ```{r 5.01}
 crabs_data <- 
   read_csv(
-    file = "http://grahamst.at/projects/STAT_541/STAT_541_Assignments/Week_06_Data_5.01.csv"
+    file = "http://grahamst.at/projects/STAT_541/STAT_541_Assignments/data/Week_06_Data_5.01.csv"
   ) %>%
   mutate(
     satell_bool = if_else(satell > 0, 1, 0)

@@ -142,7 +142,7 @@ $$
 
 ## 3.09
 ```{r 3.09}
-income.credit <- read_csv("http://grahamst.at/projects/STAT_541/STAT_541_Assignments/Week_03_Data_3.09.csv")
+income.credit <- read_csv("http://grahamst.at/projects/STAT_541/STAT_541_Assignments/data/Week_03_Data_3.09.csv")
 income.credit
 income.credit.glm <- glm(Card ~ Inc, data = income.credit, family = "binomial")
 summary(income.credit.glm)
