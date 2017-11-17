@@ -113,8 +113,9 @@ gator_logit <-
   )
 summary(gator_logit)
 ```
+With Bird as the baseline:
 $$
-  \ln\left( \frac{\pi_{i}}{\pi_{Bird}} \right) =
+  \pi_{i} =
   \frac{e^{\alpha_{i} + \beta_{1i}Size + \beta_{2i}LakeHancock + \beta_{3i}LakeOklawaha + \beta_{4i}LakeTrafford}}{1 + \sum_{\forall i}e^{\alpha_{i} + \beta_{1i}Size + \beta_{2i}LakeHancock + \beta_{3i}LakeOklawaha + \beta_{4i}LakeTrafford}}
 $$
 With the $\alpha$s and $\beta$s from above.
