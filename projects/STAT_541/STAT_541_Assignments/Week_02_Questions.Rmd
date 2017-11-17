@@ -99,7 +99,7 @@ $$
 
 ## 2.07
 ### a.
-With an odds ratio, we aren't directly measuring the probability of an event, merely its odds. The correct iterpretation would be the odds of a female surviving is 11.4 times that of a male.
+With an odds ratio, we aren't directly measuring the probability of an event, merely its odds. The correct interpretation would be the odds of a female surviving is 11.4 times that of a male.
 
 ### b.
 $$

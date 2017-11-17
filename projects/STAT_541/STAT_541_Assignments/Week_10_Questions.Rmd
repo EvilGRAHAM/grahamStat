@@ -127,8 +127,8 @@ predict(
     data.frame(
       Lake = "Oklawaha"
       ,Size = c("<=2.3", ">2.3")
-    ),
-  type = "probs"
+    )
+  ,type = "probs"
 )
 ```
 
