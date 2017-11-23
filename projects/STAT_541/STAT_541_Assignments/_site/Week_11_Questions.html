@@ -358,6 +358,557 @@ div.tocify {
   \newcommand{\that}{{\hat{T}}}
   \newcommand{\med}{{\tilde{Y}}}
 \]</span></p>
+<div id="section" class="section level2">
+<h2>7.01</h2>
+<div id="a." class="section level3">
+<h3>a.</h3>
+<p><span class="math display">\[
+  H_{0}: \text{The model fits the data well}
+\]</span> <span class="math display">\[
+  H_{1}: \text{Otherwise}
+\]</span> <span class="math display">\[
+  RR: T \geq 3.8415,
+  \alpha = 0.05
+\]</span> Based on this, with statistics of <span class="math inline">\(0.8224\text{ and }0.8246\)</span>, we fail to reject the null hypothesis based on the sample, and assume the model is a good fit.</p>
+</div>
+<div id="b." class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+  \hat{\lambda}_{j}^{Y} = 
+  \begin{cases}
+    1.4165, j = 1 \\
+    0, j = 2
+  \end{cases}
+\]</span> That is the estimate log count increases by 1.4165 for those who believe in the afterlife vs. those who don’t, holding gender constant.</p>
+</div>
+</div>
+<div id="section-1" class="section level2">
+<h2>7.03</h2>
+<pre class="r"><code>black_ct &lt;- 
+  array(
+    data = 
+      c(
+        41, 72, 65, 175,
+        2, 4, 9, 55 
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = 
+      list(
+        Busing = c(&quot;Yes&quot;, &quot;No&quot;)
+        ,Home = c(&quot;Yes&quot;, &quot;No&quot;)
+        ,President = c(&quot;Yes&quot;, &quot;No&quot;)
+      )
+  )
+black_ct</code></pre>
+<pre><code>## , , President = Yes
+## 
+##       Home
+## Busing Yes  No
+##    Yes  41  65
+##    No   72 175
+## 
+## , , President = No
+## 
+##       Home
+## Busing Yes No
+##    Yes   2  9
+##    No    4 55</code></pre>
+<div id="a.-1" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>black_tidy &lt;- flatten_ct(black_ct)
+black_count &lt;- 
+  black_tidy %&gt;% 
+  group_by_all() %&gt;% 
+  count() %&gt;% 
+  ungroup()
+black_count</code></pre>
+<pre><code>## # A tibble: 8 x 4
+##   Busing   Home President     n
+##   &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt;
+## 1     No     No        No    55
+## 2     No     No       Yes   175
+## 3     No    Yes        No     4
+## 4     No    Yes       Yes    72
+## 5    Yes     No        No     9
+## 6    Yes     No       Yes    65
+## 7    Yes    Yes        No     2
+## 8    Yes    Yes       Yes    41</code></pre>
+<pre class="r"><code>black_loglin &lt;- 
+  black_count %&gt;% 
+  glm(
+    n ~ (Busing + Home + President)^2
+    ,family = poisson
+    ,data = .
+  )
+summary(black_loglin)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = n ~ (Busing + Home + President)^2, family = poisson, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##        1         2         3         4         5         6         7  
+##  0.09107  -0.05078  -0.31912   0.07952  -0.21886   0.08372   0.54271  
+##        8  
+## -0.10448  
+## 
+## Coefficients:
+##                        Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)              3.9950     0.1346  29.685  &lt; 2e-16 ***
+## BusingYes               -1.7257     0.3300  -5.230 1.69e-07 ***
+## HomeYes                 -2.4533     0.4306  -5.698 1.21e-08 ***
+## PresidentYes             1.1736     0.1536   7.640 2.16e-14 ***
+## BusingYes:HomeYes        0.4672     0.2371   1.971 0.048744 *  
+## BusingYes:PresidentYes   0.7211     0.3539   2.038 0.041571 *  
+## HomeYes:PresidentYes     1.5520     0.4436   3.499 0.000468 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 408.04858  on 7  degrees of freedom
+## Residual deviance:   0.47939  on 1  degrees of freedom
+## AIC: 54.952
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>goodness_of_fit_loglin(black_loglin, type = &quot;Chisq&quot;)</code></pre>
+<pre><code>## 
+## Chi-squared Goodness of Fit Test 
+## 
+## model: black_loglin 
+## Chi-squared = 0.51959, df = 1, p-value = 0.47102</code></pre>
+<pre class="r"><code>goodness_of_fit_loglin(black_loglin, type = &quot;Gsq&quot;)</code></pre>
+<pre><code>## 
+## G-squared Goodness of Fit Test 
+## 
+## model: black_loglin 
+## G-squared = 0.47939, df = 1, p-value = 0.4887</code></pre>
+<p>Both tests show a nonsignificant p-value, therefore we fail to reject the null hypothesis that the model fits the data, and assume it to be true based on the sample.</p>
+</div>
+<div id="b.-1" class="section level3">
+<h3>b.</h3>
+<pre class="r"><code>(black_loglin %&gt;% 
+  coef() %&gt;% 
+  exp())[5:7]</code></pre>
+<pre><code>##      BusingYes:HomeYes BusingYes:PresidentYes   HomeYes:PresidentYes 
+##               1.595523               2.056675               4.720728</code></pre>
+<p>For each the estimated conditional odds ratio increases by a multiplicative factor of the stated value for both = Yes vs. both = No.</p>
+</div>
+<div id="c." class="section level3">
+<h3>c.</h3>
+<pre class="r"><code>black_loglin2 &lt;- 
+    black_count %&gt;% 
+  glm(
+    n ~ Busing + Home + President + Busing:Home + Home:President
+    ,family = poisson
+    ,data = .
+  )
+summary(black_loglin2)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = n ~ Busing + Home + President + Busing:Home + Home:President, 
+##     family = poisson, data = .)
+## 
+## Deviance Residuals: 
+##        1         2         3         4         5         6         7  
+##  0.92517  -0.49122   0.08524  -0.01979  -1.81145   0.84530  -0.11567  
+##        8  
+##  0.02628  
+## 
+## Coefficients:
+##                      Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)            3.8799     0.1292  30.039  &lt; 2e-16 ***
+## BusingYes             -1.1340     0.1336  -8.485  &lt; 2e-16 ***
+## HomeYes               -2.5366     0.4337  -5.849 4.96e-09 ***
+## PresidentYes           1.3218     0.1407   9.395  &lt; 2e-16 ***
+## BusingYes:HomeYes      0.5645     0.2330   2.423  0.01539 *  
+## HomeYes:PresidentYes   1.6139     0.4419   3.652  0.00026 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 408.0486  on 7  degrees of freedom
+## Residual deviance:   5.1149  on 2  degrees of freedom
+## AIC: 57.587
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>black_lrt &lt;- anova(black_loglin2, black_loglin)
+black_lrt</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: n ~ Busing + Home + President + Busing:Home + Home:President
+## Model 2: n ~ (Busing + Home + President)^2
+##   Resid. Df Resid. Dev Df Deviance
+## 1         2     5.1149            
+## 2         1     0.4794  1   4.6355</code></pre>
+<pre class="r"><code>pchisq(q = black_lrt$Deviance[2], df = black_lrt$Df[2], lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.03131752</code></pre>
+<p>From this we reject the null hypothesis that <span class="math inline">\(\text{Busing}\times\text{President}\)</span> doesn’t have an effect. As such you’d use the model stated in part a.</p>
+</div>
+<div id="d." class="section level3">
+<h3>d.</h3>
+<pre class="r"><code>black_confint &lt;- confint(object = black_loglin, parm = &quot;BusingYes:PresidentYes&quot;)</code></pre>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre class="r"><code>black_confint</code></pre>
+<pre><code>##      2.5 %     97.5 % 
+## 0.06184082 1.46137154</code></pre>
+<pre class="r"><code>exp(black_confint)</code></pre>
+<pre><code>##    2.5 %   97.5 % 
+## 1.063793 4.311869</code></pre>
+<p>That being upon repeated resampling, 95% of the time the true effect can be found in the interval.</p>
+</div>
+</div>
+<div id="section-2" class="section level2">
+<h2>7.07</h2>
+<div id="a.-2" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>pchisq(q = 12.3687 - 10.16, df = 7 - 5, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.3314262</code></pre>
+<p>Therefore we fail to reject the null hypothesis that the two models explain similar amounts of variance, and we can use the more simpler of the two models.</p>
+</div>
+<div id="b.-2" class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+  e^{-1.2202} =
+  0.2952 \implies
+  e^{\{-1.5075, -0.9382\}} =
+  \{0.2215, 0.3913\}
+\]</span> That being upon repeated resampling, 95% of the time the true effect can be found in the interval.</p>
+</div>
+<div id="c.-1" class="section level3">
+<h3>c.</h3>
+<p><span class="math display">\[
+  e^{1.2202} =
+  3.3879 \implies
+  e^{\{0.9382, 1.5075\}} =
+  \{2.5554, 4.5154\}
+\]</span> That being upon repeated resampling, 95% of the time the true effect can be found in the interval.</p>
+</div>
+</div>
+<div id="section-3" class="section level2">
+<h2>7.09</h2>
+<pre class="r"><code>berkeley_ct &lt;- 
+  array(
+    data = 
+      c(
+        512, 353, 120, 138, 53, 22,
+        313, 207, 205, 279, 138, 351,
+        89, 17, 202, 131, 94, 24,
+        19, 8, 391, 244, 299, 317
+      )
+    ,dim = c(6, 2, 2)
+    ,dimnames = 
+      list(
+        Department = 1:6
+        ,Admitted = c(&quot;Yes&quot;, &quot;No&quot;)
+        ,Gender = c(&quot;Male&quot;, &quot;Female&quot;)
+      )
+  )
+berkeley_ct</code></pre>
+<pre><code>## , , Gender = Male
+## 
+##           Admitted
+## Department Yes  No
+##          1 512 313
+##          2 353 207
+##          3 120 205
+##          4 138 279
+##          5  53 138
+##          6  22 351
+## 
+## , , Gender = Female
+## 
+##           Admitted
+## Department Yes  No
+##          1  89  19
+##          2  17   8
+##          3 202 391
+##          4 131 244
+##          5  94 299
+##          6  24 317</code></pre>
+<div id="a.-3" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>berkeley_tidy &lt;- flatten_ct(berkeley_ct)
+berkeley_count &lt;- 
+  berkeley_tidy %&gt;% 
+  group_by_all() %&gt;% 
+  count() %&gt;% 
+  ungroup()
+berkeley_count</code></pre>
+<pre><code>## # A tibble: 24 x 4
+##    Department Admitted Gender     n
+##        &lt;fctr&gt;   &lt;fctr&gt; &lt;fctr&gt; &lt;int&gt;
+##  1          1       No Female    19
+##  2          1       No   Male   313
+##  3          1      Yes Female    89
+##  4          1      Yes   Male   512
+##  5          2       No Female     8
+##  6          2       No   Male   207
+##  7          2      Yes Female    17
+##  8          2      Yes   Male   353
+##  9          3       No Female   391
+## 10          3       No   Male   205
+## # ... with 14 more rows</code></pre>
+<pre class="r"><code>berkeley_loglin &lt;- 
+  berkeley_count %&gt;% 
+  glm(
+    n ~ (Department + Admitted + Gender)^2
+    ,family = poisson
+    ,data = .
+  )
+summary(berkeley_loglin)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = n ~ (Department + Admitted + Gender)^2, family = poisson, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##        1         2         3         4         5         6         7  
+## -3.15768   0.99471   1.96454  -0.75481  -0.22034   0.04449   0.15709  
+##        8         9        10        11        12        13        14  
+## -0.03402   0.54896  -0.73839  -0.74367   1.01273   0.05080  -0.04741  
+##       15        16        17        18        19        20        21  
+## -0.06911   0.06760   0.42678  -0.61236  -0.73617   1.05578  -0.05370  
+##       22        23        24  
+##  0.05113   0.19803  -0.20117  
+## 
+## Coefficients:
+##                         Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)              3.59099    0.11659  30.801  &lt; 2e-16 ***
+## Department2             -1.43464    0.23341  -6.146 7.93e-10 ***
+## Department3              2.34983    0.12262  19.163  &lt; 2e-16 ***
+## Department4              1.90293    0.12557  15.154  &lt; 2e-16 ***
+## Department5              2.08467    0.12711  16.400  &lt; 2e-16 ***
+## Department6              2.17093    0.12798  16.963  &lt; 2e-16 ***
+## AdmittedYes              0.68192    0.09911   6.880 5.97e-12 ***
+## GenderMale               2.09846    0.11548  18.172  &lt; 2e-16 ***
+## Department2:AdmittedYes -0.04340    0.10984  -0.395    0.693    
+## Department3:AdmittedYes -1.26260    0.10663 -11.841  &lt; 2e-16 ***
+## Department4:AdmittedYes -1.29461    0.10582 -12.234  &lt; 2e-16 ***
+## Department5:AdmittedYes -1.73931    0.12611 -13.792  &lt; 2e-16 ***
+## Department6:AdmittedYes -3.30648    0.16998 -19.452  &lt; 2e-16 ***
+## Department2:GenderMale   1.07482    0.22861   4.701 2.58e-06 ***
+## Department3:GenderMale  -2.66513    0.12609 -21.137  &lt; 2e-16 ***
+## Department4:GenderMale  -1.95832    0.12734 -15.379  &lt; 2e-16 ***
+## Department5:GenderMale  -2.79519    0.13925 -20.073  &lt; 2e-16 ***
+## Department6:GenderMale  -2.00232    0.13571 -14.754  &lt; 2e-16 ***
+## AdmittedYes:GenderMale  -0.09987    0.08085  -1.235    0.217    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 2650.095  on 23  degrees of freedom
+## Residual deviance:   20.204  on  5  degrees of freedom
+## AIC: 217.26
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>berkeley_count &lt;- 
+  berkeley_count %&gt;% 
+  cbind(Predicted = predict(berkeley_loglin, type = &quot;response&quot;))
+
+mu_.11 &lt;- 
+  berkeley_count %&gt;% 
+  filter(Gender == &quot;Male&quot;, Admitted == &quot;Yes&quot;) %&gt;% 
+  dplyr::select(Predicted) %&gt;% 
+  sum()
+mu_.12 &lt;- 
+  berkeley_count %&gt;% 
+  filter(Gender == &quot;Male&quot;, Admitted == &quot;No&quot;) %&gt;% 
+  dplyr::select(Predicted) %&gt;% 
+  sum()
+mu_.21 &lt;- 
+  berkeley_count %&gt;% 
+  filter(Gender == &quot;Female&quot;, Admitted == &quot;Yes&quot;) %&gt;% 
+  dplyr::select(Predicted) %&gt;% 
+  sum()
+mu_.22 &lt;- 
+  berkeley_count %&gt;% 
+  filter(Gender == &quot;Female&quot;, Admitted == &quot;No&quot;) %&gt;% 
+  dplyr::select(Predicted) %&gt;% 
+  sum()
+AG_marginal_odds &lt;- (mu_.11 * mu_.22) / (mu_.12 * mu_.21)
+AG_marginal_odds</code></pre>
+<pre><code>## [1] 1.84108</code></pre>
+<pre class="r"><code>AG_conditional_odds &lt;- exp(coef(berkeley_loglin)[&quot;AdmittedYes:GenderMale&quot;])
+AG_conditional_odds</code></pre>
+<pre><code>## AdmittedYes:GenderMale 
+##               0.904955</code></pre>
+<p>Department must play an effect on the expected counts, hence the difference. More males apply and get in for department 1 and 2, while more females apply and don’t get in for the other departments.</p>
+</div>
+<div id="b.-3" class="section level3">
+<h3>b.</h3>
+<pre class="r"><code>goodness_of_fit_loglin(berkeley_loglin, type = &quot;Chisq&quot;)</code></pre>
+<pre><code>## 
+## Chi-squared Goodness of Fit Test 
+## 
+## model: berkeley_loglin 
+## Chi-squared = 18.82428, df = 5, p-value = 0.00207</code></pre>
+<pre class="r"><code>goodness_of_fit_loglin(berkeley_loglin, type = &quot;Gsq&quot;)</code></pre>
+<pre><code>## 
+## G-squared Goodness of Fit Test 
+## 
+## model: berkeley_loglin 
+## G-squared = 20.20428, df = 5, p-value = 0.00114</code></pre>
+<p>Based on the tests, we reject the null hypothesis that the model is a good fit based on the sample.</p>
+</div>
+<div id="c.-2" class="section level3">
+<h3>c.</h3>
+<pre class="r"><code>berkeley_loglin2 &lt;- 
+  berkeley_count %&gt;%
+  filter(Department != 1) %&gt;% 
+  glm(
+    n ~ (Department + Admitted + Gender)^2
+    ,family = poisson
+    ,data = .
+  )
+summary(berkeley_loglin2)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = n ~ (Department + Admitted + Gender)^2, family = poisson, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##        1         2         3         4         5         6         7  
+## -0.45581   0.09469   0.33892  -0.07226   0.23013  -0.31429  -0.31658  
+##        8         9        10        11        12        13        14  
+##  0.41912  -0.31738   0.30062   0.44176  -0.41987   0.24275  -0.35213  
+##       15        16        17        18        19        20  
+## -0.42470   0.58970  -0.13223   0.12626   0.49853  -0.48624  
+## 
+## Coefficients:
+##                         Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)              2.23638    0.21348  10.476  &lt; 2e-16 ***
+## Department3              3.72067    0.21643  17.191  &lt; 2e-16 ***
+## Department4              3.28104    0.21798  15.052  &lt; 2e-16 ***
+## Department5              3.44999    0.21908  15.748  &lt; 2e-16 ***
+## Department6              3.52994    0.21979  16.061  &lt; 2e-16 ***
+## AdmittedYes              0.51349    0.11936   4.302 1.69e-05 ***
+## GenderMale               3.08975    0.21151  14.608  &lt; 2e-16 ***
+## Department3:AdmittedYes -1.14008    0.12188  -9.354  &lt; 2e-16 ***
+## Department4:AdmittedYes -1.19456    0.11984  -9.968  &lt; 2e-16 ***
+## Department5:AdmittedYes -1.61308    0.13928 -11.581  &lt; 2e-16 ***
+## Department6:AdmittedYes -3.20527    0.17880 -17.927  &lt; 2e-16 ***
+## Department3:GenderMale  -3.70192    0.21705 -17.056  &lt; 2e-16 ***
+## Department4:GenderMale  -2.99401    0.21787 -13.742  &lt; 2e-16 ***
+## Department5:GenderMale  -3.81904    0.22496 -16.976  &lt; 2e-16 ***
+## Department6:GenderMale  -3.00203    0.22310 -13.456  &lt; 2e-16 ***
+## AdmittedYes:GenderMale   0.03069    0.08676   0.354    0.724    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 1879.7761  on 19  degrees of freedom
+## Residual deviance:    2.5564  on  4  degrees of freedom
+## AIC: 166.84
+## 
+## Number of Fisher Scoring iterations: 3</code></pre>
+<pre class="r"><code>goodness_of_fit_loglin(berkeley_loglin2, type = &quot;Chisq&quot;)</code></pre>
+<pre><code>## 
+## Chi-squared Goodness of Fit Test 
+## 
+## model: berkeley_loglin2 
+## Chi-squared = 2.55818, df = 4, p-value = 0.63425</code></pre>
+<pre class="r"><code>goodness_of_fit_loglin(berkeley_loglin2, type = &quot;Gsq&quot;)</code></pre>
+<pre><code>## 
+## G-squared Goodness of Fit Test 
+## 
+## model: berkeley_loglin2 
+## G-squared = 2.55643, df = 4, p-value = 0.63456</code></pre>
+<p>Since the p-values are non-significant, we fail to reject the null hypothesis that the model is a good fit based on the sample.</p>
+</div>
+<div id="d.-1" class="section level3">
+<h3>d.</h3>
+<pre class="r"><code>berkeley_logit &lt;- 
+  berkeley_tidy %&gt;%
+  filter(Department != 1) %&gt;% 
+  glm(
+    Admitted ~ Department + Gender
+    ,family = binomial
+    ,data = .
+  )
+summary(berkeley_logit)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Admitted ~ Department + Gender, family = binomial, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.4155  -0.9164  -0.3675   0.9567   2.3483  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  0.51349    0.11936   4.302 1.69e-05 ***
+## Department3 -1.14008    0.12188  -9.354  &lt; 2e-16 ***
+## Department4 -1.19456    0.11984  -9.968  &lt; 2e-16 ***
+## Department5 -1.61308    0.13928 -11.581  &lt; 2e-16 ***
+## Department6 -3.20527    0.17880 -17.927  &lt; 2e-16 ***
+## GenderMale   0.03069    0.08676   0.354    0.724    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 4511.1  on 3592  degrees of freedom
+## Residual deviance: 3974.2  on 3587  degrees of freedom
+## AIC: 3986.2
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>goodness_of_fit(berkeley_logit, type = &quot;Chisq&quot;)</code></pre>
+<pre><code>## 
+## Chi-squared Goodness of Fit Test 
+## 
+## model: berkeley_logit 
+## Chi-squared = 2.55818, df = 4, p-value = 0.63425</code></pre>
+<pre class="r"><code>goodness_of_fit(berkeley_logit, type = &quot;Gsq&quot;)</code></pre>
+<pre><code>## 
+## G-squared Goodness of Fit Test 
+## 
+## model: berkeley_logit 
+## G-squared = 2.55643, df = 4, p-value = 0.63456</code></pre>
+<p>You can use either the <span class="math inline">\(AG\)</span> term from the log linear model, or the <span class="math inline">\(G\)</span> term from the logit model to find the odds ratio estimate for <span class="math inline">\(G\)</span> on <span class="math inline">\(A\)</span>, controlling for <span class="math inline">\(D\)</span>.</p>
+</div>
+</div>
+<div id="section-4" class="section level2">
+<h2>7.13</h2>
+<div id="a.-4" class="section level3">
+<h3>a.</h3>
+<pre class="r"><code>pchisq(q = 31.6695, df = 48, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.9667493</code></pre>
+<pre class="r"><code>pchisq(q = 26.5224, df = 48, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.9949738</code></pre>
+<p>Since the p-values are non-significant, we fail to reject the null hypothesis that the model is a good fit based on the sample.</p>
+</div>
+<div id="b.-4" class="section level3">
+<h3>b.</h3>
+<p><span class="math display">\[
+  \ln\left( \frac{\hat{\mu}_{11\cdot\cdot}\hat{\mu}_{33\cdot\cdot}}{\hat{\mu}_{13\cdot\cdot}\hat{\mu}_{31\cdot\cdot}} \right) = 
+  \ln\left( \hat{\mu}_{11\cdot\cdot} \right) + \ln\left( \hat{\mu}_{33\cdot\cdot} \right) - \ln\left( \hat{\mu}_{13\cdot\cdot} \right) - \ln\left( \hat{\mu}_{31\cdot\cdot} \right)
+\]</span> <span class="math display">\[
+  =
+  \hat{\lambda}_{11}^{EH} + \hat{\lambda}_{33}^{EH} - \hat{\lambda}_{13}^{EH} - \hat{\lambda}_{31}^{EH} =
+  2.1425 + 0 - 0 - 0 =
+  2.1425
+\]</span> <span class="math display">\[
+  e^{2.1425 \mp 1.96(0.523)} =
+  (3.0570, 23.7495)
+\]</span> That being upon repeated resampling, 95% of the time the true odds ratios can be found in the interval.</p>
+</div>
+<div id="c.-3" class="section level3">
+<h3>c.</h3>
+<p><span class="math display">\[
+  \theta_{EL} = e^{-0.1328} = 0.8756,
+  \theta_{EC} = e^{1.200} = 3.3201,
+  \theta_{HC} = e^{-0.1865} = 0.8299,
+\]</span> <span class="math display">\[
+  \theta_{HL} = e^{1.8741} = 6.5150,
+  \theta_{CL} = e^{0.8735} = 2.3953,
+\]</span> I’d look at dropping <span class="math inline">\(EL\)</span> and <span class="math inline">\(HC\)</span>, as they are fairly close to 1.</p>
+</div>
+</div>
 
 
 

@@ -15,6 +15,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
 library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+library(flatr, warn.conflicts = FALSE, quietly = TRUE)
 theme_minimal2 <- theme_minimal() %>%  theme_set()
 theme_minimal2 <-
   theme_update(
@@ -42,3 +43,281 @@ theme_minimal2 <-
   \newcommand{\that}{{\hat{T}}}
   \newcommand{\med}{{\tilde{Y}}}
 \]
+
+## 7.01
+### a.
+$$
+  H_{0}: \text{The model fits the data well}
+$$
+$$
+  H_{1}: \text{Otherwise}
+$$
+$$
+  RR: T \geq 3.8415,
+  \alpha = 0.05
+$$
+Based on this, with statistics of $0.8224\text{ and }0.8246$, we fail to reject the null hypothesis based on the sample, and assume the model is a good fit.
+
+### b.
+$$
+  \hat{\lambda}_{j}^{Y} = 
+  \begin{cases}
+    1.4165, j = 1 \\
+    0, j = 2
+  \end{cases}
+$$
+That is the estimate log count increases by 1.4165 for those who believe in the afterlife vs. those who don't, holding gender constant.
+
+
+## 7.03
+```{r 7.03 Data}
+black_ct <- 
+  array(
+    data = 
+      c(
+        41, 72, 65, 175,
+        2, 4, 9, 55 
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = 
+      list(
+        Busing = c("Yes", "No")
+        ,Home = c("Yes", "No")
+        ,President = c("Yes", "No")
+      )
+  )
+black_ct
+```
+### a.
+```{r 7.03a}
+black_tidy <- flatten_ct(black_ct)
+black_count <- 
+  black_tidy %>% 
+  group_by_all() %>% 
+  count() %>% 
+  ungroup()
+black_count
+
+black_loglin <- 
+  black_count %>% 
+  glm(
+    n ~ (Busing + Home + President)^2
+    ,family = poisson
+    ,data = .
+  )
+summary(black_loglin)
+goodness_of_fit_loglin(black_loglin, type = "Chisq")
+goodness_of_fit_loglin(black_loglin, type = "Gsq")
+```
+Both tests show a nonsignificant p-value, therefore we fail to reject the null hypothesis that the model fits the data, and assume it to be true based on the sample.
+
+### b.
+```{r 7.03b}
+(black_loglin %>% 
+  coef() %>% 
+  exp())[5:7]
+```
+For each the estimated conditional odds ratio increases by a multiplicative factor of the stated value for both = Yes vs. both = No.
+
+### c.
+```{r 7.03c}
+black_loglin2 <- 
+    black_count %>% 
+  glm(
+    n ~ Busing + Home + President + Busing:Home + Home:President
+    ,family = poisson
+    ,data = .
+  )
+summary(black_loglin2)
+
+black_lrt <- anova(black_loglin2, black_loglin)
+black_lrt
+pchisq(q = black_lrt$Deviance[2], df = black_lrt$Df[2], lower.tail = FALSE)
+```
+From this we reject the null hypothesis that $\text{Busing}\times\text{President}$ doesn't have an effect. As such you'd use the model stated in part a.
+
+### d.
+```{r 7.03d}
+black_confint <- confint(object = black_loglin, parm = "BusingYes:PresidentYes")
+black_confint
+exp(black_confint)
+```
+That being upon repeated resampling, 95\% of the time the true effect can be found in the interval.
+
+
+## 7.07
+### a.
+```{r 7.07a}
+pchisq(q = 12.3687 - 10.16, df = 7 - 5, lower.tail = FALSE)
+```
+Therefore we fail to reject the null hypothesis that the two models explain similar amounts of variance, and we can use the more simpler of the two models.
+
+### b.
+$$
+  e^{-1.2202} =
+  0.2952 \implies
+  e^{\{-1.5075, -0.9382\}} =
+  \{0.2215, 0.3913\}
+$$
+That being upon repeated resampling, 95\% of the time the true effect can be found in the interval.
+
+### c.
+$$
+  e^{1.2202} =
+  3.3879 \implies
+  e^{\{0.9382, 1.5075\}} =
+  \{2.5554, 4.5154\}
+$$
+That being upon repeated resampling, 95\% of the time the true effect can be found in the interval.
+
+
+## 7.09
+```{r 7.09 Data}
+berkeley_ct <- 
+  array(
+    data = 
+      c(
+        512, 353, 120, 138, 53, 22,
+        313, 207, 205, 279, 138, 351,
+        89, 17, 202, 131, 94, 24,
+        19, 8, 391, 244, 299, 317
+      )
+    ,dim = c(6, 2, 2)
+    ,dimnames = 
+      list(
+        Department = 1:6
+        ,Admitted = c("Yes", "No")
+        ,Gender = c("Male", "Female")
+      )
+  )
+berkeley_ct
+```
+### a.
+```{r 7.09a}
+berkeley_tidy <- flatten_ct(berkeley_ct)
+berkeley_count <- 
+  berkeley_tidy %>% 
+  group_by_all() %>% 
+  count() %>% 
+  ungroup()
+berkeley_count
+
+berkeley_loglin <- 
+  berkeley_count %>% 
+  glm(
+    n ~ (Department + Admitted + Gender)^2
+    ,family = poisson
+    ,data = .
+  )
+summary(berkeley_loglin)
+
+berkeley_count <- 
+  berkeley_count %>% 
+  cbind(Predicted = predict(berkeley_loglin, type = "response"))
+
+mu_.11 <- 
+  berkeley_count %>% 
+  filter(Gender == "Male", Admitted == "Yes") %>% 
+  dplyr::select(Predicted) %>% 
+  sum()
+mu_.12 <- 
+  berkeley_count %>% 
+  filter(Gender == "Male", Admitted == "No") %>% 
+  dplyr::select(Predicted) %>% 
+  sum()
+mu_.21 <- 
+  berkeley_count %>% 
+  filter(Gender == "Female", Admitted == "Yes") %>% 
+  dplyr::select(Predicted) %>% 
+  sum()
+mu_.22 <- 
+  berkeley_count %>% 
+  filter(Gender == "Female", Admitted == "No") %>% 
+  dplyr::select(Predicted) %>% 
+  sum()
+AG_marginal_odds <- (mu_.11 * mu_.22) / (mu_.12 * mu_.21)
+AG_marginal_odds
+
+AG_conditional_odds <- exp(coef(berkeley_loglin)["AdmittedYes:GenderMale"])
+AG_conditional_odds
+```
+Department must play an effect on the expected counts, hence the difference. More males apply and get in for department 1 and 2, while more females apply and don't get in for the other departments.
+
+### b.
+```{r 7.09b}
+goodness_of_fit_loglin(berkeley_loglin, type = "Chisq")
+goodness_of_fit_loglin(berkeley_loglin, type = "Gsq")
+```
+Based on the tests, we reject the null hypothesis that the model is a good fit based on the sample.
+
+### c.
+```{r 7.09c}
+berkeley_loglin2 <- 
+  berkeley_count %>%
+  filter(Department != 1) %>% 
+  glm(
+    n ~ (Department + Admitted + Gender)^2
+    ,family = poisson
+    ,data = .
+  )
+summary(berkeley_loglin2)
+
+goodness_of_fit_loglin(berkeley_loglin2, type = "Chisq")
+goodness_of_fit_loglin(berkeley_loglin2, type = "Gsq")
+```
+Since the p-values are non-significant, we fail to reject the null hypothesis that the model is a good fit based on the sample.
+
+### d.
+```{r 7.09d}
+berkeley_logit <- 
+  berkeley_tidy %>%
+  filter(Department != 1) %>% 
+  glm(
+    Admitted ~ Department + Gender
+    ,family = binomial
+    ,data = .
+  )
+summary(berkeley_logit)
+
+goodness_of_fit(berkeley_logit, type = "Chisq")
+goodness_of_fit(berkeley_logit, type = "Gsq")
+```
+You can use either the $AG$ term from the log linear model, or the $G$ term from the logit model to find the odds ratio estimate for $G$ on $A$, controlling for $D$.
+
+
+## 7.13
+### a.
+```{r 7.13a}
+pchisq(q = 31.6695, df = 48, lower.tail = FALSE)
+pchisq(q = 26.5224, df = 48, lower.tail = FALSE)
+```
+Since the p-values are non-significant, we fail to reject the null hypothesis that the model is a good fit based on the sample.
+
+### b.
+$$
+  \ln\left( \frac{\hat{\mu}_{11\cdot\cdot}\hat{\mu}_{33\cdot\cdot}}{\hat{\mu}_{13\cdot\cdot}\hat{\mu}_{31\cdot\cdot}} \right) = 
+  \ln\left( \hat{\mu}_{11\cdot\cdot} \right) + \ln\left( \hat{\mu}_{33\cdot\cdot} \right) - \ln\left( \hat{\mu}_{13\cdot\cdot} \right) - \ln\left( \hat{\mu}_{31\cdot\cdot} \right)
+$$
+$$
+  =
+  \hat{\lambda}_{11}^{EH} + \hat{\lambda}_{33}^{EH} - \hat{\lambda}_{13}^{EH} - \hat{\lambda}_{31}^{EH} =
+  2.1425 + 0 - 0 - 0 =
+  2.1425
+$$
+$$
+  e^{2.1425 \mp 1.96(0.523)} =
+  (3.0570, 23.7495)
+$$
+That being upon repeated resampling, 95\% of the time the true odds ratios can be found in the interval.
+
+### c.
+$$
+  \theta_{EL} = e^{-0.1328} = 0.8756,
+  \theta_{EC} = e^{1.200} = 3.3201,
+  \theta_{HC} = e^{-0.1865} = 0.8299,
+$$
+$$
+  \theta_{HL} = e^{1.8741} = 6.5150,
+  \theta_{CL} = e^{0.8735} = 2.3953,
+$$
+I'd look at dropping $EL$ and $HC$, as they are fairly close to 1.
