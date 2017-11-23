@@ -1,35 +1,16 @@
 ---
 title: "Randomization Test"
-author: "Scott Graham 10131323"
+author: "Scott Graham"
 date: "December 06, 2017"
 output:
   ioslides_presentation:
     smaller: true
 ---
-\[
-  \newcommand{\Prob}{\operatorname{P}}
-  \newcommand{\E}{\operatorname{E}}
-  \newcommand{\Var}{\operatorname{Var}}
-  \newcommand{\Cov}{\operatorname{Cov}}
-  \newcommand{\se}{\operatorname{se}}
-  \newcommand{\re}{\operatorname{re}}
-  \newcommand{\ybar}{{\overline{Y}}}
-  \newcommand{\phat}{{\hat{p}}}
-  \newcommand{\that}{{\hat{T}}}
-  \newcommand{\med}{{\tilde{Y}}}
-  \newcommand{\Logit}{{\operatorname{Logit}}}
-  \]
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(MASS, warn.conflicts = FALSE, quietly = TRUE)
-library(ordinal, warn.conflicts = FALSE, quietly = TRUE)
-library(knitr, warn.conflicts = FALSE, quietly = TRUE)
-library(kableExtra, warn.conflicts = FALSE, quietly = TRUE)
-library(flatr, warn.conflicts = FALSE, quietly = TRUE)
 library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
 library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
-
 theme_minimal2 <- theme_minimal() %>%  theme_set()
 theme_minimal2 <-
   theme_update(
@@ -45,3 +26,15 @@ theme_minimal2 <-
     )
   )
 ```
+\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]

@@ -1,27 +1,20 @@
 ---
 title: "Randomization Test"
-author: "Scott Graham 10131323"
+author: "Scott Graham"
 date: "December 06, 2017"
-header-includes:
-  - \newcommand{\Prob}{\operatorname{P}}
-  - \newcommand{\E}{\operatorname{E}}
-  - \newcommand{\Var}{\operatorname{Var}}
-  - \newcommand{\Cov}{\operatorname{Cov}}
-  - \newcommand{\se}{\operatorname{se}}
-  - \newcommand{\re}{\operatorname{re}}
-  - \newcommand{\ybar}{{\overline{Y}}}
-  - \newcommand{\phat}{{\hat{p}}}
-  - \newcommand{\that}{{\hat{T}}}
-  - \newcommand{\med}{{\tilde{Y}}}
 output:
-  pdf_document: default
+  html_document:
+    theme: lumen
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
 library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
-library(flatr, warn.conflicts = FALSE, quietly = TRUE)
 theme_minimal2 <- theme_minimal() %>%  theme_set()
 theme_minimal2 <-
   theme_update(
@@ -37,3 +30,15 @@ theme_minimal2 <-
     )
   )
 ```
+\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]
