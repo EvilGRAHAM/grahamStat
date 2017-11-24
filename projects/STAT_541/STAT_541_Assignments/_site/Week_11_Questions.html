@@ -728,7 +728,14 @@ mu_.22 &lt;-
   filter(Gender == &quot;Female&quot;, Admitted == &quot;No&quot;) %&gt;% 
   dplyr::select(Predicted) %&gt;% 
   sum()
-AG_marginal_odds &lt;- (mu_.11 * mu_.22) / (mu_.12 * mu_.21)
+
+berkeley_AG_mt &lt;- margin.table(x = berkeley_ct, margin = c(2, 3))
+berkeley_AG_mt</code></pre>
+<pre><code>##         Gender
+## Admitted Male Female
+##      Yes 1198    557
+##      No  1493   1278</code></pre>
+<pre class="r"><code>AG_marginal_odds &lt;- (berkeley_AG_mt[1, 1] * berkeley_AG_mt[2, 2]) / (berkeley_AG_mt[1, 2] * berkeley_AG_mt[2, 1])
 AG_marginal_odds</code></pre>
 <pre><code>## [1] 1.84108</code></pre>
 <pre class="r"><code>AG_conditional_odds &lt;- exp(coef(berkeley_loglin)[&quot;AdmittedYes:GenderMale&quot;])
@@ -739,6 +746,15 @@ AG_conditional_odds</code></pre>
 </div>
 <div id="b.-3" class="section level3">
 <h3>b.</h3>
+<pre class="r"><code>rstandard(berkeley_loglin, type = &quot;deviance&quot;)</code></pre>
+<pre><code>##          1          2          3          4          5          6 
+## -4.4346988  3.9890094  3.8800219 -4.0494869 -0.2832841  0.2795779 
+##          7          8          9         10         11         12 
+##  0.2779289 -0.2798066  1.8720682 -1.8967907 -1.8970207  1.8511726 
+##         13         14         15         16         17         18 
+##  0.1411852 -0.1413286 -0.1414038  0.1411262  1.6267311 -1.6475004 
+##         19         20         21         22         23         24 
+## -1.6537759  1.5925492 -0.3027959  0.3025061  0.3005842 -0.3047842</code></pre>
 <pre class="r"><code>goodness_of_fit_loglin(berkeley_loglin, type = &quot;Chisq&quot;)</code></pre>
 <pre><code>## 
 ## Chi-squared Goodness of Fit Test 

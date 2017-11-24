@@ -235,7 +235,11 @@ mu_.22 <-
   filter(Gender == "Female", Admitted == "No") %>% 
   dplyr::select(Predicted) %>% 
   sum()
-AG_marginal_odds <- (mu_.11 * mu_.22) / (mu_.12 * mu_.21)
+
+berkeley_AG_mt <- margin.table(x = berkeley_ct, margin = c(2, 3))
+berkeley_AG_mt
+
+AG_marginal_odds <- (berkeley_AG_mt[1, 1] * berkeley_AG_mt[2, 2]) / (berkeley_AG_mt[1, 2] * berkeley_AG_mt[2, 1])
 AG_marginal_odds
 
 AG_conditional_odds <- exp(coef(berkeley_loglin)["AdmittedYes:GenderMale"])
@@ -245,6 +249,7 @@ Department must play an effect on the expected counts, hence the difference. Mor
 
 ### b.
 ```{r 7.09b}
+rstandard(berkeley_loglin, type = "deviance")
 goodness_of_fit_loglin(berkeley_loglin, type = "Chisq")
 goodness_of_fit_loglin(berkeley_loglin, type = "Gsq")
 ```
