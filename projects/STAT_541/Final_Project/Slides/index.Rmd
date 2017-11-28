@@ -8,9 +8,19 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+
+set.seed(5609)
+
+library(knitr, warn.conflicts = FALSE, quietly = TRUE)
+library(kableExtra, warn.conflicts = FALSE, quietly = TRUE)
 library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
+library(ggfortify, warn.conflicts = FALSE, quietly = TRUE)
 library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+library(flatr, warn.conflicts = FALSE, quietly = TRUE)
+library(lmtest, warn.conflicts = FALSE, quietly = TRUE)
+library(glmnet, warn.conflicts = FALSE, quietly = TRUE)
+
 theme_minimal2 <- theme_minimal() %>%  theme_set()
 theme_minimal2 <-
   theme_update(
@@ -25,6 +35,41 @@ theme_minimal2 <-
       ,fill = NA
     )
   )
+
+hockey_data <- 
+  "http://grahamst.at/projects/STAT_541/Final_Project/data/hockey_stats.csv" %>% 
+  read_csv() %>% 
+  rename(`Day of the Week` = `Day of Week`) %>% 
+  mutate(
+    `P1 Win` = as.factor(`P1 Win`)
+    ,`P2 - P1 Goals` = P2 - P1
+    ,`Shot Differential` = `P2 Shots` - `P1 Shots`
+    ,`Hit Differential` = `P2 Hits` - `P1 Hits`
+    ,`Day of the Week` = as.factor(`Day of the Week`)
+    ,`Scored 1st Boolean (P2)` = if_else(`Scored 1st` == "P2", 1, 0)
+    ,Shots = `P1 Shots` + `P2 Shots`
+    ,Hits = `P1 Hits` + `P2 Hits`
+    ,ToA = `P1 ToA` + `P2 ToA`
+    ,Passing = `P1 Passing` + `P2 Passing`
+    ,PM = `P1 PM` + `P2 PM`
+    ,Powerplays = `P1 Powerplays` + `P2 Powerplays`
+    ,`Penalty Shots` = `P1 Penalty Shots` + `P2 Penalty Shots`
+    ,Faceoffs = `P1 Faceoffs` + `P2 Faceoffs`
+    ,`Offensive Faceoffs` = `P1 Offensive Faceoffs` + `P2 Offensive Faceoffs`
+    ,Breakaways = `P1 Breakaways` + `P2 Breakaways`
+  )
+
+day_of_week_conv <- 
+  c(
+    "0" = "Sunday"
+    ,"1" = "Monday"
+    ,"2" = "Tuesday"
+    ,"3" = "Wednesday"
+    ,"4" = "Thursday"
+    ,"5" = "Friday"
+    ,"6" = "Saturday"
+  )
+
 ```
 \[
   \newcommand{\Prob}{\operatorname{P}}
@@ -37,4 +82,674 @@ theme_minimal2 <-
   \newcommand{\phat}{{\hat{p}}}
   \newcommand{\that}{{\hat{T}}}
   \newcommand{\med}{{\tilde{Y}}}
-\]
+  \newcommand{\Logit}{{\operatorname{Logit}}}
+  \]
+
+# Introduction
+## Data
+This data set contains the results of 217 games played in the video games NHL 12, 13, and 17, played between 2 friends, Tim and Randy (P1 and P2 respectively)^[]. They compiled a incredibly detailed gamelog for each game played, with well over 50 variables recorded, and period by period breakdowns. For those not familiar, the NHL series of video games is developed by EA Sports, and serves as the most readily available means of simulating real NHL.^[] While obviously not perfect, it serves as a decent proxy for predicting the results of hockey games in general, as many of the same principles apply.
+
+Since the outcome of a game is determined by the end score, any variables referencing the goals scored have been removed, as they serve little to know interest in the prediction of games. However there is one exception, and that is who scored the first goal of the game, which in itself seemed to be an interesting possible predictor. Instead more periphery statistics will be looked at, such as hits, shots, face off percentage, breakaways, penalties, and other such things. As well, a 1 game lagged result term has been included, to see if any autocorrelation exists within the results, and if it plays a significant role in the prediction process.
+
+
+## Analysis
+In this report, a Binomial and Log Linear LASSO model will be used in the variable selection and coefficient estimation process, in addition to the usual step wise methods. As previously mentioned, the autocorrelation of the results will also be examined to see if such an effect exists. Finally a variety of visual tools will be used in the exploratory analysis portion of the paper, in an effort to understand the relationships within the data.
+
+For the LASSO model, the package `glmnet` is used, to perform an elastic-net version of the LASSO model^[]. All the data cleaning is done with the usage of a variety of packages from the "tidyverse". This includes the packages `dplyr`, `tidyr`, `magrittr`, and `tibble`.^[] As well, the `flatr` package is used to transform contingency tables into "tidy" data frames, where each variable has its own column for each observation. `flatr` was created by myself in an effort to simplify some of the cleaning done for this course. Finally `ggplot2` is used as the primary visualization method, due to its flexibility in creating visualizations, and overall better appearance than base graphics.
+
+
+## Research Question
+What periphery (non-goal related) statistics can be used to predict the outcome of a hockey game?
+
+
+
+# Exploratory Analysis
+## Correlation Matrix
+```{r Cor Matrix}
+hockey_data %>%
+  select_if(.predicate = is.numeric) %>%
+  select(
+    -c(
+      Game
+      ,Version
+      ,`P2 - P1 Goals`
+    )
+    ,-ends_with("Differential")
+  ) %>% 
+  cor() %>% 
+  as.data.frame() %>%  
+  rownames_to_column() %>% 
+  as.tibble() %>% 
+  gather(
+    key = Column
+    ,value = Correlation
+    ,-rowname
+  ) %>% 
+  rename(Row = rowname) %>% 
+  ggplot(
+    aes(
+      x = Column
+      ,y = Row
+      ,fill = Correlation
+    )
+  ) +
+  geom_raster() +
+  scale_fill_distiller(
+    type = "div"
+    ,palette = "RdBu"
+    ,limits = c(-1, 1)
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1)
+    ,axis.title.x = element_blank()
+    ,axis.title.y = element_blank()
+  )
+```
+
+
+## Distribution of Goals
+```{r Goal Distribution}
+hockey_data %>% 
+  select(
+    P1
+    ,P2
+    ,`P2 - P1 Goals`
+  ) %>% 
+  gather(
+    key = "Variable"
+    ,value = "Goals"
+  ) %>% 
+  mutate(
+    Variable = 
+      factor(
+        x = Variable
+        ,levels = c("P1", "P2", "P2 - P1 Goals")
+      )
+  ) %>% 
+  ggplot(
+    aes(
+      x = Goals
+      ,colour = Variable
+    )
+  ) +
+  geom_density() +
+  facet_wrap(
+    facet = ~ Variable
+    ,ncol = 1
+  ) +
+  scale_colour_brewer(
+    type = "qual"
+    ,name = "Variable"
+    ,palette = "Set2"
+  )
+```
+
+
+## Goal Distribution by Version
+```{r Goal Distribution by Version}
+hockey_data %>% 
+  select(
+    P1
+    ,P2
+    ,`P2 - P1 Goals`
+    ,Version
+  ) %>% 
+  gather(
+    key = "Variable"
+    ,value = "Goals"
+    ,-Version
+  ) %>% 
+  mutate(
+    Variable = 
+      factor(
+        x = Variable
+        ,levels = c("P1", "P2", "P2 - P1 Goals")
+      )
+  ) %>% 
+  ggplot(
+    aes(
+      x = Goals
+      ,colour = Variable
+    )
+  ) +
+  geom_density() +
+  facet_grid(facet = Version ~ Variable) +
+  scale_colour_brewer(
+    type = "qual"
+    ,name = "Variable"
+    ,palette = "Set2"
+  )
+```
+
+
+## Goals vs. Shots
+> "You miss 100% of the shots you don't take."
+> - Wayne Gretzky
+
+```{r GvS}
+hockey_data_GvS <- 
+  hockey_data %>% 
+  select(
+    Game
+    ,`P1 Goals` = P1
+    ,`P2 Goals` = P2
+    ,`P1 Shots`
+    ,`P2 Shots`
+  ) %>% 
+  gather(
+    key = Variable
+    ,value = Value
+    ,-Game
+  ) %>% 
+  mutate(
+    Player = 
+      if_else(
+        grepl(pattern = "P1 *", x = .$Variable), "P1", "P2"
+      )
+    ,Statistic =
+      if_else(
+        grepl(pattern = "* Goals", x = .$Variable), "Goals", "Shots"
+      )
+  ) %>% 
+  select(-Variable) %>% 
+  spread(
+    key = Statistic
+    ,value = Value
+  ) %>% 
+  mutate(Player = as.factor(Player))
+
+hockey_data_GvS %>% 
+  ggplot(
+    aes(
+      x = Shots
+      ,y = Goals
+      ,colour = Player
+    )
+  ) +
+  geom_point(
+    data = 
+      hockey_data_GvS %>% 
+      select(-Player)
+    ,colour="grey92"
+    ,alpha = 0.75
+  ) +
+  geom_point() +
+  geom_smooth(
+    method = "loess"
+    ,se = FALSE
+  ) +
+  geom_smooth(
+    method = "lm"
+    ,se = FALSE
+  )  +
+  facet_grid(facet = ~ Player) +
+  scale_colour_brewer(
+    type = "qual"
+    ,name = "Player"
+    ,palette = "Set2"
+  )
+```
+
+
+## Goals vs. Shots Results
+1. P1 should shoot the puck more often, as his expected goals will rise at a faster rate than P2's
+2. P2 shouldn't worry as much about getting lots of shots, but primarily focus on getting high danger chances (chances close to the net)
+
+
+## Autocorrelation
+Autocorrelation measures the correlation between $\left(X_{t-k}, X_{t}\right), t=k, k+1\dots,n$. It is primarily used in timeseries analysis to measure the tendency for a time series to be mean reverting (negative autocorrelation) or a tendency to go on long runs in one direct or the other (positive autocorrelation). This is primarily used in the analysis of stock returns, but can be applied to any time series.
+
+
+## Autocorrelation Plot
+```{r Autocorrelation Plot}
+hockey_data_acf <- 
+  hockey_data %>%
+  mutate(P1_Win_Bool = if_else(`P1 Win` == "Yes", 1, 0)) %>% 
+  select(P1_Win_Bool) %>% 
+  acf(plot = FALSE)
+
+data.frame(Lag = hockey_data_acf$lag, Autocorrelation = hockey_data_acf$acf) %>% 
+  ggplot(
+    aes(
+      x = Lag
+      ,y = Autocorrelation
+    )
+  ) +
+  geom_hline(
+    aes(
+      yintercept = 0
+    )
+    ,linetype = "dotted"
+  ) +
+  geom_segment(
+    aes(
+      xend = Lag
+      ,yend = 0
+    )
+  ) +
+  geom_smooth(
+    linetype = 0
+    ,method = "lm"
+    ,formula = y ~ 1
+  )
+```
+
+
+## Autocorrelation Model
+$$
+  \operatorname{Logit}\left( \text{P1 Wins} \right) =
+  \alpha + \beta_{1}\text{Previous Game's Result}
+$$
+
+```{r Autocorrelation Logit}
+hockey_acf_logit <- 
+  hockey_data %>%
+  glm(
+    formula = `P1 Win` ~ `P1 Previous Game`
+    ,family = binomial
+    ,data = .
+  )
+summary(hockey_acf_logit)
+```
+
+
+## Durbin-Watson Test
+$$
+  H_{0}: \text{Autocorrelation} = 0
+$$
+$$
+  H_{1}: \text{Autocorrelation} \neq 0
+$$
+```{r Autocorrelation Test}
+lmtest::dwtest(hockey_acf_logit, alternative = "two.sided")
+```
+
+
+
+# Modeling
+## Contingency Table Model
+```{r CT}
+hockey_ct_summary <- 
+  hockey_data %>% 
+  select(
+    `P1 Win`
+    ,`P1 Home`
+    ,`Scored 1st`
+  ) %>% 
+  group_by_all() %>% 
+  count() %>% 
+  ungroup()
+
+hockey_ct <- 
+  array(
+    data =
+      c(
+        hockey_ct_summary %>% 
+          filter(
+            `P1 Win` == "Yes"
+            ,`P1 Home` == "H"
+            ,`Scored 1st` == "P1"
+          ) %>% 
+          select(n) %>% 
+          as.numeric()
+        ,hockey_ct_summary %>% 
+          filter(
+            `P1 Win` == "Yes"
+            ,`P1 Home` == "H"
+            ,`Scored 1st` == "P2"
+          ) %>% 
+          select(n) %>% 
+          as.numeric()
+        ,hockey_ct_summary %>% 
+          filter(
+            `P1 Win` == "No"
+            ,`P1 Home` == "H"
+            ,`Scored 1st` == "P1"
+          ) %>% 
+          select(n) %>% 
+          as.numeric()
+        ,hockey_ct_summary %>% 
+          filter(
+            `P1 Win` == "No"
+            ,`P1 Home` == "H"
+            ,`Scored 1st` == "P2"
+          ) %>% 
+          select(n) %>% 
+          as.numeric()
+        ,hockey_ct_summary %>% 
+          filter(
+            `P1 Win` == "Yes"
+            ,`P1 Home` == "A"
+            ,`Scored 1st` == "P1"
+          ) %>% 
+          select(n) %>% 
+          as.numeric()
+        ,hockey_ct_summary %>% 
+          filter(
+            `P1 Win` == "Yes"
+            ,`P1 Home` == "A"
+            ,`Scored 1st` == "P2"
+          ) %>% 
+          select(n) %>% 
+          as.numeric()
+        ,hockey_ct_summary %>% 
+          filter(
+            `P1 Win` == "No"
+            ,`P1 Home` == "A"
+            ,`Scored 1st` == "P1"
+          ) %>% 
+          select(n) %>% 
+          as.numeric()
+        ,hockey_ct_summary %>% 
+          filter(
+            `P1 Win` == "No"
+            ,`P1 Home` == "A"
+            ,`Scored 1st` == "P2"
+          ) %>% 
+          select(n) %>% 
+          as.numeric()
+      )
+    ,dim = c(2, 2, 2)
+    ,dimnames = 
+      list(
+        Scored_1st = c("P1", "P2")
+        ,Winner = c("P1", "P2")
+        ,Home = c("P1", "P2")
+      )
+  )
+hockey_ct
+```
+
+
+## flatten_ct
+```{r CT Flatten}
+hockey_ct %>% 
+  flatten_ct() %>% 
+  head() %>% 
+  kable(digits = 4, format = "html") %>% 
+  kable_styling()
+
+hockey_ct %>% 
+  flatten_ct() %>% 
+  group_by_all() %>% 
+  count() %>% 
+  kable(digits = 4, format = "html") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+```
+
+
+## Regression Models and Goodness of Fit Tests
+### Logit Model
+$$
+  \operatorname{Logit}\left( \text{P1 Wins} \right) =
+  \alpha + \beta_{1}\text{Scored First} + \beta_{2}\text{Home Team}
+$$
+
+### Log Linear Model
+$$
+  \ln(\mu) =
+  \alpha + \beta_{1}\text{Scored First} + \beta_{2}\text{P1 Wins} + \beta_{3}\text{Home Team}
+$$
+
+
+## Regression Models and Goodness of Fit Tests Outputs
+```{r CT Model}
+hockey_ct_logit <- 
+  hockey_ct %>% 
+  flatten_ct() %>% 
+  glm(
+    Winner ~ Scored_1st + Home
+    ,family = binomial
+    ,data = .
+  )
+summary(hockey_ct_logit)
+goodness_of_fit(model = hockey_ct_logit, type = "Chisq")
+goodness_of_fit(model = hockey_ct_logit, type = "Gsq")
+
+hockey_ct_loglin <- 
+  hockey_ct %>% 
+  flatten_ct() %>% 
+  group_by_all() %>% 
+  count() %>% 
+  ungroup() %>% 
+  glm(
+    n ~ (Scored_1st + Winner + Home)^2
+    ,family = poisson
+    ,data = .
+  )
+summary(hockey_ct_loglin)
+goodness_of_fit_loglin(model = hockey_ct_loglin, type = "Chisq")
+goodness_of_fit_loglin(model = hockey_ct_loglin, type = "Gsq")
+```
+
+
+## Full Model
+```{r Full Model 02}
+hockey_full_logit_02<- 
+  glm(
+    formula = 
+      `P1 Win` ~
+      `Scored 1st` + 
+      `P1 Shots` + `P2 Shots` +
+      `P1 Hits` + `P2 Hits` +
+      `P1 ToA` + `P2 ToA` +
+      `P1 Passing` + `P2 Passing` + 
+      `P1 Faceoffs` + `P2 Faceoffs` +
+      `P1 Offensive Faceoffs` + `P2 Offensive Faceoffs` +
+      `P1 PM` + `P2 PM` +
+      `P1 Powerplays` + `P2 Powerplays` +
+      `P1 Penalty Shots` + `P2 Penalty Shots` +
+      `P1 Breakaways` + `P2 Breakaways`
+    ,family = binomial
+    ,data =   hockey_data
+  )
+summary(hockey_full_logit_02)
+goodness_of_fit(hockey_full_logit_02, type = "Chisq")
+```
+
+
+## Total Model
+```{r Full Model 03}
+hockey_full_logit_03<- 
+  glm(
+    formula = 
+      `P1 Win` ~
+      Shots + Hits + ToA +
+      Passing + Faceoffs + `Offensive Faceoffs` +
+      PM + Powerplays + `Penalty Shots` + Breakaways
+    ,family = binomial
+    ,data =   hockey_data
+  )
+summary(hockey_full_logit_03)
+goodness_of_fit(hockey_full_logit_03, type = "Chisq")
+```
+
+
+## Backward BIC
+```{r Stepwise 01}
+hockey_full_logit_02 %>% 
+  step(
+    direction = "backward"
+    ,k = 
+      hockey_data %>% 
+      count() %>% 
+      as.numeric() %>% 
+      log()
+    ,trace = 0
+  ) %>% 
+  summary()
+
+hockey_step_logit_01 <- 
+  hockey_data %>% 
+  glm(
+    `P1 Win` ~ `Scored 1st` + `P1 Powerplays` + `P2 Penalty Shots`
+    ,family = binomial
+    ,data = .
+  )
+goodness_of_fit(hockey_step_logit_01, type = "Chisq")
+goodness_of_fit(hockey_step_logit_01, type = "Gsq")
+```
+
+
+## Backward BIC Model
+$$
+  \operatorname{Logit}\left( \text{P1 Wins} \right) =
+  \alpha + \beta_{1}\text{Scored 1st} + \beta_{2}\text{P1 Powerplays} 
+$$
+$$
+  + \beta_{3}\text{P2 Penalty Shots}
+$$
+$$
+  =
+  -0.8114 - 1.7359\text{Scored 1st} + 0.2133\text{P1 Powerplays}
+$$
+$$
+  - 1.5155\text{P2 Penalty Shots}
+$$
+Where:
+$$
+  \text{Scored 1st} =
+  \begin{cases}
+    0,\text{ if P1} \\
+    1,\text{ if P2}
+  \end{cases}
+$$
+
+```{r Stepwise 01 CI}
+hockey_step_logit_01 %>% 
+  confint() %>% 
+  exp()
+```
+
+## Forward BIC
+```{r Stepwise 02}
+hockey_full_logit_02 %>% 
+  step(
+    direction = "forward"
+    ,k = 
+      hockey_data %>% 
+      count() %>% 
+      as.numeric() %>% 
+      log()
+    ,trace = 0
+  ) %>% 
+  summary()
+```
+
+Note this is the second full model discussed earlier. Since stepwise selection is almost never used in favour of other methods, and the fact that it gave us some not so useful results, LASSO will be looked at as well in hopes of a better model^[http://andrewgelman.com/2014/06/02/hate-stepwise-regression/].
+
+
+
+# LASSO
+## LASSO 01 Variables
+```{r LASSO 01 Variables}
+ind_var_01 <- 
+  c(
+    "Scored 1st Boolean (P2)"
+    ,"P1 Shots"
+    ,"P2 Shots"
+    ,"P1 Hits"
+    ,"P2 Hits"
+    ,"P1 ToA"
+    ,"P2 ToA"
+    ,"P1 Passing"
+    ,"P2 Passing"
+    ,"P1 PM"
+    ,"P2 PM"
+    ,"P1 Powerplays"
+    ,"P2 Powerplays"
+    ,"P1 Faceoffs"
+    ,"P2 Faceoffs"
+    ,"P1 Breakaways"
+    ,"P2 Breakaways"
+    ,"P1 Penalty Shots"
+    ,"P2 Penalty Shots"
+    ,"P1 Offensive Faceoffs"
+    ,"P2 Offensive Faceoffs"
+  )
+ind_var_01
+
+dep_var <- "P1 Win"
+
+hockey_lasso_ind_01 <- 
+  hockey_data %>% 
+  select(ind_var_01) %>% 
+  as.matrix()
+
+hockey_lasso_dep <-
+  hockey_data %>% 
+  select(dep_var) %>% 
+  as.matrix()
+```
+
+
+## LASSO 01 Plot
+```{r LASSO 01 Plot}
+hockey_lasso_cvfit_01 <-
+  cv.glmnet(
+    x = hockey_lasso_ind_01
+    ,y = hockey_lasso_dep
+    ,family = "binomial"
+    ,alpha = 1
+  )
+
+autoplot(hockey_lasso_cvfit_01)
+```
+
+
+## LASSO 01 Coefficients 1se
+```{r LASSO 01 Coefficients 1se}
+hockey_lasso_coef_01_1se <- coef(hockey_lasso_cvfit_01, s = "lambda.1se", exact = TRUE)
+hockey_lasso_coef_01_1se
+```
+
+
+## LASSO 01 Coefficients Min
+```{r LASSO 01 Coefficients min}
+hockey_lasso_coef_01_min <- coef(hockey_lasso_cvfit_01, s = "lambda.min", exact = TRUE)
+hockey_lasso_coef_01_min
+```
+
+
+## LASSO 01 Average Coefficient
+```{r LASSO 01 Repeated Coefficient, cache=TRUE}
+reps <- 100
+
+hockey_lasso_res_01 <- matrix(nrow = length(ind_var_01) + 1, ncol = reps)
+rownames(hockey_lasso_res_01) <- c("(Intercept)", ind_var_01)
+
+hockey_lasso_lambda_01 <- tibble(Min = as.numeric(NA), SE = as.numeric(NA))
+
+for(i in 1:reps){
+  hockey_lasso_cvfit_rep <- 
+    cv.glmnet(
+      x = hockey_lasso_ind_01
+      ,y = hockey_lasso_dep
+      ,family = "binomial"
+      ,alpha = 1
+    )
+  
+  hockey_lasso_coef_rep_min <- 
+    hockey_lasso_cvfit_rep %>% 
+    coef(s = "lambda.min", exact = TRUE) %>% 
+    as.matrix()
+  hockey_lasso_res_01[, i] <- hockey_lasso_coef_rep_min
+  hockey_lasso_lambda_01[i, "Min"] <- hockey_lasso_cvfit_rep$lambda.min
+  hockey_lasso_lambda_01[i, "SE"] <- hockey_lasso_cvfit_rep$lambda.1se
+}
+
+apply(X = hockey_lasso_res_01, MARGIN = 1, FUN = mean)
+```
+
+
+## LASSO 01 Average Lambda
+```{r LASSO 01 Repeated Lambda}
+cv.glmnet(
+  x = hockey_lasso_ind_01
+  ,y = hockey_lasso_dep
+  ,family = "binomial"
+  ,alpha = 1
+) %>% 
+  coef(s = mean(hockey_lasso_lambda_01$Min))
+```
