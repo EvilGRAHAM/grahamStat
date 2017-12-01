@@ -544,9 +544,10 @@ hockey_full_logit_02<-
     ,family = binomial
     ,data =   hockey_data
   )
-summary(hockey_full_logit_02)
-goodness_of_fit(hockey_full_logit_02, type = "Chisq")
+coef(hockey_full_logit_02)
 ```
+* Scored 1st is significant
+* P1, P2 Passing, and P1 Breakaways all have p-values $<0.10$
 
 
 ## Total Model

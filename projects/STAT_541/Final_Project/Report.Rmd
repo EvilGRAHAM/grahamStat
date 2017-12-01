@@ -90,7 +90,7 @@ day_of_week_conv <-
 
 # Introduction
 ## Data
-This data set contains the results of 217 games played in the video games NHL 12, 13, and 17, played between 2 friends, Tim and Randy (P1 and P2 respectively)^[]. They compiled a incredibly detailed gamelog for each game played, with well over 50 variables recorded, and period by period breakdowns. For those not familiar, the NHL series of video games is developed by EA Sports, and serves as the most readily available means of simulating real NHL.^[] While obviously not perfect, it serves as a decent proxy for predicting the results of hockey games in general, as many of the same principles apply.
+This data set contains the results of 217 games played in the video games NHL 12, 13, and 17, played between 2 friends, Tim and Randy (P1 and P2 respectively)^[R. (n.d.). 2_buds_hockey_stats.xlsx. Retrieved November 29, 2017, from http://randude.com/ps3/]. They compiled an incredibly detailed gamelog for each game played, with well over 50 variables recorded, and period by period breakdowns. For those not familiar, the NHL series of video games is developed by EA Sports, and serves as the most readily available means of simulating real NHL.^[NHL 18 - EA SPORTS - Official Site. (n.d.). Retrieved November 29, 2017, from https://www.easports.com/nhl] While obviously not perfect, it serves as a decent proxy for predicting the results of hockey games in general, as many of the same principles apply.
 
 Since the outcome of a game is determined by the end score, any variables referencing the goals scored have been removed, as they serve little to know interest in the prediction of games. However there is one exception, and that is who scored the first goal of the game, which in itself seemed to be an interesting possible predictor. Instead more periphery statistics will be looked at, such as hits, shots, face off percentage, breakaways, penalties, and other such things. As well, a 1 game lagged result term has been included, to see if any autocorrelation exists within the results, and if it plays a significant role in the prediction process.
 
@@ -98,7 +98,7 @@ Since the outcome of a game is determined by the end score, any variables refere
 ## Analysis
 In this report, a Binomial and Log Linear LASSO model will be used in the variable selection and coefficient estimation process, in addition to the usual step wise methods. As previously mentioned, the autocorrelation of the results will also be examined to see if such an effect exists. Finally a variety of visual tools will be used in the exploratory analysis portion of the paper, in an effort to understand the relationships within the data.
 
-For the LASSO model, the package `glmnet` is used, to perform an elastic-net version of the LASSO model^[]. All the data cleaning is done with the usage of a variety of packages from the "tidyverse". This includes the packages `dplyr`, `tidyr`, `magrittr`, and `tibble`.^[] As well, the `flatr` package is used to transform contingency tables into "tidy" data frames, where each variable has its own column for each observation. `flatr` was created by myself in an effort to simplify some of the cleaning done for this course. Finally `ggplot2` is used as the primary visualization method, due to its flexibility in creating visualizations, and overall better appearance than base graphics.
+For the LASSO model, the package `glmnet` is used, to perform an elastic-net version of the LASSO model^[NHL 18 - EA SPORTS - Official Site. (n.d.). Retrieved November 29, 2017, from https://www.easports.com/nhl]. All the data cleaning is done with the usage of a variety of packages from the "tidyverse". This includes the packages `dplyr`, `tidyr`, `magrittr`, and `tibble`.^[Wickham, H. (n.d.). Tidyverse. Retrieved November 29, 2017, from https://www.tidyverse.org/] As well, the `flatr` package is used to transform contingency tables into "tidy" data frames, where each variable has its own column for each observation. `flatr` was created by myself in an effort to simplify some of the cleaning done for this course. Finally `ggplot2` is used as the primary visualization method, due to its flexibility in creating visualizations, and overall better appearance than base graphics.
 
 
 ## Research Question
@@ -314,7 +314,7 @@ As one can see, clearly P2 scores more goals on average (`r round(mean(hockey_da
 ## Autocorrelation
 Autocorrelation measures the correlation between $\left(X_{t-k}, X_{t}\right), t=k, k+1\dots,n$. It is primarily used in timeseries analysis to measure the tendency for a time series to be mean reverting (negative autocorrelation) or a tendency to go on long runs in one direct or the other (positive autocorrelation). This is primarily used in the analysis of stock returns, but can be applied to any time series.
 
-What we wish to measure is if P1 wins the last game, is he more or less likely to win the following game? This can be accomplished both graphically, and through the use of a Durbin-Watson test^[http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm]. More specifically, the Durbin-Watson statistic tests:
+What we wish to measure is if P1 wins the last game, is he more or less likely to win the following game? This can be accomplished both graphically, and through the use of a Durbin-Watson test^[Testing for Autocorrelation. (1999). Retrieved November 29, 2017, from http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm]. More specifically, the Durbin-Watson statistic tests:
 $$
   H_{0}: \text{Autocorrelation} = 0
 $$
@@ -679,7 +679,7 @@ hockey_full_logit_02 %>%
   summary()
 ```
 
-Note this is the second full model discussed earlier. Since stepwise selection is almost never used in favor of other methods, and the fact that it gave us some not so useful results, LASSO will be looked at as well in hopes of a better model^[http://andrewgelman.com/2014/06/02/hate-stepwise-regression/].
+Note this is the second full model discussed earlier. Since stepwise selection is almost never used in favor of other methods, and the fact that it gave us some not so useful results, LASSO will be looked at as well in hopes of a better model^[Gelman, A. (2014, June 02). Why we hate stepwise regression. Retrieved November 29, 2017, from http://andrewgelman.com/2014/06/02/hate-stepwise-regression/].
 
 
 ## LASSO
@@ -687,8 +687,7 @@ How LASSO regression works is it estimates the value of all the parameters, and 
 
 In LASSO regression instead of minimizing $\left(y_{i} - \hat{y}_{i}\right)^{2}$, you minimize $\left|y_{i} - \hat{y}_{i}\right|$. Doing so allows for coefficients to be set to 0, instead of merely near it. The question then becomes, how many coefficients are set to 0? This is accomplished through the use of a tuning parameter $\lambda$, which is in turn determined via the usage of cross-validation. The general rule of thumb for $\lambda$ is to choose it such that the resulting model has 1 standard error than the minimum mean squared error model, in an effort to prevent overfitting.
 
-To do so, the package `glment` is used, specifically the function `cv.glmnet`. Unlike base R, `glmnet` only takes matrices as inputs, so all data frames must be converted to matrices to be used with the model; $\vec{X}$ and $\vec{Y}$.^[https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log]
-
+To do so, the package `glment` is used, specifically the function `cv.glmnet`. Unlike base R, `glmnet` only takes matrices as inputs, so all data frames must be converted to matrices to be used with the model; $\vec{X}$ and $\vec{Y}$.(Hastie et al, 2014)
 ```{r LASSO 01 Variables}
 ind_var_01 <- 
   c(
@@ -792,4 +791,4 @@ cv.glmnet(
   coef(s = mean(hockey_lasso_lambda_01$Min))
 ```
 
-The advantage to averaging the $\lambda$s is that when you average the coefficients, if even just 1 time the regression finds an effect, a non-zero effect will appear for that coefficient, which could be unwanted.
+The advantage to averaging the $\lambda$s is that when you average the coefficients, if even just 1 time the regression finds an effect, a non-zero effect will appear for that coefficient, which could be unwanted. As such, the averaging of the lambdas will be used, which is the latter of the two models.

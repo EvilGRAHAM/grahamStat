@@ -338,7 +338,7 @@ div.tocify {
 <h1>Introduction</h1>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<p>This data set contains the results of 217 games played in the video games NHL 12, 13, and 17, played between 2 friends, Tim and Randy (P1 and P2 respectively)<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. They compiled a incredibly detailed gamelog for each game played, with well over 50 variables recorded, and period by period breakdowns. For those not familiar, the NHL series of video games is developed by EA Sports, and serves as the most readily available means of simulating real NHL.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> While obviously not perfect, it serves as a decent proxy for predicting the results of hockey games in general, as many of the same principles apply.</p>
+<p>This data set contains the results of 217 games played in the video games NHL 12, 13, and 17, played between 2 friends, Tim and Randy (P1 and P2 respectively)<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. They compiled an incredibly detailed gamelog for each game played, with well over 50 variables recorded, and period by period breakdowns. For those not familiar, the NHL series of video games is developed by EA Sports, and serves as the most readily available means of simulating real NHL.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> While obviously not perfect, it serves as a decent proxy for predicting the results of hockey games in general, as many of the same principles apply.</p>
 <p>Since the outcome of a game is determined by the end score, any variables referencing the goals scored have been removed, as they serve little to know interest in the prediction of games. However there is one exception, and that is who scored the first goal of the game, which in itself seemed to be an interesting possible predictor. Instead more periphery statistics will be looked at, such as hits, shots, face off percentage, breakaways, penalties, and other such things. As well, a 1 game lagged result term has been included, to see if any autocorrelation exists within the results, and if it plays a significant role in the prediction process.</p>
 </div>
 <div id="analysis" class="section level2">
@@ -1238,7 +1238,7 @@ goodness_of_fit(hockey_step_logit_01, type = &quot;Chisq&quot;)</code></pre>
 <h2>LASSO</h2>
 <p>How LASSO regression works is it estimates the value of all the parameters, and starts shrinking them to 0. In this way, LASSO has the advantage of stepwise regression in that it performs both variable selection and coefficient estimation. This is done by manipulating the bias variance trade off. By introducing a bit of bias into the coefficients, the variance of the coefficients can be reduced.</p>
 <p>In LASSO regression instead of minimizing <span class="math inline">\(\left(y_{i} - \hat{y}_{i}\right)^{2}\)</span>, you minimize <span class="math inline">\(\left|y_{i} - \hat{y}_{i}\right|\)</span>. Doing so allows for coefficients to be set to 0, instead of merely near it. The question then becomes, how many coefficients are set to 0? This is accomplished through the use of a tuning parameter <span class="math inline">\(\lambda\)</span>, which is in turn determined via the usage of cross-validation. The general rule of thumb for <span class="math inline">\(\lambda\)</span> is to choose it such that the resulting model has 1 standard error than the minimum mean squared error model, in an effort to prevent overfitting.</p>
-<p>To do so, the package <code>glment</code> is used, specifically the function <code>cv.glmnet</code>. Unlike base R, <code>glmnet</code> only takes matrices as inputs, so all data frames must be converted to matrices to be used with the model; <span class="math inline">\(\vec{X}\)</span> and <span class="math inline">\(\vec{Y}\)</span>.<a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a></p>
+<p>To do so, the package <code>glment</code> is used, specifically the function <code>cv.glmnet</code>. Unlike base R, <code>glmnet</code> only takes matrices as inputs, so all data frames must be converted to matrices to be used with the model; <span class="math inline">\(\vec{X}\)</span> and <span class="math inline">\(\vec{Y}\)</span>.(Hastie et al, 2014)</p>
 <pre class="r"><code>ind_var_01 &lt;- 
   c(
     &quot;Scored 1st Boolean (P2)&quot;
@@ -1424,19 +1424,18 @@ apply(X = hockey_lasso_res_01, MARGIN = 1, FUN = mean)</code></pre>
 ## P2 Penalty Shots        -0.525402691
 ## P1 Offensive Faceoffs    .          
 ## P2 Offensive Faceoffs    .</code></pre>
-<p>The advantage to averaging the <span class="math inline">\(\lambda\)</span>s is that when you average the coefficients, if even just 1 time the regression finds an effect, a non-zero effect will appear for that coefficient, which could be unwanted.</p>
+<p>The advantage to averaging the <span class="math inline">\(\lambda\)</span>s is that when you average the coefficients, if even just 1 time the regression finds an effect, a non-zero effect will appear for that coefficient, which could be unwanted. As such, the averaging of the lambdas will be used, which is the latter of the two models.</p>
 </div>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p><a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p><a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p><a href="#fnref3">↩</a></p></li>
-<li id="fn4"><p><a href="#fnref4">↩</a></p></li>
-<li id="fn5"><p><a href="http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm" class="uri">http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm</a><a href="#fnref5">↩</a></p></li>
-<li id="fn6"><p><a href="http://andrewgelman.com/2014/06/02/hate-stepwise-regression/" class="uri">http://andrewgelman.com/2014/06/02/hate-stepwise-regression/</a><a href="#fnref6">↩</a></p></li>
-<li id="fn7"><p><a href="https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log" class="uri">https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log</a><a href="#fnref7">↩</a></p></li>
+<li id="fn1"><p>R. (n.d.). 2_buds_hockey_stats.xlsx. Retrieved November 29, 2017, from <a href="http://randude.com/ps3/" class="uri">http://randude.com/ps3/</a><a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>NHL 18 - EA SPORTS - Official Site. (n.d.). Retrieved November 29, 2017, from <a href="https://www.easports.com/nhl" class="uri">https://www.easports.com/nhl</a><a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>NHL 18 - EA SPORTS - Official Site. (n.d.). Retrieved November 29, 2017, from <a href="https://www.easports.com/nhl" class="uri">https://www.easports.com/nhl</a><a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>Wickham, H. (n.d.). Tidyverse. Retrieved November 29, 2017, from <a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a><a href="#fnref4">↩</a></p></li>
+<li id="fn5"><p>Testing for Autocorrelation. (1999). Retrieved November 29, 2017, from <a href="http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm" class="uri">http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm</a><a href="#fnref5">↩</a></p></li>
+<li id="fn6"><p>Gelman, A. (2014, June 02). Why we hate stepwise regression. Retrieved November 29, 2017, from <a href="http://andrewgelman.com/2014/06/02/hate-stepwise-regression/" class="uri">http://andrewgelman.com/2014/06/02/hate-stepwise-regression/</a><a href="#fnref6">↩</a></p></li>
 </ol>
 </div>
 
