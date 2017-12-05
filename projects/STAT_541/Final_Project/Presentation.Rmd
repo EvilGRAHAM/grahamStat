@@ -1,5 +1,5 @@
 ---
-title: "STAT 541 Final Project"
+title: "Analysis of EA NHL Results"
 author: "Scott Graham"
 date: "December 06, 2017"
 output:
@@ -87,15 +87,30 @@ day_of_week_conv <-
 
 # Introduction
 ## Data
-This data set contains the results of 217 games played in the video games NHL 12, 13, and 17, played between 2 friends, Tim and Randy (P1 and P2 respectively)^[]. They compiled a incredibly detailed gamelog for each game played, with well over 50 variables recorded, and period by period breakdowns. For those not familiar, the NHL series of video games is developed by EA Sports, and serves as the most readily available means of simulating real NHL.^[] While obviously not perfect, it serves as a decent proxy for predicting the results of hockey games in general, as many of the same principles apply.
+- 217 Games Played
+- EA NHL 12, 13, and 17
+- Tim $\rightarrow$ P1
+- Randy $\rightarrow$ P2
 
-Since the outcome of a game is determined by the end score, any variables referencing the goals scored have been removed, as they serve little to know interest in the prediction of games. However there is one exception, and that is who scored the first goal of the game, which in itself seemed to be an interesting possible predictor. Instead more periphery statistics will be looked at, such as hits, shots, face off percentage, breakaways, penalties, and other such things. As well, a 1 game lagged result term has been included, to see if any autocorrelation exists within the results, and if it plays a significant role in the prediction process.
 
+## Explanatory Variables
+- Categorical:
+    - Home vs. Away
+    - Scored First
 
-## Analysis
-In this report, a Binomial and Log Linear LASSO model will be used in the variable selection and coefficient estimation process, in addition to the usual step wise methods. As previously mentioned, the autocorrelation of the results will also be examined to see if such an effect exists. Finally a variety of visual tools will be used in the exploratory analysis portion of the paper, in an effort to understand the relationships within the data.
+- Discrete:
+    - Shots
+    - Hits
+    - Penalty Minutes (PM)
+    - Penalty Shots
+    - Breakaways
+    - Powerplays
+    - Faceoffs Won
+    - Offensive Faceoffs Won
 
-For the LASSO model, the package `glmnet` is used, to perform an elastic-net version of the LASSO model^[]. All the data cleaning is done with the usage of a variety of packages from the "tidyverse". This includes the packages `dplyr`, `tidyr`, `magrittr`, and `tibble`.^[] As well, the `flatr` package is used to transform contingency tables into "tidy" data frames, where each variable has its own column for each observation. `flatr` was created by myself in an effort to simplify some of the cleaning done for this course. Finally `ggplot2` is used as the primary visualization method, due to its flexibility in creating visualizations, and overall better appearance than base graphics.
+- Continuous:
+    - Time of Attack (ToA)
+    - Passing \%
 
 
 ## Research Question
@@ -104,6 +119,48 @@ What periphery (non-goal related) statistics can be used to predict the outcome 
 
 
 # Exploratory Analysis
+## Game Results
+```{r Game Results}
+hockey_data %>% 
+  mutate(
+    `P2` = if_else(`P2 - P1 Goals` > 0, `P2 - P1 Goals`, as.integer(0))
+    ,`P1` = if_else(`P2 - P1 Goals` <= 0, `P2 - P1 Goals`, as.integer(0))
+  ) %>% 
+  select(
+    Game
+    ,`P1`
+    ,`P2`
+  ) %>% 
+  gather(
+    key = Player
+    ,value = `Goal Differential`
+    ,-Game
+  ) %>% 
+  filter(`Goal Differential` != 0) %>% 
+  ggplot(
+    aes(
+      x = Game
+      ,y = `Goal Differential`
+      ,fill = `Player`
+    )
+  ) +
+  geom_vline(
+    data = 
+      hockey_data %>% 
+      group_by(Version) %>% 
+      summarize(Game = min(Game))
+    ,aes(xintercept = Game)
+    ,linetype = "dashed"
+    ,size = 0.5
+  ) +
+  geom_col() +
+  scale_fill_brewer(
+    type = "qual"
+    ,palette = "Set2"
+  )
+```
+
+
 ## Correlation Matrix
 ```{r Cor Matrix}
 hockey_data %>%
@@ -289,11 +346,6 @@ hockey_data_GvS %>%
     ,palette = "Set2"
   )
 ```
-
-
-## Goals vs. Shots Results
-1. P1 should shoot the puck more often, as his expected goals will rise at a faster rate than P2's
-2. P2 shouldn't worry as much about getting lots of shots, but primarily focus on getting high danger chances (chances close to the net)
 
 
 ## Autocorrelation
@@ -503,10 +555,13 @@ hockey_ct_logit <-
     ,family = binomial
     ,data = .
   )
-summary(hockey_ct_logit)
+coef(hockey_ct_logit)
 goodness_of_fit(model = hockey_ct_logit, type = "Chisq")
 goodness_of_fit(model = hockey_ct_logit, type = "Gsq")
+```
 
+## Log Linear Models and Goodness of Fit Tests Outputs
+```{r CT Loglin Model}
 hockey_ct_loglin <- 
   hockey_ct %>% 
   flatten_ct() %>% 
@@ -518,7 +573,7 @@ hockey_ct_loglin <-
     ,family = poisson
     ,data = .
   )
-summary(hockey_ct_loglin)
+coef(hockey_ct_loglin)
 goodness_of_fit_loglin(model = hockey_ct_loglin, type = "Chisq")
 goodness_of_fit_loglin(model = hockey_ct_loglin, type = "Gsq")
 ```
@@ -550,25 +605,8 @@ coef(hockey_full_logit_02)
 * P1, P2 Passing, and P1 Breakaways all have p-values $<0.10$
 
 
-## Total Model
-```{r Full Model 03}
-hockey_full_logit_03<- 
-  glm(
-    formula = 
-      `P1 Win` ~
-      Shots + Hits + ToA +
-      Passing + Faceoffs + `Offensive Faceoffs` +
-      PM + Powerplays + `Penalty Shots` + Breakaways
-    ,family = binomial
-    ,data =   hockey_data
-  )
-summary(hockey_full_logit_03)
-goodness_of_fit(hockey_full_logit_03, type = "Chisq")
-```
-
-
 ## Backward BIC
-```{r Stepwise 01}
+```{r Stepwise 01, include=FALSE}
 hockey_full_logit_02 %>% 
   step(
     direction = "backward"
@@ -592,8 +630,6 @@ goodness_of_fit(hockey_step_logit_01, type = "Chisq")
 goodness_of_fit(hockey_step_logit_01, type = "Gsq")
 ```
 
-
-## Backward BIC Model
 $$
   \operatorname{Logit}\left( \text{P1 Wins} \right) =
   \alpha + \beta_{1}\text{Scored 1st} + \beta_{2}\text{P1 Powerplays} 
@@ -623,28 +659,10 @@ hockey_step_logit_01 %>%
   exp()
 ```
 
-## Forward BIC
-```{r Stepwise 02}
-hockey_full_logit_02 %>% 
-  step(
-    direction = "forward"
-    ,k = 
-      hockey_data %>% 
-      count() %>% 
-      as.numeric() %>% 
-      log()
-    ,trace = 0
-  ) %>% 
-  summary()
-```
-
-Note this is the second full model discussed earlier. Since stepwise selection is almost never used in favour of other methods, and the fact that it gave us some not so useful results, LASSO will be looked at as well in hopes of a better model^[http://andrewgelman.com/2014/06/02/hate-stepwise-regression/].
-
 
 
 # LASSO
-## LASSO 01 Variables
-```{r LASSO 01 Variables}
+```{r LASSO Variables, include=FALSE}
 ind_var_01 <- 
   c(
     "Scored 1st Boolean (P2)"
@@ -685,8 +703,8 @@ hockey_lasso_dep <-
 ```
 
 
-## LASSO 01 Plot
-```{r LASSO 01 Plot}
+## LASSO Plot
+```{r LASSO Plot}
 hockey_lasso_cvfit_01 <-
   cv.glmnet(
     x = hockey_lasso_ind_01
@@ -699,22 +717,22 @@ autoplot(hockey_lasso_cvfit_01)
 ```
 
 
-## LASSO 01 Coefficients 1se
-```{r LASSO 01 Coefficients 1se}
+## LASSO Coefficients 1se
+```{r LASSO Coefficients 1se}
 hockey_lasso_coef_01_1se <- coef(hockey_lasso_cvfit_01, s = "lambda.1se", exact = TRUE)
 hockey_lasso_coef_01_1se
 ```
 
 
-## LASSO 01 Coefficients Min
-```{r LASSO 01 Coefficients min}
+## LASSO Coefficients Min
+```{r LASSO Coefficients min}
 hockey_lasso_coef_01_min <- coef(hockey_lasso_cvfit_01, s = "lambda.min", exact = TRUE)
 hockey_lasso_coef_01_min
 ```
 
 
-## LASSO 01 Average Coefficient
-```{r LASSO 01 Repeated Coefficient, cache=TRUE}
+## LASSO Average Coefficient
+```{r LASSO Repeated Coefficient, cache=TRUE}
 reps <- 100
 
 hockey_lasso_res_01 <- matrix(nrow = length(ind_var_01) + 1, ncol = reps)
@@ -744,13 +762,87 @@ apply(X = hockey_lasso_res_01, MARGIN = 1, FUN = mean)
 ```
 
 
-## LASSO 01 Average Lambda
-```{r LASSO 01 Repeated Lambda}
-cv.glmnet(
+## LASSO Average Lambda
+```{r LASSO Repeated Lambda}
+hockey_lasso_avg_lambda <- 
+  cv.glmnet(
   x = hockey_lasso_ind_01
   ,y = hockey_lasso_dep
   ,family = "binomial"
   ,alpha = 1
 ) %>% 
   coef(s = mean(hockey_lasso_lambda_01$Min))
+hockey_lasso_avg_lambda
 ```
+
+
+
+# Results
+## Model
+- LASSO Average Lambda chosen
+    - Scored First
+    - P1 Shots
+    - P1 \& P2 Passing
+    - P1 Powerplays
+    - P1 Breakaways
+    - P2 Penalty Shots
+    
+$$
+  \ln\left( \frac{\text{P1 Wins}}{\text{P2 Wins}} \right) =
+  -2.2919 - 1.4114\text{Scored First} + 0.0046\text{P1 Shots}
+$$
+$$
+  + 1.0339\text{P1 Passing} + 1.1588\text{P2 Passing} + 0.1212\text{P1 Powerplays} 
+$$
+$$
+  + 0.0623\text{P1 Breakaways} - 0.5254\text{P2 Penalty Shots}
+$$
+
+
+## Interpretation
+- By scoring first, a player increases their estimated odds in favour of winning by a multiplicative factor of `r round(exp(-hockey_lasso_avg_lambda["Scored 1st Boolean (P2)",]), 4)`
+
+- Only P1's shots was found as a useful predictive measure.
+    - Increases the estimated odds in favour by a multiplicative factor of `r round(exp(hockey_lasso_avg_lambda["P1 Shots",]), 4)` per each additional shot
+    - So not a lot
+    
+- If both players make a lot of their passes, P1's increases their estimated odds in favour of winning by a multiplicative factor of:
+    - P1: `r round(exp(hockey_lasso_avg_lambda["P1 Passing",]), 4)`
+    - P2: `r round(exp(hockey_lasso_avg_lambda["P2 Passing",]), 4)`
+    
+- The more 1-on-0 opportunities given up in a game by a player, the less likely that player will win.
+    - Breakaways: `r round(exp(hockey_lasso_avg_lambda["P1 Breakaways",]), 4)`
+    - Penalty Shots: `r round(exp(hockey_lasso_avg_lambda["P2 Penalty Shots",]), 4)`
+
+
+## Weaknesses
+- Based on a video game
+    - May not apply to real life
+
+- Who is P1 in real life?
+    - Other combinations of players may have different results
+
+- Includes P1's and P2's Passing \%
+    - Both have the same sign
+    - Unexpected
+    
+- Possible overfitting
+    - Uses $\lambda_{Min}$ instead of $\lambda_{1se}$
+    
+- Introduced bias to lower variance
+
+- It may be beneficial to use the average coefficient LASSO, with a cutoff if the variable appears in $<x\%$ of results
+
+
+## References
+Gelman, A. (2014, June 02). Why we hate stepwise regression. Retrieved November 29, 2017, from http://andrewgelman.com/2014/06/02/hate-stepwise-regression/
+
+Hastie, T., & Qian, J. (2014, June 26). Glmnet Vignette. Retrieved November 29, 2017, from https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html
+
+NHL 18 - EA SPORTS - Official Site. (n.d.). Retrieved November 29, 2017, from https://www.easports.com/nhl
+
+R. (n.d.). 2_buds_hockey_stats.xlsx. Retrieved November 29, 2017, from http://randude.com/ps3/
+
+Testing for Autocorrelation. (1999). Retrieved November 29, 2017, from http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm
+
+Wickham, H. (n.d.). Tidyverse. Retrieved November 29, 2017, from https://www.tidyverse.org/

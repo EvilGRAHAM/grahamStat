@@ -1,5 +1,5 @@
 ---
-title: "STAT 541 Final Project Report"
+title: "Analysis of EA NHL Results"
 author: "Scott Graham"
 date: "December 06, 2017"
 output:
@@ -98,7 +98,7 @@ Since the outcome of a game is determined by the end score, any variables refere
 ## Analysis
 In this report, a Binomial and Log Linear LASSO model will be used in the variable selection and coefficient estimation process, in addition to the usual step wise methods. As previously mentioned, the autocorrelation of the results will also be examined to see if such an effect exists. Finally a variety of visual tools will be used in the exploratory analysis portion of the paper, in an effort to understand the relationships within the data.
 
-For the LASSO model, the package `glmnet` is used, to perform an elastic-net version of the LASSO model^[NHL 18 - EA SPORTS - Official Site. (n.d.). Retrieved November 29, 2017, from https://www.easports.com/nhl]. All the data cleaning is done with the usage of a variety of packages from the "tidyverse". This includes the packages `dplyr`, `tidyr`, `magrittr`, and `tibble`.^[Wickham, H. (n.d.). Tidyverse. Retrieved November 29, 2017, from https://www.tidyverse.org/] As well, the `flatr` package is used to transform contingency tables into "tidy" data frames, where each variable has its own column for each observation. `flatr` was created by myself in an effort to simplify some of the cleaning done for this course. Finally `ggplot2` is used as the primary visualization method, due to its flexibility in creating visualizations, and overall better appearance than base graphics.
+For the LASSO model, the package `glmnet` is used, to perform an elastic-net version of the LASSO model^[Hastie, T., & Qian, J. (2014, June 26). Glmnet Vignette. Retrieved November 29, 2017, from https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html]. All the data cleaning is done with the usage of a variety of packages from the "tidyverse". This includes the packages `dplyr`, `tidyr`, `magrittr`, and `tibble`.^[Wickham, H. (n.d.). Tidyverse. Retrieved November 29, 2017, from https://www.tidyverse.org/] As well, the `flatr` package is used to transform contingency tables into "tidy" data frames, where each variable has its own column for each observation. `flatr` was created by myself in an effort to simplify some of the cleaning done for this course. Finally `ggplot2` is used as the primary visualization method, due to its flexibility in creating visualizations, and overall better appearance than base graphics.
 
 
 ## Research Question
@@ -107,6 +107,50 @@ What periphery (non-goal related) statistics can be used to predict the outcome 
 
 
 # Exploratory Analysis
+## Game Results
+```{r Game Results}
+hockey_data %>% 
+  mutate(
+    `P2` = if_else(`P2 - P1 Goals` > 0, `P2 - P1 Goals`, as.integer(0))
+    ,`P1` = if_else(`P2 - P1 Goals` <= 0, `P2 - P1 Goals`, as.integer(0))
+  ) %>% 
+  select(
+    Game
+    ,`P1`
+    ,`P2`
+  ) %>% 
+  gather(
+    key = Player
+    ,value = `Goal Differential`
+    ,-Game
+  ) %>% 
+  filter(`Goal Differential` != 0) %>% 
+  ggplot(
+    aes(
+      x = Game
+      ,y = `Goal Differential`
+      ,fill = `Player`
+    )
+  ) +
+  geom_vline(
+    data = 
+      hockey_data %>% 
+      group_by(Version) %>% 
+      summarize(Game = min(Game))
+    ,aes(xintercept = Game)
+    ,linetype = "dashed"
+    ,size = 0.5
+  ) +
+  geom_col() +
+  scale_fill_brewer(
+    type = "qual"
+    ,palette = "Set2"
+  )
+```
+
+From this, it is fairly obvious that P2 wins the majority of the games (`r round((1 - (mean(unclass(hockey_data$"P1 Win")) - 1)) * 100, 2)`\%), as well as by a fairly decent margin (`r round(mean(hockey_data$"P2 - P1 Goals"), 4)` goals per game). The dotted lines represent a change in version, from 12 to 13 to 17.
+
+
 ## Correlation Matrix
 One of the primary issues with any regression model is collinearity among the predictors. To analyse this, a correlation matrix has been generated, presented as the corresponding visualization. Any of the variables that are of numeric type are evaluated.
 
@@ -688,7 +732,7 @@ How LASSO regression works is it estimates the value of all the parameters, and 
 In LASSO regression instead of minimizing $\left(y_{i} - \hat{y}_{i}\right)^{2}$, you minimize $\left|y_{i} - \hat{y}_{i}\right|$. Doing so allows for coefficients to be set to 0, instead of merely near it. The question then becomes, how many coefficients are set to 0? This is accomplished through the use of a tuning parameter $\lambda$, which is in turn determined via the usage of cross-validation. The general rule of thumb for $\lambda$ is to choose it such that the resulting model has 1 standard error than the minimum mean squared error model, in an effort to prevent overfitting.
 
 To do so, the package `glment` is used, specifically the function `cv.glmnet`. Unlike base R, `glmnet` only takes matrices as inputs, so all data frames must be converted to matrices to be used with the model; $\vec{X}$ and $\vec{Y}$.(Hastie et al, 2014)
-```{r LASSO 01 Variables}
+```{r LASSO Variables}
 ind_var_01 <- 
   c(
     "Scored 1st Boolean (P2)"
@@ -728,9 +772,9 @@ hockey_lasso_dep <-
   as.matrix()
 ```
 
-This is the list of predictor variable that is being used in the first LASSO model:
+This is the list of predictors variable that is being used in the first LASSO model:
 
-```{r LASSO 01 Plot}
+```{r LASSO Plot}
 hockey_lasso_cvfit_01 <-
   cv.glmnet(
     x = hockey_lasso_ind_01
@@ -742,9 +786,9 @@ hockey_lasso_cvfit_01 <-
 autoplot(hockey_lasso_cvfit_01)
 ```
 
-The above chart plots $\ln(\lambda)$ on the x-axis, the $MSE$ on the y-axis, and on the top displays the number of coefficients estimated for a give $\lambda$. The dotted line going through the lower point is our value for $\lambda_{min}=$ `r round(hockey_lasso_cvfit_01$lambda.min, 4)`, and the dotted line going through the higher point is $\lambda_{1se}=$ `r round(hockey_lasso_cvfit_01$lambda.1se, 4)`.
+The above chart plots $\ln(\lambda)$ on the x-axis, the $MSE$ on the y-axis, and on the top displays the number of coefficients estimated for a given $\lambda$. The dotted line going through the lower point is our value for $\lambda_{min}=$ `r round(hockey_lasso_cvfit_01$lambda.min, 4)`, and the dotted line going through the higher point is $\lambda_{1se}=$ `r round(hockey_lasso_cvfit_01$lambda.1se, 4)`.
 
-```{r LASSO 01 Coefficients}
+```{r LASSO Coefficients}
 hockey_lasso_coef_01_1se <- coef(hockey_lasso_cvfit_01, s = "lambda.1se", exact = TRUE)
 hockey_lasso_coef_01_1se
 
@@ -754,7 +798,7 @@ hockey_lasso_coef_01_min
 
 The first output is estimating coefficients using $\lambda_{1se}$, and the latter output is with $\lambda_{min}$. However, because cross-validation is being used in order to estimate $\lambda$, each time the regression is run, different coefficients will arise. As a result of this, it is valuable to do this multiple times and average the results. This can be done by either averaging the coefficients each time the regression is run, or the lambdas themselves.
 
-```{r LASSO 01 Repeated, cache=TRUE}
+```{r LASSO Repeated, cache=TRUE}
 reps <- 100
 
 hockey_lasso_res_01 <- matrix(nrow = length(ind_var_01) + 1, ncol = reps)
@@ -782,13 +826,73 @@ for(i in 1:reps){
 
 apply(X = hockey_lasso_res_01, MARGIN = 1, FUN = mean)
 
-cv.glmnet(
+hockey_lasso_avg_lambda <- 
+  cv.glmnet(
   x = hockey_lasso_ind_01
   ,y = hockey_lasso_dep
   ,family = "binomial"
   ,alpha = 1
 ) %>% 
   coef(s = mean(hockey_lasso_lambda_01$Min))
+hockey_lasso_avg_lambda
 ```
 
 The advantage to averaging the $\lambda$s is that when you average the coefficients, if even just 1 time the regression finds an effect, a non-zero effect will appear for that coefficient, which could be unwanted. As such, the averaging of the lambdas will be used, which is the latter of the two models.
+
+
+
+# Results
+## Model
+- LASSO Average Lambda chosen
+    - Scored First
+    - P1 Shots
+    - P1 \& P2 Passing
+    - P1 Powerplays
+    - P1 Breakaways
+    - P2 Penalty Shots
+    
+$$
+  \ln\left( \frac{\text{P1 Wins}}{\text{P2 Wins}} \right) =
+  -2.2919 - 1.4114\text{Scored First} + 0.0046\text{P1 Shots}
+$$
+$$
+  + 1.0339\text{P1 Passing} + 1.1588\text{P2 Passing} + 0.1212\text{P1 Powerplays} 
+$$
+$$
+  + 0.0623\text{P1 Breakaways} - 0.5254\text{P2 Penalty Shots}
+$$
+
+
+## Interpretation
+- By scoring first, a player increases their estimated odds in favour of winning by a multiplicative factor of `r round(exp(-hockey_lasso_avg_lambda["Scored 1st Boolean (P2)",]), 4)`
+
+- Only P1's shots was found as a useful predictive measure.
+    - Increases the estimated odds in favour by a multiplicative factor of `r round(exp(hockey_lasso_avg_lambda["P1 Shots",]), 4)` per each additional shot
+    - So not a lot
+    
+- If both players make a lot of their passes, P1's increases their estimated odds in favour of winning by a multiplicative factor of:
+    - P1: `r round(exp(hockey_lasso_avg_lambda["P1 Passing",]), 4)`
+    - P2: `r round(exp(hockey_lasso_avg_lambda["P2 Passing",]), 4)`
+    
+- The more 1-on-0 opportunities given up in a game by a player, the less likely that player will win.
+    - Breakaways: `r round(exp(hockey_lasso_avg_lambda["P1 Breakaways",]), 4)`
+    - Penalty Shots: `r round(exp(hockey_lasso_avg_lambda["P2 Penalty Shots",]), 4)`
+
+
+## Weaknesses
+- Based on a video game
+    - May not apply to real life
+
+- Who is P1 in real life?
+    - Other combinations of players may have different results
+
+- Includes P1's and P2's Passing \%
+    - Both have the same sign
+    - Unexpected
+    
+- Possible overfitting
+    - Uses $\lambda_{Min}$ instead of $\lambda_{1se}$
+    
+- Introduced bias to lower variance
+
+- It may be beneficial to use the average coefficient LASSO, with a cutoff if the variable appears in $<x\%$ of results

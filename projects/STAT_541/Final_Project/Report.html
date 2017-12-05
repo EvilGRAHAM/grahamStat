@@ -13,7 +13,7 @@
 
 <meta name="date" content="2017-12-06" />
 
-<title>STAT 541 Final Project Report</title>
+<title>Analysis of EA NHL Results</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -315,7 +315,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">STAT 541 Final Project Report</h1>
+<h1 class="title toc-ignore">Analysis of EA NHL Results</h1>
 <h4 class="author"><em>Scott Graham</em></h4>
 <h4 class="date"><em>December 06, 2017</em></h4>
 
@@ -353,6 +353,48 @@ div.tocify {
 </div>
 <div id="exploratory-analysis" class="section level1">
 <h1>Exploratory Analysis</h1>
+<div id="game-results" class="section level2">
+<h2>Game Results</h2>
+<pre class="r"><code>hockey_data %&gt;% 
+  mutate(
+    `P2` = if_else(`P2 - P1 Goals` &gt; 0, `P2 - P1 Goals`, as.integer(0))
+    ,`P1` = if_else(`P2 - P1 Goals` &lt;= 0, `P2 - P1 Goals`, as.integer(0))
+  ) %&gt;% 
+  select(
+    Game
+    ,`P1`
+    ,`P2`
+  ) %&gt;% 
+  gather(
+    key = Player
+    ,value = `Goal Differential`
+    ,-Game
+  ) %&gt;% 
+  filter(`Goal Differential` != 0) %&gt;% 
+  ggplot(
+    aes(
+      x = Game
+      ,y = `Goal Differential`
+      ,fill = `Player`
+    )
+  ) +
+  geom_vline(
+    data = 
+      hockey_data %&gt;% 
+      group_by(Version) %&gt;% 
+      summarize(Game = min(Game))
+    ,aes(xintercept = Game)
+    ,linetype = &quot;dashed&quot;
+    ,size = 0.5
+  ) +
+  geom_col() +
+  scale_fill_brewer(
+    type = &quot;qual&quot;
+    ,palette = &quot;Set2&quot;
+  )</code></pre>
+<p><img src="Report_files/figure-html/Game%20Results-1.png" width="672" /></p>
+<p>From this, it is fairly obvious that P2 wins the majority of the games (76.5%), as well as by a fairly decent margin (1.6175 goals per game). The dotted lines represent a change in version, from 12 to 13 to 17.</p>
+</div>
 <div id="correlation-matrix" class="section level2">
 <h2>Correlation Matrix</h2>
 <p>One of the primary issues with any regression model is collinearity among the predictors. To analyse this, a correlation matrix has been generated, presented as the corresponding visualization. Any of the variables that are of numeric type are evaluated.</p>
@@ -1286,7 +1328,7 @@ hockey_lasso_dep &lt;-
   hockey_data %&gt;% 
   select(dep_var) %&gt;% 
   as.matrix()</code></pre>
-<p>This is the list of predictor variable that is being used in the first LASSO model:</p>
+<p>This is the list of predictors variable that is being used in the first LASSO model:</p>
 <pre class="r"><code>hockey_lasso_cvfit_01 &lt;-
   cv.glmnet(
     x = hockey_lasso_ind_01
@@ -1296,8 +1338,8 @@ hockey_lasso_dep &lt;-
   )
 
 autoplot(hockey_lasso_cvfit_01)</code></pre>
-<p><img src="Report_files/figure-html/LASSO%2001%20Plot-1.png" width="672" /></p>
-<p>The above chart plots <span class="math inline">\(\ln(\lambda)\)</span> on the x-axis, the <span class="math inline">\(MSE\)</span> on the y-axis, and on the top displays the number of coefficients estimated for a give <span class="math inline">\(\lambda\)</span>. The dotted line going through the lower point is our value for <span class="math inline">\(\lambda_{min}=\)</span> 0.0306, and the dotted line going through the higher point is <span class="math inline">\(\lambda_{1se}=\)</span> 0.1125.</p>
+<p><img src="Report_files/figure-html/LASSO%20Plot-1.png" width="672" /></p>
+<p>The above chart plots <span class="math inline">\(\ln(\lambda)\)</span> on the x-axis, the <span class="math inline">\(MSE\)</span> on the y-axis, and on the top displays the number of coefficients estimated for a given <span class="math inline">\(\lambda\)</span>. The dotted line going through the lower point is our value for <span class="math inline">\(\lambda_{min}=\)</span> 0.0306, and the dotted line going through the higher point is <span class="math inline">\(\lambda_{1se}=\)</span> 0.1125.</p>
 <pre class="r"><code>hockey_lasso_coef_01_1se &lt;- coef(hockey_lasso_cvfit_01, s = &quot;lambda.1se&quot;, exact = TRUE)
 hockey_lasso_coef_01_1se</code></pre>
 <pre><code>## 22 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
@@ -1393,13 +1435,15 @@ apply(X = hockey_lasso_res_01, MARGIN = 1, FUN = mean)</code></pre>
 ##            0.000000e+00           -5.293945e-01            2.589165e-05 
 ##   P2 Offensive Faceoffs 
 ##            0.000000e+00</code></pre>
-<pre class="r"><code>cv.glmnet(
+<pre class="r"><code>hockey_lasso_avg_lambda &lt;- 
+  cv.glmnet(
   x = hockey_lasso_ind_01
   ,y = hockey_lasso_dep
   ,family = &quot;binomial&quot;
   ,alpha = 1
 ) %&gt;% 
-  coef(s = mean(hockey_lasso_lambda_01$Min))</code></pre>
+  coef(s = mean(hockey_lasso_lambda_01$Min))
+hockey_lasso_avg_lambda</code></pre>
 <pre><code>## 22 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                                    1
 ## (Intercept)             -2.291872149
@@ -1427,12 +1471,82 @@ apply(X = hockey_lasso_res_01, MARGIN = 1, FUN = mean)</code></pre>
 <p>The advantage to averaging the <span class="math inline">\(\lambda\)</span>s is that when you average the coefficients, if even just 1 time the regression finds an effect, a non-zero effect will appear for that coefficient, which could be unwanted. As such, the averaging of the lambdas will be used, which is the latter of the two models.</p>
 </div>
 </div>
+<div id="results" class="section level1">
+<h1>Results</h1>
+<div id="model" class="section level2">
+<h2>Model</h2>
+<ul>
+<li>LASSO Average Lambda chosen
+<ul>
+<li>Scored First</li>
+<li>P1 Shots</li>
+<li>P1 &amp; P2 Passing</li>
+<li>P1 Powerplays</li>
+<li>P1 Breakaways</li>
+<li>P2 Penalty Shots</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+  \ln\left( \frac{\text{P1 Wins}}{\text{P2 Wins}} \right) =
+  -2.2919 - 1.4114\text{Scored First} + 0.0046\text{P1 Shots}
+\]</span> <span class="math display">\[
+  + 1.0339\text{P1 Passing} + 1.1588\text{P2 Passing} + 0.1212\text{P1 Powerplays} 
+\]</span> <span class="math display">\[
+  + 0.0623\text{P1 Breakaways} - 0.5254\text{P2 Penalty Shots}
+\]</span></p>
+</div>
+<div id="interpretation" class="section level2">
+<h2>Interpretation</h2>
+<ul>
+<li><p>By scoring first, a player increases their estimated odds in favour of winning by a multiplicative factor of 4.1016</p></li>
+<li>Only P1’s shots was found as a useful predictive measure.
+<ul>
+<li>Increases the estimated odds in favour by a multiplicative factor of 1.0046 per each additional shot</li>
+<li>So not a lot</li>
+</ul></li>
+<li>If both players make a lot of their passes, P1’s increases their estimated odds in favour of winning by a multiplicative factor of:
+<ul>
+<li>P1: 2.8119</li>
+<li>P2: 3.1862</li>
+</ul></li>
+<li>The more 1-on-0 opportunities given up in a game by a player, the less likely that player will win.
+<ul>
+<li>Breakaways: 1.0642</li>
+<li>Penalty Shots: 0.5913</li>
+</ul></li>
+</ul>
+</div>
+<div id="weaknesses" class="section level2">
+<h2>Weaknesses</h2>
+<ul>
+<li>Based on a video game
+<ul>
+<li>May not apply to real life</li>
+</ul></li>
+<li>Who is P1 in real life?
+<ul>
+<li>Other combinations of players may have different results</li>
+</ul></li>
+<li>Includes P1’s and P2’s Passing %
+<ul>
+<li>Both have the same sign</li>
+<li>Unexpected</li>
+</ul></li>
+<li>Possible overfitting
+<ul>
+<li>Uses <span class="math inline">\(\lambda_{Min}\)</span> instead of <span class="math inline">\(\lambda_{1se}\)</span></li>
+</ul></li>
+<li><p>Introduced bias to lower variance</p></li>
+<li><p>It may be beneficial to use the average coefficient LASSO, with a cutoff if the variable appears in <span class="math inline">\(&lt;x\%\)</span> of results</p></li>
+</ul>
+</div>
+</div>
 <div class="footnotes">
 <hr />
 <ol>
 <li id="fn1"><p>R. (n.d.). 2_buds_hockey_stats.xlsx. Retrieved November 29, 2017, from <a href="http://randude.com/ps3/" class="uri">http://randude.com/ps3/</a><a href="#fnref1">↩</a></p></li>
 <li id="fn2"><p>NHL 18 - EA SPORTS - Official Site. (n.d.). Retrieved November 29, 2017, from <a href="https://www.easports.com/nhl" class="uri">https://www.easports.com/nhl</a><a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>NHL 18 - EA SPORTS - Official Site. (n.d.). Retrieved November 29, 2017, from <a href="https://www.easports.com/nhl" class="uri">https://www.easports.com/nhl</a><a href="#fnref3">↩</a></p></li>
+<li id="fn3"><p>Hastie, T., &amp; Qian, J. (2014, June 26). Glmnet Vignette. Retrieved November 29, 2017, from <a href="https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html" class="uri">https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html</a><a href="#fnref3">↩</a></p></li>
 <li id="fn4"><p>Wickham, H. (n.d.). Tidyverse. Retrieved November 29, 2017, from <a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a><a href="#fnref4">↩</a></p></li>
 <li id="fn5"><p>Testing for Autocorrelation. (1999). Retrieved November 29, 2017, from <a href="http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm" class="uri">http://www.okstate.edu/sas/v8/sashtml/ets/chap8/sect5.htm</a><a href="#fnref5">↩</a></p></li>
 <li id="fn6"><p>Gelman, A. (2014, June 02). Why we hate stepwise regression. Retrieved November 29, 2017, from <a href="http://andrewgelman.com/2014/06/02/hate-stepwise-regression/" class="uri">http://andrewgelman.com/2014/06/02/hate-stepwise-regression/</a><a href="#fnref6">↩</a></p></li>

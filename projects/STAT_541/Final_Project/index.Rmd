@@ -1,5 +1,5 @@
 ---
-title: "STAT 541 Final Project Abstract"
+title: "Analysis of EA NHL Results Abstract"
 author: "Scott Graham"
 date: "November 29, 2017"
 output:
