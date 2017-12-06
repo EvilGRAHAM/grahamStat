@@ -20,6 +20,7 @@ library(knitr, warn.conflicts = FALSE, quietly = TRUE)
 library(kableExtra, warn.conflicts = FALSE, quietly = TRUE)
 library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
 library(ggfortify, warn.conflicts = FALSE, quietly = TRUE)
+library(plotly, warn.conflicts = FALSE, quietly = TRUE)
 library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
 library(flatr, warn.conflicts = FALSE, quietly = TRUE)
 library(lmtest, warn.conflicts = FALSE, quietly = TRUE)
@@ -109,7 +110,8 @@ What periphery (non-goal related) statistics can be used to predict the outcome 
 # Exploratory Analysis
 ## Game Results
 ```{r Game Results}
-hockey_data %>% 
+hockey_game_results <- 
+  hockey_data %>% 
   mutate(
     `P2` = if_else(`P2 - P1 Goals` > 0, `P2 - P1 Goals`, as.integer(0))
     ,`P1` = if_else(`P2 - P1 Goals` <= 0, `P2 - P1 Goals`, as.integer(0))
@@ -146,6 +148,7 @@ hockey_data %>%
     type = "qual"
     ,palette = "Set2"
   )
+ggplotly(hockey_game_results)
 ```
 
 From this, it is fairly obvious that P2 wins the majority of the games (`r round((1 - (mean(unclass(hockey_data$"P1 Win")) - 1)) * 100, 2)`\%), as well as by a fairly decent margin (`r round(mean(hockey_data$"P2 - P1 Goals"), 4)` goals per game). The dotted lines represent a change in version, from 12 to 13 to 17.
@@ -155,7 +158,8 @@ From this, it is fairly obvious that P2 wins the majority of the games (`r round
 One of the primary issues with any regression model is collinearity among the predictors. To analyse this, a correlation matrix has been generated, presented as the corresponding visualization. Any of the variables that are of numeric type are evaluated.
 
 ```{r Cor Matrix}
-hockey_data %>%
+hockey_cor_matrix <- 
+  hockey_data %>%
   select_if(.predicate = is.numeric) %>%
   select(
     -c(
@@ -193,6 +197,7 @@ hockey_data %>%
     ,axis.title.x = element_blank()
     ,axis.title.y = element_blank()
   )
+ggplotly(hockey_cor_matrix)
 ```
 
 There appears to be be fairly small correlation among the different variables, with a few exceptions. Time of Attack (ToA) and Shots appear to have a somewhat significant correlation, which is expected, as the more time spent in the attacking zone, the more shots are generated. Hits and face offs appear to be correlated, which is interesting, as I can't see a reason why this would occur.
@@ -202,7 +207,8 @@ There appears to be be fairly small correlation among the different variables, w
 The underlying distribution of goals may also be of interest. I expect a right-skewed distribution, as most games typically have `r round(cbind(hockey_data$P1, hockey_data$P2) %>% mean(), 4)` goals for each player. As well, the domain of the distribution is $[0, \infty)$, as negative goals can't be awarded. The distribution of their difference is looked at as well, which should be bimodal, as no ties exist in the data set or in the modern NHL.
 
 ```{r Goal Distribution}
-hockey_data %>% 
+hockey_goal_distribution <- 
+  hockey_data %>% 
   select(
     P1
     ,P2
@@ -223,18 +229,21 @@ hockey_data %>%
     aes(
       x = Goals
       ,colour = Variable
+      ,fill = Variable
     )
   ) +
-  geom_density() +
-  facet_wrap(
-    facet = ~ Variable
-    ,ncol = 1
-  ) +
+  geom_density(alpha = 0.5) +
   scale_colour_brewer(
     type = "qual"
     ,name = "Variable"
     ,palette = "Set2"
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Variable"
+    ,palette = "Set2"
   )
+ggplotly(hockey_goal_distribution)
 ```
 
 P2's distribution matches what was expected, as well as the difference. P1's on the other hand appears to be more symmetric than expected, possibly due to a decreased likelihood of him running up the score.
@@ -242,7 +251,8 @@ P2's distribution matches what was expected, as well as the difference. P1's on 
 Another factor to explore is if the version of the game changes the distribution. Besides updating player rosters, various game play changes are made, which may effect each player differently.
 
 ```{r Goal Distribution by Version}
-hockey_data %>% 
+hockey_goal_distribution_version <- 
+  hockey_data %>% 
   select(
     P1
     ,P2
@@ -265,15 +275,25 @@ hockey_data %>%
     aes(
       x = Goals
       ,colour = Variable
+      ,fill = Variable
     )
   ) +
-  geom_density() +
-  facet_grid(facet = Version ~ Variable) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(
+    facet = ~ Version
+    ,ncol = 1
+  ) +
   scale_colour_brewer(
     type = "qual"
     ,name = "Variable"
     ,palette = "Set2"
+  ) +
+  scale_fill_brewer(
+    type = "qual"
+    ,name = "Variable"
+    ,palette = "Set2"
   )
+ggplotly(hockey_goal_distribution_version)
 ```
 
 It appears version does not play a significant role in determining the distribution of goals. This can be seen by reading the chart from top to bottom, and not seeing significant changes in the shape of the kernel density estimators.
@@ -317,20 +337,14 @@ hockey_data_GvS <-
   ) %>% 
   mutate(Player = as.factor(Player))
 
-hockey_data_GvS %>% 
+hockey_goals_vs_shots <- 
+  hockey_data_GvS %>% 
   ggplot(
     aes(
       x = Shots
       ,y = Goals
       ,colour = Player
     )
-  ) +
-  geom_point(
-    data = 
-      hockey_data_GvS %>% 
-      select(-Player)
-    ,colour="grey92"
-    ,alpha = 0.75
   ) +
   geom_point() +
   geom_smooth(
@@ -341,12 +355,12 @@ hockey_data_GvS %>%
     method = "lm"
     ,se = FALSE
   )  +
-  facet_grid(facet = ~ Player) +
   scale_colour_brewer(
     type = "qual"
     ,name = "Player"
     ,palette = "Set2"
   )
+ggplotly(hockey_goals_vs_shots)
 ```
 
 As one can see, clearly P2 scores more goals on average (`r round(mean(hockey_data$P2), 4)` vs. `r round(mean(hockey_data$P1), 4)`). However the slopes of the two lines appear to differ, with P1's being higher than P2's. This leads to two possible conclusions:
@@ -375,7 +389,8 @@ hockey_data_acf <-
 
 hockey_data_acf
 
-data.frame(Lag = hockey_data_acf$lag, Autocorrelation = hockey_data_acf$acf) %>% 
+hockey_acf_plot <- 
+  data.frame(Lag = hockey_data_acf$lag, Autocorrelation = hockey_data_acf$acf) %>% 
   ggplot(
     aes(
       x = Lag
@@ -396,9 +411,11 @@ data.frame(Lag = hockey_data_acf$lag, Autocorrelation = hockey_data_acf$acf) %>%
   ) +
   geom_smooth(
     linetype = 0
+    ,size = 0
     ,method = "lm"
     ,formula = y ~ 1
   )
+ggplotly(hockey_acf_plot)
 ```
 
 As one can see, the autocorrelation for $k=1$ is not larger than the 95\% confidence interval, as shown by the grey band. Since we are interested in the case for $k=1$, we can confirm this by modeling:
