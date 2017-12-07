@@ -1,10 +1,16 @@
-name: "Randomization Tests"
+name: Randomization Tests
 navbar:
-  title: "STAT 523 Final Project"
+  title: STAT 523 Final Project
   left:
-    - text: "Home"
-      href: ../../
-    - text: "Report"
-      href: Report.html
-    - text: "Presentation"
-      href: Presentation.html
+  - text: Home
+    href: ../../
+  - text: Report
+    href: Report.html
+  - text: Presentation
+    href: Presentation.html
+output_dir: _site
+output:
+  html_document:
+    lib_dir: site_libs
+    self_contained: no
+

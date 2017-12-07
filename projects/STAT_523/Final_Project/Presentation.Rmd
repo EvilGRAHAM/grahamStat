@@ -6,10 +6,11 @@ header-includes:
    - \usepackage{mathtools}
    - \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
    - \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
-output:
+output: 
   ioslides_presentation:
     smaller: true
     logo: ../../../images/logo/GrahamStat-emblem-black.png
+
 ---
 
 ```{r setup, include=FALSE}
@@ -254,13 +255,13 @@ $$
   H_{1}: \E(X) \neq \E(Y)
 $$
 $$
-  \omega_{\frac{\alpha}{2}} =
+  \frac{\alpha}{2}-percentile =
   \left\lceil {{3+4}\choose{3}}\frac{0.05}{2} \right\rceil =
   \left\lceil 0.875 \right\rceil =
   1
 $$
 $$
-  \omega_{1-\frac{\alpha}{2}} =
+  1-\frac{\alpha}{2}-percentile =
   \left\lceil {{3+4}\choose{3}}\left( 1-\frac{0.05}{2} \right) \right\rceil =
   \left\lceil 34.25 \right\rceil =
   35

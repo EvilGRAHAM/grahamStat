@@ -9,6 +9,9 @@ dplyr
 stringr
 forcats
 magrittr
+perm
+survival
+coin
 knitr
 kableExtra
 ggfortify

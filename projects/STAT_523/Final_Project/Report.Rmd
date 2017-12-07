@@ -242,7 +242,7 @@ $$
   H_{1}: \E(X) \neq \E(Y)
 $$
 $$
-  \omega_{\frac{\alpha}{2}} =
+  \frac{\alpha}{2}-percentile =
   \ceil*{ {{n+m}\choose{n}}\frac{\alpha}{2} } =
   \ceil*{ {{3+4}\choose{3}}\frac{0.05}{2} } =
   \ceil*{35(0.025)} =
@@ -250,7 +250,7 @@ $$
   1
 $$
 $$
-  \omega_{1-\frac{\alpha}{2}} =
+  1-\frac{\alpha}{2}-percentile =
   \ceil*{ {{n+m}\choose{n}}\left( 1-\frac{\alpha}{2} \right) } =
   \ceil*{ {{3+4}\choose{3}}\left( 1-\frac{0.05}{2} \right) } =
   \ceil*{35(0.975)} =

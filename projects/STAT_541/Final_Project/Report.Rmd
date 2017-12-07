@@ -878,38 +878,14 @@ $$
 $$
   + 0.0623\text{P1 Breakaways} - 0.5254\text{P2 Penalty Shots}
 $$
+I would have liked to use a model where the coefficients were averaged, and than any coefficient that appeared in less than $x$\% of the models was set to 0, but I didn't have the opportunity to implement said model, which would be worth looking into going forward. Another possibility would be to find the $\lambda_{Min}$ that minimized the $MSE$ across all models, and use that instead, but again due to time constraints, this wasn't possible.
 
 
 ## Interpretation
-- By scoring first, a player increases their estimated odds in favour of winning by a multiplicative factor of `r round(exp(-hockey_lasso_avg_lambda["Scored 1st Boolean (P2)",]), 4)`
-
-- Only P1's shots was found as a useful predictive measure.
-    - Increases the estimated odds in favour by a multiplicative factor of `r round(exp(hockey_lasso_avg_lambda["P1 Shots",]), 4)` per each additional shot
-    - So not a lot
-    
-- If both players make a lot of their passes, P1's increases their estimated odds in favour of winning by a multiplicative factor of:
-    - P1: `r round(exp(hockey_lasso_avg_lambda["P1 Passing",]), 4)`
-    - P2: `r round(exp(hockey_lasso_avg_lambda["P2 Passing",]), 4)`
-    
-- The more 1-on-0 opportunities given up in a game by a player, the less likely that player will win.
-    - Breakaways: `r round(exp(hockey_lasso_avg_lambda["P1 Breakaways",]), 4)`
-    - Penalty Shots: `r round(exp(hockey_lasso_avg_lambda["P2 Penalty Shots",]), 4)`
+By scoring first, a player increases their estimated odds in favor of winning by a multiplicative factor of `r round(exp(-hockey_lasso_avg_lambda["Scored 1st Boolean (P2)",]), 4)`. Only P1's shots was found as a useful predictive measure. Increases the estimated odds in favor by a multiplicative factor of `r round(exp(hockey_lasso_avg_lambda["P1 Shots",]), 4)` per each additional shot. If both players make a lot of their passes, P1's increases their estimated odds in favor of winning by a multiplicative factor of `r round(exp(hockey_lasso_avg_lambda["P1 Passing",]), 4)` for P1 and `r round(exp(hockey_lasso_avg_lambda["P2 Passing",]), 4)` for P2. The more 1-on-0 opportunities given up in a game by a player, the less likely that player will win. For Breakaways this equates to an estimated multiplicative increase by a factor of `r round(exp(hockey_lasso_avg_lambda["P1 Breakaways",]), 4)` and for Penalty Shots an estimated multiplicative increase by a factor of `r round(exp(hockey_lasso_avg_lambda["P2 Penalty Shots",]), 4)`.
 
 
 ## Weaknesses
-- Based on a video game
-    - May not apply to real life
+As with any model, it isn't perfect, so there are some weaknesses. One of which is; what is the real life application of this model? It only really applies to the video game played between these two players, so the results may not be true for any combination of players. As well, who is P1 and P2 in real life? the model would have been potentially more useful if it only include 1 players coefficients, or for each statistic chosen, included both players results, with preferably opposite signs. Passing \% is a example of this, as the higher completion rate by both players, the higher odds P1 has to win, which is unexpected to say the least. One would expect the more passes P2 makes, the odds of winning for P1 would decrease.
 
-- Who is P1 in real life?
-    - Other combinations of players may have different results
-
-- Includes P1's and P2's Passing \%
-    - Both have the same sign
-    - Unexpected
-    
-- Possible overfitting
-    - Uses $\lambda_{Min}$ instead of $\lambda_{1se}$
-    
-- Introduced bias to lower variance
-
-- It may be beneficial to use the average coefficient LASSO, with a cutoff if the variable appears in $<x\%$ of results
+As well, the $\lambda_{Min}$ was chosen over $\lambda_{1se}$, as the model was more interesting, as it chose more than one factor. This may be a result in over fitting, and is therefore not advised to do in general practice. As well, LASSO models introduce bias to lower variance, which may be worth examining as well.

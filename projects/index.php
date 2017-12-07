@@ -106,7 +106,7 @@
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						Final project for STAT 541
+						Final Project for STAT 541
 					</div>
 					<div class="mdl-card__actions mdl-card--border">
 						<a 
@@ -126,7 +126,7 @@
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						Final project for STAT 523
+						Final Project for STAT 523
 					</div>
 					<div class="mdl-card__actions mdl-card--border">
 						<a 
