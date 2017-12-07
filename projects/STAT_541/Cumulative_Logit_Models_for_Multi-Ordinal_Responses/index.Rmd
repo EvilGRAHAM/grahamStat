@@ -18,7 +18,7 @@ output:
   \newcommand{\that}{{\hat{T}}}
   \newcommand{\med}{{\tilde{Y}}}
   \newcommand{\Logit}{{\operatorname{Logit}}}
-  \]
+\]
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)

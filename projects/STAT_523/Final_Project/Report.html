@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Scott Graham" />
+
+<meta name="date" content="2017-11-30" />
+
+<title>Randomization Test</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">STAT 523 Final Project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="../../">Home</a>
+</li>
+<li>
+  <a href="Report.html">Report</a>
+</li>
+<li>
+  <a href="Presentation.html">Presentation</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Randomization Test</h1>
+<h4 class="author"><em>Scott Graham</em></h4>
+<h4 class="date"><em>November 30, 2017</em></h4>
+
+</div>
+
+
+<p><span class="math display">\[
+  \usepackage{mathtools}
+  \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+  \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]</span></p>
+<div id="theory" class="section level1">
+<h1>Theory</h1>
+<div id="motivation" class="section level2">
+<h2>Motivation:</h2>
+<p>Sometimes it can be quite difficult to determine the underlying distribution of a data set, especially when one chooses to use the actual observations, vs. looking at their ranks. While one may be able to spend time on deriving said distribution, this may provide minimal benefit in terms of the relative efficiency of the test. One may then ask, why use the actual observations at all as a means of scoring, and why not use merely their rank or score them based on an assumed distribution? By doing so, information is lost, in exchange for easy to calculate statistics and tables.</p>
+<p>Ronald Fisher set out to solve this problem, and in 1935 came up with the concept of a class of tests known as “Randomization Tests”. These tests are analogous to their non-parametric counterparts, to provide a means of addressing similar null and alternative hypotheses. For example: <span class="math display">\[
+  H_{0}: \theta(X) = \theta(Y)
+\]</span> <span class="math display">\[
+  H_{1}: \theta(X) \neq \theta(Y)
+\]</span> <span class="math inline">\(\theta\)</span> can be any number of statistics, with either known, or unknown underlying distributions. This becomes especially useful in the case when the underlying distribution is either unknown, or difficult to work with. One of the easiest examples to look at for this class of tests is the comparison of means between 2 random samples.</p>
+</div>
+</div>
+<div id="independent-samples" class="section level1">
+<h1>Independent Samples</h1>
+<div id="data" class="section level2">
+<h2>Data:</h2>
+<p>Consider two independent simple random samples: <span class="math display">\[
+  X_{i}, i = 1, 2, \dots, n
+\]</span> <span class="math display">\[
+  Y_{j}, j = 1, 2, \dots, m
+\]</span></p>
+<p>Where: <span class="math display">\[
+  X_{i} \stackrel{i.i.d.}{\sim} f(x) \forall i = 1, 2, \dots, n
+\]</span> <span class="math display">\[
+  Y_{j} \stackrel{i.i.d.}{\sim} g(y) \forall j = 1, 2, \dots, m
+\]</span></p>
+<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are at least an interval scale. We then pool the data into one large random sample <span class="math inline">\(Z\)</span>. <span class="math display">\[
+  Z = 
+  \{X_{i}, Y_{j}\} \forall i,j \implies
+  Z = 
+  \{X_{1}, X_{2}, \dots, X_{n}, Y_{1}, Y_{2}, \dots, Y_{m}\}
+\]</span></p>
+</div>
+<div id="test-statistic" class="section level2">
+<h2>Test Statistic:</h2>
+<p>Let: <span class="math display">\[
+  T_{1} =
+  \sum_{i = 1}^{n} X_{i}
+\]</span></p>
+</div>
+<div id="distribution" class="section level2">
+<h2>Distribution:</h2>
+<p>For most tests, we’d attach some well defined distribution, such as a normal distribution or a binomial distribution, but instead we use our sample <span class="math inline">\(Z\)</span> as the distribution. As such it does no make sense to create tables describing this distribution, as the null distribution for any two samples differ.</p>
+<p>Instead we consider all ways to choose <span class="math inline">\(n\)</span> observations from <span class="math inline">\(Z\)</span>, of which there are <span class="math inline">\(n+m\)</span> entries. From this we have exactly <span class="math inline">\({{n+m}\choose{n}}\)</span> possible combinations. Then we find the arrangement of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> that yield the smallest <span class="math inline">\(T_{1}\)</span>, and by ordering them from smallest to largest, we use: <span class="math display">\[
+  p^{th}-quantile =
+  \ceil*{ {{n+m}\choose{n}}p }
+\]</span> This number is the index of the value of <span class="math inline">\(T_{1}\)</span> we wish to assign to <span class="math inline">\(\omega_{p}\)</span>.</p>
+<p>Let <span class="math inline">\(T_{1}^{(i)}\)</span> be the <span class="math inline">\(i^{\text{th}}\)</span> largest possible value for <span class="math inline">\(T_{1}\)</span>, by rearranging which values in <span class="math inline">\(Z\)</span> are considered as <span class="math inline">\(X\)</span>s or <span class="math inline">\(Y\)</span>s. Then we have the pth-quantile of <span class="math inline">\(T_{1}\)</span>: <span class="math display">\[
+  \omega_{p} =
+  T_{1}^{\left( \ceil*{ {{n+m}\choose{n}}p } \right)}
+\]</span></p>
+<p>This is similar to the bootstrap method (which is closely related), as under the null hypothesis, approximately <span class="math inline">\(p\)</span> percent of <span class="math inline">\(T_{1}\)</span>s should be less than <span class="math inline">\(T_{1}^{(\omega_{p})}\)</span>.</p>
+<p>We can then use this to find the rejection region for our test, by finding <span class="math inline">\(\omega_{\frac{\alpha}{2}}\)</span> and <span class="math inline">\(\omega_{1-\frac{\alpha}{2}}\)</span>, and see if <span class="math inline">\(T_{1}\)</span> falls outside of these two numbers.</p>
+<p>Equivalently we can find the p-value of the test, by finding the proportion of possible values for <span class="math inline">\(T_{1}\)</span>, less than what we observed, and multiplying it by 2 if we are considering the two-tailed version.</p>
+</div>
+<div id="example" class="section level2">
+<h2>Example:</h2>
+<p>For this test, we will look at a few cases to see how the randomization test compares to other parametric and non-parametric methods. In “R”, this can be accomplished by <code>library(perm)</code>, and calling the function <code>permTS</code>. Histograms of the <span class="math inline">\(X_{i}\)</span>s can be found in Appendices A-C.</p>
+<div id="proof-of-concept" class="section level3">
+<h3>Proof of Concept</h3>
+<pre class="r"><code>set.seed(5609)
+x_PoC &lt;- sample(1:5, size = 3, replace = TRUE)
+y_PoC &lt;- sample(3:8, size = 4, replace = TRUE)
+perm::permTS(x = x_PoC, y = y_PoC, alternative = &quot;two.sided&quot;, exact = TRUE)</code></pre>
+<pre><code>## 
+##  Exact Permutation Test (network algorithm)
+## 
+## data:  x_PoC and y_PoC
+## p-value = 0.2286
+## alternative hypothesis: true mean x_PoC - mean y_PoC is not equal to 0
+## sample estimates:
+## mean x_PoC - mean y_PoC 
+##               -2.333333</code></pre>
+<p>This is equivalent to doing the following:</p>
+<span class="math display">\[
+  X = \{5, 1, 2\},
+  Y = \{6, 5, 5, 4\} \implies
+  Z = \{1, 2, 4, 5, 5, 5, 6\}
+\]</span> <span class="math display">\[
+  H_{0}: \E(X) = \E(Y)
+\]</span> <span class="math display">\[
+  H_{1}: \E(X) \neq \E(Y)
+\]</span> <span class="math display">\[
+  \omega_{\frac{\alpha}{2}} =
+  \ceil*{ {{n+m}\choose{n}}\frac{\alpha}{2} } =
+  \ceil*{ {{3+4}\choose{3}}\frac{0.05}{2} } =
+  \ceil*{35(0.025)} =
+  \ceil*{0.875} =
+  1
+\]</span> <span class="math display">\[
+  \omega_{1-\frac{\alpha}{2}} =
+  \ceil*{ {{n+m}\choose{n}}\left( 1-\frac{\alpha}{2} \right) } =
+  \ceil*{ {{3+4}\choose{3}}\left( 1-\frac{0.05}{2} \right) } =
+  \ceil*{35(0.975)} =
+  \ceil*{34.25} =
+  35
+\]</span>
+
+<p><span class="math display">\[
+  T_{1} =
+  \sum_{i=1}^{3}X_{i} =
+  5 + 1 + 2 =
+  13
+\]</span> Therefore we fail to reject the null hypothesis based on the sample. <span class="math display">\[
+  p-value =
+  2\frac{4}{35} =
+  \frac{8}{35} =
+  0.2286
+\]</span> We use 4 in the numerator, as there are 4 possible values for <span class="math inline">\(T_{1}\leq13\)</span>.</p>
+</div>
+<div id="normal-distribution" class="section level3">
+<h3>Normal Distribution</h3>
+Let: <span class="math display">\[
+  X_{1, j} \sim \mathcal{N}(0, 1),
+  X_{2, j} \sim \mathcal{N}(0, 2),
+  X_{3, j} \sim \mathcal{N}(1, 1),
+  X_{4. j} \sim \mathcal{N}(1, 2),
+  j = 1, 2, \dots, 25
+\]</span>
+
+<p>Looking at the table, we are primarily interested in the cases when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> have different population means. As expected the t-test has the lowest p-value, and hence highest power, followed by the randomization test and then finally the Wilcoxon test. As well, at <span class="math inline">\(\alpha=0.05\)</span>, all 3 tests correctly rejected or failed to reject the null hypothesis.</p>
+</div>
+<div id="weibull-distribution" class="section level3">
+<h3>Weibull Distribution</h3>
+<span class="math display">\[
+  X_{1, j} \sim Wei(\lambda = 1, k = 1),
+  X_{2, j} \sim Wei(\lambda = 2, k = 1),
+\]</span> <span class="math display">\[
+  X_{3, j} \sim Wei\left( \lambda = \frac{1}{\Gamma\left(1+\frac{1}{2}\right)}, k = 2 \right),
+  X_{4, j} \sim Wei\left( \lambda = \frac{2}{\Gamma\left(1+\frac{1}{2}\right)}, k = 2 \right),
+  j = 1, 2, \dots, 25
+\]</span>
+
+<p>Here we use a distribution with heavier tails than that of a normal distribution, which would normally call for a non-parametric test, vs. using a traditional t-test. Again looking at the cases where <span class="math inline">\(\mu_{X}\neq\mu_{Y}\)</span>, we have the Wilcoxon test being the most powerful of the 3, followed by either the t-test or the randomization test.</p>
+</div>
+<div id="uniform-distribution" class="section level3">
+<h3>Uniform Distribution</h3>
+<span class="math display">\[
+  X_{1, j} \sim \mathcal{U}(-1, 1),
+  X_{2, j} \sim \mathcal{U}(-2, 2),
+  X_{3, j} \sim \mathcal{U}(0, 2),
+  X_{4, j} \sim \mathcal{U}(-1, 3),
+  j = 1, 2, \dots, 25
+\]</span>
+
+<p>For the Uniform Distribution, generally the t-test is the most powerful, usually followed by the Wilcoxon test and finally the randomization test.</p>
+</div>
+</div>
+</div>
+<div id="matched-pairs" class="section level1">
+<h1>Matched Pairs</h1>
+<div id="data-1" class="section level2">
+<h2>Data:</h2>
+<p>Another useful configuration is when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are paired: <span class="math display">\[
+  \left( X_{1}, Y_{1} \right), \left( X_{2}, Y_{2} \right), \dots, \left( X_{n&#39;}, Y_{n&#39;} \right)
+\]</span></p>
+</div>
+<div id="test-statistic-1" class="section level2">
+<h2>Test Statistic:</h2>
+<p>And then only look at the <span class="math inline">\(n\)</span> pairs who have non zero differences. Let: <span class="math display">\[
+  D_{i} = 
+  Y_{i} - X_{i}, i = 1, 2, \dots, n
+\]</span> <span class="math display">\[
+  T_{2} =
+  \sum_{i=1}^{n}D_{i}, \forall D_{i} &gt; 0
+\]</span></p>
+</div>
+<div id="distribution-1" class="section level2">
+<h2>Distribution:</h2>
+<p>Then if we consider <span class="math inline">\(|D_{i}|\)</span>, there are <span class="math inline">\(2^{n}\)</span> ways of assigning a <span class="math inline">\(+\)</span> or <span class="math inline">\(-\)</span> symbol to each of the <span class="math inline">\(n\)</span> <span class="math inline">\(D_{i}\)</span>s. Then we can define <span class="math inline">\(\omega_{\frac{\alpha}{2}}\)</span> as: <span class="math display">\[
+  \frac{\alpha}{2}-quantile = 
+  2^{n}\frac{\alpha}{2}
+\]</span> This functions similarly to the sign test, but instead of looking at the signs directly, we randomly assign them to the existing differences.</p>
+<p>Let: <span class="math display">\[
+  \omega_{\frac{\alpha}{2}} =
+  T_{2}^{\left( 2^{n}\frac{\alpha}{2} \right)}
+\]</span> <span class="math display">\[
+  \omega_{1 - \frac{\alpha}{2}} =
+  \sum_{i=1}^{n}|D_{i}| - \omega_{\frac{\alpha}{2}}
+\]</span> Which forms the basis for the rejection region.</p>
+<p>The p-value for this test is: <span class="math display">\[
+  2\frac{\min\{ \text{\# of }T_{2} \leq \text{the observed}, \text{\# of }T_{2} \geq \text{the observed} \}}{2^{n}}
+\]</span></p>
+</div>
+<div id="example-1" class="section level2">
+<h2>Example:</h2>
+<p>The code for the function <code>permPT</code> can be found in Appendix D.</p>
+<div id="proof-of-concept-1" class="section level3">
+<h3>Proof of Concept</h3>
+<pre class="r"><code>set.seed(5609)
+alpha &lt;- 0.05
+n_prime &lt;- 20
+# Random sample with n&#39; = 10
+z_PoC &lt;- sample(-5:5, size = n_prime, replace = TRUE)
+z_PoC</code></pre>
+<pre><code>##  [1]  5 -4 -3  0  0 -1 -3  0  5 -3  4 -5 -4 -5  0  5 -3 -4 -3 -1</code></pre>
+<pre class="r"><code># First n&#39;/2 numbers are assigned to x, second n&#39;/2 to y
+x_PoC &lt;- z_PoC[1:(n_prime/2)]
+y_PoC &lt;- z_PoC[(n_prime/2 + 1):n_prime]
+
+results &lt;- permPT(x_PoC, y_PoC, alpha)
+cat(
+  &quot;\n&quot;,
+  &quot;T_2:&quot;, results$T_2, &quot;\n&quot;,
+  &quot;Lower Bound:&quot;, results$RR[1], &quot;\n&quot;,
+  &quot;Upper Bound:&quot;, results$RR[2], &quot;\n&quot;,
+  &quot;P-Value:&quot;, results$p.value
+)</code></pre>
+<pre><code>## 
+##  T_2: 8 
+##  Lower Bound: 2 
+##  Upper Bound: 26 
+##  P-Value: 0.40625</code></pre>
+<p>Since <span class="math inline">\(T_{2}=8\in[2, 26]\)</span>, and equivalently, the p-value<span class="math inline">\(=0.40625&gt;\alpha=0.05\)</span>, we fail to reject the null hypothesis of equal means based on the sample.</p>
+</div>
+<div id="normal-distribution-1" class="section level3">
+<h3>Normal Distribution</h3>
+Let: <span class="math display">\[
+  X_{1, j} \sim \mathcal{N}(0, 1),
+  X_{2, j} \sim \mathcal{N}(0, 2),
+  X_{3, j} \sim \mathcal{N}(1, 1),
+  X_{4. j} \sim \mathcal{N}(1, 2),
+  j = 1, 2, \dots, 10
+\]</span>
+
+<p>For the most part, both the randomization test and the t-test compute very similar p-values. It is important to note that none of the tests detected a significant difference at a level of <span class="math inline">\(\alpha=0.05\)</span>, however this may be due to small sample sizes. The reason for dropping the sample size to <span class="math inline">\(n=10\)</span> for this, is that the <code>permPT</code> function can’t handle data much larger than that, before the internal variables balloon in size.</p>
+</div>
+<div id="weibull-distribution-1" class="section level3">
+<h3>Weibull Distribution</h3>
+<span class="math display">\[
+  X_{1, j} \sim Wei(\lambda = 1, k = 1),
+  X_{2, j} \sim Wei(\lambda = 2, k = 1),
+\]</span> <span class="math display">\[
+  X_{3, j} \sim Wei\left( \lambda = \frac{1}{\Gamma\left(1+\frac{1}{2}\right)}, k = 2 \right),
+  X_{4, j} \sim Wei\left( \lambda = \frac{2}{\Gamma\left(1+\frac{1}{2}\right)}, k = 2 \right),
+  j = 1, 2, \dots, 10
+\]</span>
+
+<p>From this table, it appears that the power of the randomization test lies somewhere between the Wilcoxon Paired test, and the paired t-test. This would make sense for a heavier tailed distribution, as the Wilcoxon test should be the most powerful of the 3. As well, we also see some statistically significant results among the tests, and improvement over he results in the normal distribution.</p>
+</div>
+<div id="uniform-distribution-1" class="section level3">
+<h3>Uniform Distribution</h3>
+<span class="math display">\[
+  X_{1, j} \sim \mathcal{U}(-1, 1),
+  X_{2, j} \sim \mathcal{U}(-2, 2),
+  X_{3, j} \sim \mathcal{U}(0, 2),
+  X_{4, j} \sim \mathcal{U}(-1, 3),
+  j = 1, 2, \dots, 10
+\]</span>
+
+<p>The Uniform Distribution being a lighter tailed distribution, it’d be expected that the paired t-test would be the most powerful, followed by the randomization test, and finally the paired Wilcoxon test. This generally seems to hold true based on these results, which is encouraging in that regard.</p>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>Randomization tests provide statisticians with another tool for the hypothesis testing. The primary advantage of this class of tests, is that it effectively allows you to test a hypothesis involving nearly any statistic, without the need to derive an underlying distribution. By freeing oneself of this need, the assumptions for running such a test are relaxed. Take for example a t-test, this test requires <span class="math inline">\(X\&amp;Y\stackrel{i.i.d.}{\sim}\mathcal{N}\)</span>. This relaxes in a randomization test, as no underlying distribution is assumed, and the distribution of the test statistic is derived from the data, which may not be a theoretically friendly distribution.</p>
+<p>This can be especially helpful for cases with <span class="math inline">\(n&lt;20\)</span>, as when examining the mean, the Central Limit Theorem may not have kicked in yet. If the distribution of the population is not known, it may not be accurate to use a t-test. If instead a Wilcoxon test is done, information is lost in the conversion of observations to rank. This can be mitigated through the careful selection of scores representing the data, but that requires making additional assumptions regarding the data. By instead choosing to use the data itself as a score, information is not lost in favor of not being able to generate nice tables or being able to state the sampling distribution.</p>
+<p>A drawback of this method is it is typically not the optimal solution in most cases. Going back to the example with the means, usually either the t-test or Wilcoxon test was deemed optimal, with the Randomization test coming in second or sometimes third. However this does allow for it to be applicable in many situations, where the analyst may be unsure which of the other two tests is more appropriate. As well, unless carefully written, Randomization tests can be quite computationally intensive. As an example, consider the <code>permPT</code> function written for this paper:</p>
+<p><img src="Report_files/figure-html/permPT%20Timing-1.png" width="672" /></p>
+<p>Even with a small sample size of 15, the time it takes to complete the function grows at an exponential rate. Obviously this isn’t the most efficient means of implementing this test, but it does highlight the difficulties of implementation.</p>
+<p>The biggest advantage to using a Randomization test is the freedom choose what statistic you wish to test, and the direction you wish to test it. This makes this class of tests especially friendly to those with little theoretical statistical knowledge, as it allows them to go about their data analysis without stopping to figure out every test they might need to run, and the requisite assumptions and interpretations.</p>
+
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Conover, W. J. (1999). Practical nonparametric statistics (3rd ed.). John Wiley &amp; Sons.</p>
+<p>Fay, M. (2010, July 29). Perm: Exact or Asymptotic permutation tests. Retrieved November 29, 2017, from <a href="https://cran.r-project.org/package=perm" class="uri">https://cran.r-project.org/package=perm</a></p>
+</div>
+<div id="appendices" class="section level1">
+<h1>Appendices</h1>
+<div id="appendix-a" class="section level2">
+<h2>Appendix A</h2>
+<p><img src="Report_files/figure-html/Appendix%20A-1.png" width="672" /></p>
+</div>
+<div id="appendix-b" class="section level2">
+<h2>Appendix B</h2>
+<p><img src="Report_files/figure-html/Appendix%20B-1.png" width="672" /></p>
+</div>
+<div id="appendix-c" class="section level2">
+<h2>Appendix C</h2>
+<p><img src="Report_files/figure-html/Appendix%20C-1.png" width="672" /></p>
+</div>
+<div id="appendix-d" class="section level2">
+<h2>Appendix D</h2>
+<pre class="r"><code>permPT &lt;- function(x, y, alpha){
+  # D_i is their difference
+  D_i &lt;- y - x
+
+  # Remove any 0s
+  D_i &lt;- D_i[D_i != 0]
+  n &lt;- length(D_i)
+  
+  # Test Statistic
+  T_2 &lt;- sum(D_i[D_i &gt; 0])
+  
+  # Quantiles
+  lower_quantile &lt;- ceiling(2^n * alpha / 2)
+  
+  # Orders the D_i from smallest to largest
+  D_i &lt;- D_i[order(D_i)]
+  
+  # Creates a matrix of size n, 2^n
+  all_possible_combs &lt;- t(expand.grid(lapply(numeric(n), function(x) c(-1, 1))))
+  all_possible_combs &lt;- all_possible_combs * D_i
+  
+  # Anything &lt;= 0, we set to 0, so we don&#39;t sum them when finding T_2
+  for (i in 1:n){
+    for(j in 1:(2^n)){
+      all_possible_combs[i, j] &lt;- ifelse(all_possible_combs[i, j] &gt; 0, all_possible_combs[i, j], 0)
+    }
+  }
+  
+  # Finds the column sums, orders them and prints out the required ones
+  all_possible_col_sums &lt;- colSums(all_possible_combs)
+  all_possible_col_sums &lt;- all_possible_col_sums[order(all_possible_col_sums)]
+  
+  # Rejection Region
+  w_lower &lt;- all_possible_col_sums[lower_quantile]
+  w_upper &lt;- sum(abs(D_i)) - w_lower
+  RR &lt;- c(w_lower, w_upper)
+  
+  # P-Value
+  num_leq_T_2 &lt;- length(all_possible_col_sums[all_possible_col_sums &lt;= T_2])
+  num_geq_T_2 &lt;- length(all_possible_col_sums[all_possible_col_sums &gt;= T_2])
+  p.value = 2 * (min(num_leq_T_2, num_geq_T_2) / 2^(n))
+  
+  # Results List
+  results &lt;- 
+    list(
+      T_2 = T_2
+      ,RR = RR
+      ,p.value = p.value
+    )
+  results
+}</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

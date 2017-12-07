@@ -1,0 +1,1019 @@
+---
+title: "Randomization Test"
+author: "Scott Graham"
+date: "November 30, 2017"
+output:
+  html_document:
+    theme: lumen
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
+library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+library(perm, warn.conflicts = FALSE, quietly = TRUE)
+library(coin, warn.conflicts = FALSE, quietly = TRUE)
+library(knitr, warn.conflicts = FALSE, quietly = TRUE)
+library(kableExtra, warn.conflicts = FALSE, quietly = TRUE)
+
+theme_minimal2 <- theme_minimal() %>%  theme_set()
+theme_minimal2 <-
+  theme_update(
+    panel.border = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+    ,strip.background = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+  )
+
+four_facet_hist <- function(data){
+  data %>%
+    gather(key = X_i, value = Observation, -j) %>%
+    ggplot(
+      aes(
+        x = Observation,
+        colour = X_i
+      )
+    ) +
+    geom_density(size = 1) +
+    facet_wrap(
+      ~ X_i
+      ,ncol = 1
+    ) +
+    scale_colour_brewer(
+      type = "qual"
+      ,name = "X_i"
+      ,palette = "Set2"
+    )
+}
+
+permPT <- function(x, y, alpha){
+  # D_i is their difference
+  D_i <- y - x
+
+  # Remove any 0s
+  D_i <- D_i[D_i != 0]
+  n <- length(D_i)
+  
+  # Test Statistic
+  T_2 <- sum(D_i[D_i > 0])
+  
+  # Quantiles
+  lower_quantile <- ceiling(2^n * alpha / 2)
+  
+  # Orders the D_i from smallest to largest
+  D_i <- D_i[order(D_i)]
+  
+  # Creates a matrix of size n, 2^n
+  all_possible_combs <- t(expand.grid(lapply(numeric(n), function(x) c(-1, 1))))
+  all_possible_combs <- all_possible_combs * D_i
+  
+  # Anything <= 0, we set to 0, so we don't sum them when finding T_2
+  for (i in 1:n){
+    for(j in 1:(2^n)){
+      all_possible_combs[i, j] <- ifelse(all_possible_combs[i, j] > 0, all_possible_combs[i, j], 0)
+    }
+  }
+  
+  # Finds the column sums, orders them and prints out the required ones
+  all_possible_col_sums <- colSums(all_possible_combs)
+  all_possible_col_sums <- all_possible_col_sums[order(all_possible_col_sums)]
+  
+  # Rejection Region
+  w_lower <- all_possible_col_sums[lower_quantile]
+  w_upper <- sum(abs(D_i)) - w_lower
+  RR <- c(w_lower, w_upper)
+  
+  # P-Value
+  num_leq_T_2 <- length(all_possible_col_sums[all_possible_col_sums <= T_2])
+  num_geq_T_2 <- length(all_possible_col_sums[all_possible_col_sums >= T_2])
+  p.value = 2 * (min(num_leq_T_2, num_geq_T_2) / 2^(n))
+  
+  # Results List
+  results <- 
+    list(
+      T_2 = T_2
+      ,RR = RR
+      ,p.value = p.value
+    )
+  results
+}
+
+permPT_time <- function(iterations){
+  function_time_df <- 
+    tibble(
+      n = as.numeric(NA)
+      ,Time = as.numeric(NA)
+    )
+  for(i in 2:iterations){
+    x <- rnorm(n = i, mean = 0, sd = 1)
+    y <- rnorm(n = i, mean = 1, sd = 1)
+    function_time_df[i-1, ] <- 
+      cbind(
+        i
+        ,as.numeric(system.time(expr = permPT(x, y, alpha = 0.05))["elapsed"])
+      )
+  }
+  rownames(function_time_df) <- NULL
+  function_time_df
+}
+```
+\[
+  \usepackage{mathtools}
+  \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+  \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]
+
+# Theory
+## Motivation:
+Sometimes it can be quite difficult to determine the underlying distribution of a data set, especially when one chooses to use the actual observations, vs. looking at their ranks. While one may be able to spend time on deriving said distribution, this may provide minimal benefit in terms of the relative efficiency of the test. One may then ask, why use the actual observations at all as a means of scoring, and why not use merely their rank or score them based on an assumed distribution? By doing so, information is lost, in exchange for easy to calculate statistics and tables.
+
+Ronald Fisher set out to solve this problem, and in 1935 came up with the concept of a class of tests known as "Randomization Tests". These tests are analogous to their non-parametric counterparts, to provide a means of addressing similar null and alternative hypotheses. For example:
+$$
+  H_{0}: \theta(X) = \theta(Y)
+$$
+$$
+  H_{1}: \theta(X) \neq \theta(Y)
+$$
+$\theta$ can be any number of statistics, with either known, or unknown underlying distributions. This becomes especially useful in the case when the underlying distribution is either unknown, or difficult to work with. One of the easiest examples to look at for this class of tests is the comparison of means between 2 random samples.
+
+
+
+# Independent Samples
+## Data:
+Consider two independent simple random samples:
+$$
+  X_{i}, i = 1, 2, \dots, n
+$$
+$$
+  Y_{j}, j = 1, 2, \dots, m
+$$
+
+Where:
+$$
+  X_{i} \stackrel{i.i.d.}{\sim} f(x) \forall i = 1, 2, \dots, n
+$$
+$$
+  Y_{j} \stackrel{i.i.d.}{\sim} g(y) \forall j = 1, 2, \dots, m
+$$
+
+Both $X$ and $Y$ are at least an interval scale. We then pool the data into one large random sample $Z$.
+$$
+  Z = 
+  \{X_{i}, Y_{j}\} \forall i,j \implies
+  Z = 
+  \{X_{1}, X_{2}, \dots, X_{n}, Y_{1}, Y_{2}, \dots, Y_{m}\}
+$$
+
+
+## Test Statistic:
+Let:
+$$
+  T_{1} =
+  \sum_{i = 1}^{n} X_{i}
+$$
+
+
+## Distribution:
+For most tests, we'd attach some well defined distribution, such as a normal distribution or a binomial distribution, but instead we use our sample $Z$ as the distribution. As such it does no make sense to create tables describing this distribution, as the null distribution for any two samples differ.
+
+Instead we consider all ways to choose $n$ observations from $Z$, of which there are $n+m$ entries. From this we have exactly ${{n+m}\choose{n}}$ possible combinations. Then we find the arrangement of $X$ and $Y$ that yield the smallest $T_{1}$, and by ordering them from smallest to largest, we use:
+$$
+  p^{th}-quantile =
+  \ceil*{ {{n+m}\choose{n}}p }
+$$
+This number is the index of the value of $T_{1}$ we wish to assign to $\omega_{p}$.
+
+Let $T_{1}^{(i)}$ be the $i^{\text{th}}$ largest possible value for $T_{1}$, by rearranging which values in $Z$ are considered as $X$s or $Y$s. Then we have the pth-quantile of $T_{1}$:
+$$
+  \omega_{p} =
+  T_{1}^{\left( \ceil*{ {{n+m}\choose{n}}p } \right)}
+$$
+
+This is similar to the bootstrap method (which is closely related), as under the null hypothesis, approximately $p$ percent of $T_{1}$s should be less than $T_{1}^{(\omega_{p})}$.
+
+We can then use this to find the rejection region for our test, by finding $\omega_{\frac{\alpha}{2}}$ and $\omega_{1-\frac{\alpha}{2}}$, and see if $T_{1}$ falls outside of these two numbers.
+
+Equivalently we can find the p-value of the test, by finding the proportion of possible values for $T_{1}$, less than what we observed, and multiplying it by 2 if we are considering the two-tailed version.
+
+
+## Example:
+For this test, we will look at a few cases to see how the randomization test compares to other parametric and non-parametric methods. In "R", this can be accomplished by `library(perm)`, and calling the function `permTS`. Histograms of the $X_{i}$s can be found in Appendices A-C.
+
+### Proof of Concept
+```{r PoCIS, echo=TRUE}
+set.seed(5609)
+x_PoC <- sample(1:5, size = 3, replace = TRUE)
+y_PoC <- sample(3:8, size = 4, replace = TRUE)
+perm::permTS(x = x_PoC, y = y_PoC, alternative = "two.sided", exact = TRUE)
+```
+
+This is equivalent to doing the following:
+
+$$
+  X = \{5, 1, 2\},
+  Y = \{6, 5, 5, 4\} \implies
+  Z = \{1, 2, 4, 5, 5, 5, 6\}
+$$
+$$
+  H_{0}: \E(X) = \E(Y)
+$$
+$$
+  H_{1}: \E(X) \neq \E(Y)
+$$
+$$
+  \omega_{\frac{\alpha}{2}} =
+  \ceil*{ {{n+m}\choose{n}}\frac{\alpha}{2} } =
+  \ceil*{ {{3+4}\choose{3}}\frac{0.05}{2} } =
+  \ceil*{35(0.025)} =
+  \ceil*{0.875} =
+  1
+$$
+$$
+  \omega_{1-\frac{\alpha}{2}} =
+  \ceil*{ {{n+m}\choose{n}}\left( 1-\frac{\alpha}{2} \right) } =
+  \ceil*{ {{3+4}\choose{3}}\left( 1-\frac{0.05}{2} \right) } =
+  \ceil*{35(0.975)} =
+  \ceil*{34.25} =
+  35
+$$
+\begin{center}
+  \begin{tabular}{ c|c c c c c c c|c }
+    \hline
+    (i) & 1 & 2 & 4 & 5 & 5 & 5 & 6 & T \\
+    \hline
+    (1) & X & X & X & Y & Y & Y & Y & 7 \\
+    (2) & X & X & Y & X & Y & Y & Y & 8 \\
+    (3) & X & X & Y & Y & X & Y & Y & 8 \\
+    \vdots &  \vdots &  \vdots &  \vdots &  \vdots &  \vdots &  \vdots &  \vdots &  \vdots \\ 
+    (34)& Y & Y & Y & X & Y & X & X & 16 \\
+    (35)& Y & Y & Y & Y & X & X & X & 16 \\
+    \hline
+  \end{tabular}
+\end{center}
+$$
+  T_{1} =
+  \sum_{i=1}^{3}X_{i} =
+  5 + 1 + 2 =
+  13
+$$
+Therefore we fail to reject the null hypothesis based on the sample.
+$$
+  p-value =
+  2\frac{4}{35} =
+  \frac{8}{35} =
+  0.2286
+$$
+We use 4 in the numerator, as there are 4 possible values for $T_{1}\leq13$.
+
+### Normal Distribution
+Let:
+$$
+  X_{1, j} \sim \mathcal{N}(0, 1),
+  X_{2, j} \sim \mathcal{N}(0, 2),
+  X_{3, j} \sim \mathcal{N}(1, 1),
+  X_{4. j} \sim \mathcal{N}(1, 2),
+  j = 1, 2, \dots, 25
+$$
+```{r ISEXND}
+set.seed(323643)
+normal_data <-
+  1:25 %>% 
+  tibble(
+    x_1 = rnorm(n = ., mean = 0, sd = 1)
+    ,x_2 = rnorm(n = ., mean = 0, sd = 2)
+    ,x_3 = rnorm(n = ., mean = 1, sd = 1)
+    ,x_4 = rnorm(n = ., mean = 1, sd = 2)
+  ) %>% 
+  rename(j = !!".")
+
+isexnd_results <-
+  1:4 %>% 
+  combn(m = 2) %>% 
+  t() %>% 
+  as.tibble() %>% 
+  rename(X = V1, Y = V2) %>% 
+  cbind(
+    tibble(
+      `Population Mean 1` = 
+        c(
+          0
+          ,0
+          ,0
+          ,0
+          ,0
+          ,1
+        )
+      ,`Population Mean 2` =
+        c(
+          0
+          ,1
+          ,1
+          ,1
+          ,1
+          ,1
+        )
+      ,`Randomization Test` = 
+        c(
+          permTS(x = normal_data$x_1, y = normal_data$x_2)$p.value
+          ,permTS(x = normal_data$x_1, y = normal_data$x_3)$p.value
+          ,permTS(x = normal_data$x_1, y = normal_data$x_4)$p.value
+          ,permTS(x = normal_data$x_2, y = normal_data$x_3)$p.value
+          ,permTS(x = normal_data$x_2, y = normal_data$x_4)$p.value
+          ,permTS(x = normal_data$x_3, y = normal_data$x_4)$p.value
+        )
+      ,`t-test` =
+        c(
+          t.test(x = normal_data$x_1, y = normal_data$x_2, var.equal = FALSE)$p.value
+          ,t.test(x = normal_data$x_1, y = normal_data$x_3, var.equal = FALSE)$p.value
+          ,t.test(x = normal_data$x_1, y = normal_data$x_4, var.equal = FALSE)$p.value
+          ,t.test(x = normal_data$x_2, y = normal_data$x_3, var.equal = FALSE)$p.value
+          ,t.test(x = normal_data$x_2, y = normal_data$x_4, var.equal = FALSE)$p.value
+          ,t.test(x = normal_data$x_3, y = normal_data$x_4, var.equal = FALSE)$p.value
+        )
+      ,`Wilcoxon test` = 
+        c(
+          wilcox.test(x = normal_data$x_1, y = normal_data$x_2)$p.value
+          ,wilcox.test(x = normal_data$x_1, y = normal_data$x_3)$p.value
+          ,wilcox.test(x = normal_data$x_1, y = normal_data$x_4)$p.value
+          ,wilcox.test(x = normal_data$x_2, y = normal_data$x_3)$p.value
+          ,wilcox.test(x = normal_data$x_2, y = normal_data$x_4)$p.value
+          ,wilcox.test(x = normal_data$x_3, y = normal_data$x_4)$p.value
+        )
+    )
+  ) %>% 
+  as.tibble()
+
+isexnd_results %>% 
+  kable(format = "latex", booktabs = T) %>% 
+  kable_styling()
+```
+
+Looking at the table, we are primarily interested in the cases when $X$ and $Y$ have different population means. As expected the t-test has the lowest p-value, and hence highest power, followed by the randomization test and then finally the Wilcoxon test. As well, at $\alpha=0.05$, all 3 tests correctly rejected or failed to reject the null hypothesis.
+
+### Weibull Distribution
+$$
+  X_{1, j} \sim Wei(\lambda = 1, k = 1),
+  X_{2, j} \sim Wei(\lambda = 2, k = 1),
+$$
+$$
+  X_{3, j} \sim Wei\left( \lambda = \frac{1}{\Gamma\left(1+\frac{1}{2}\right)}, k = 2 \right),
+  X_{4, j} \sim Wei\left( \lambda = \frac{2}{\Gamma\left(1+\frac{1}{2}\right)}, k = 2 \right),
+  j = 1, 2, \dots, 25
+$$
+```{r ISEXWD}
+set.seed(323643)
+wei_data <-
+  1:25 %>% 
+  tibble(
+    x_1 = rweibull(n = ., scale = 1, shape = 1)
+    ,x_2 = rweibull(n = ., scale = 2, shape = 1)
+    ,x_3 = rweibull(n = ., scale = 1/gamma(1+1/2), shape = 2)
+    ,x_4 = rweibull(n = ., scale = 2/gamma(1+1/2), shape = 2)
+  ) %>% 
+  rename(j = !!".")
+
+isexwd_results <-
+  1:4 %>% 
+  combn(m = 2) %>% 
+  t() %>% 
+  as.tibble() %>% 
+  rename(X = V1, Y = V2) %>% 
+  cbind(
+    tibble(
+      `Population Mean 1` = 
+        c(
+          1*gamma(1+1/1)
+          ,1*gamma(1+1/1)
+          ,1*gamma(1+1/1)
+          ,2*gamma(1+1/1)
+          ,2*gamma(1+1/1)
+          ,(1/gamma(1+1/2))*gamma(1+1/2)
+        )
+      ,`Population Mean 2` =
+        c(
+          2*gamma(1+1/1)
+          ,(1/gamma(1+1/2))*gamma(1+1/2)
+          ,(2/gamma(1+1/2))*gamma(1+1/2)
+          ,(1/gamma(1+1/2))*gamma(1+1/2)
+          ,(2/gamma(1+1/2))*gamma(1+1/2)
+          ,(2/gamma(1+1/2))*gamma(1+1/2)
+        )
+      ,`Randomization Test` =  
+        c(
+          permTS(x = wei_data$x_1, y = wei_data$x_2)$p.value
+          ,permTS(x = wei_data$x_1, y = wei_data$x_3)$p.value
+          ,permTS(x = wei_data$x_1, y = wei_data$x_4)$p.value
+          ,permTS(x = wei_data$x_2, y = wei_data$x_3)$p.value
+          ,permTS(x = wei_data$x_2, y = wei_data$x_4)$p.value
+          ,permTS(x = wei_data$x_3, y = wei_data$x_4)$p.value
+        )
+      ,`t-test` =
+        c(
+          t.test(x = wei_data$x_1, y = wei_data$x_2, var.equal = FALSE)$p.value
+          ,t.test(x = wei_data$x_1, y = wei_data$x_3, var.equal = FALSE)$p.value
+          ,t.test(x = wei_data$x_1, y = wei_data$x_4, var.equal = FALSE)$p.value
+          ,t.test(x = wei_data$x_2, y = wei_data$x_3, var.equal = FALSE)$p.value
+          ,t.test(x = wei_data$x_2, y = wei_data$x_4, var.equal = FALSE)$p.value
+          ,t.test(x = wei_data$x_3, y = wei_data$x_4, var.equal = FALSE)$p.value
+        )
+      ,`Wilcoxon test` = 
+        c(
+          wilcox.test(x = wei_data$x_1, y = wei_data$x_2)$p.value
+          ,wilcox.test(x = wei_data$x_1, y = wei_data$x_3)$p.value
+          ,wilcox.test(x = wei_data$x_1, y = wei_data$x_4)$p.value
+          ,wilcox.test(x = wei_data$x_2, y = wei_data$x_3)$p.value
+          ,wilcox.test(x = wei_data$x_2, y = wei_data$x_4)$p.value
+          ,wilcox.test(x = wei_data$x_3, y = wei_data$x_4)$p.value
+        )
+    )
+  ) %>% 
+  as.tibble()
+
+isexwd_results %>% 
+  kable(format = "latex", booktabs = T) %>% 
+  kable_styling()
+```
+
+Here we use a distribution with heavier tails than that of a normal distribution, which would normally call for a non-parametric test, vs. using a traditional t-test. Again looking at the cases where $\mu_{X}\neq\mu_{Y}$, we have the Wilcoxon test being the most powerful of the 3, followed by either the t-test or the randomization test.
+
+### Uniform Distribution
+$$
+  X_{1, j} \sim \mathcal{U}(-1, 1),
+  X_{2, j} \sim \mathcal{U}(-2, 2),
+  X_{3, j} \sim \mathcal{U}(0, 2),
+  X_{4, j} \sim \mathcal{U}(-1, 3),
+  j = 1, 2, \dots, 25
+$$
+```{r ISEXUD}
+set.seed(323643)
+unif_data <-
+  1:25 %>% 
+  tibble(
+    x_1 = runif(n = ., min = -1, max = 1)
+    ,x_2 = runif(n = ., min = -2, max = 2)
+    ,x_3 = runif(n = ., min = 0, max = 2)
+    ,x_4 = runif(n = ., min = -1, max = 3)
+  ) %>% 
+  rename(j = !!".")
+
+isexud_results <-
+  1:4 %>% 
+  combn(m = 2) %>% 
+  t() %>% 
+  as.tibble() %>% 
+  rename(X = V1, Y = V2) %>% 
+  cbind(
+    tibble(
+      `Population Mean 1` = 
+        c(
+          0
+          ,0
+          ,0
+          ,0
+          ,0
+          ,1
+        )
+      ,`Population Mean 2` =
+        c(
+          0
+          ,1
+          ,1
+          ,1
+          ,1
+          ,1
+        )
+      ,`Randomization Test` =  
+        c(
+          permTS(x = unif_data$x_1, y = unif_data$x_2)$p.value
+          ,permTS(x = unif_data$x_1, y = unif_data$x_3)$p.value
+          ,permTS(x = unif_data$x_1, y = unif_data$x_4)$p.value
+          ,permTS(x = unif_data$x_2, y = unif_data$x_3)$p.value
+          ,permTS(x = unif_data$x_2, y = unif_data$x_4)$p.value
+          ,permTS(x = unif_data$x_3, y = unif_data$x_4)$p.value
+        )
+      ,`t-test` =
+        c(
+          t.test(x = unif_data$x_1, y = unif_data$x_2, var.equal = FALSE)$p.value
+          ,t.test(x = unif_data$x_1, y = unif_data$x_3, var.equal = FALSE)$p.value
+          ,t.test(x = unif_data$x_1, y = unif_data$x_4, var.equal = FALSE)$p.value
+          ,t.test(x = unif_data$x_2, y = unif_data$x_3, var.equal = FALSE)$p.value
+          ,t.test(x = unif_data$x_2, y = unif_data$x_4, var.equal = FALSE)$p.value
+          ,t.test(x = unif_data$x_3, y = unif_data$x_4, var.equal = FALSE)$p.value
+        )
+      ,`Wilcoxon test` = 
+        c(
+          wilcox.test(x = unif_data$x_1, y = unif_data$x_2)$p.value
+          ,wilcox.test(x = unif_data$x_1, y = unif_data$x_3)$p.value
+          ,wilcox.test(x = unif_data$x_1, y = unif_data$x_4)$p.value
+          ,wilcox.test(x = unif_data$x_2, y = unif_data$x_3)$p.value
+          ,wilcox.test(x = unif_data$x_2, y = unif_data$x_4)$p.value
+          ,wilcox.test(x = unif_data$x_3, y = unif_data$x_4)$p.value
+        )
+    )
+  ) %>% 
+  as.tibble()
+
+isexud_results %>% 
+  kable(format = "latex", booktabs = T) %>% 
+  kable_styling()
+```
+
+For the Uniform Distribution, generally the t-test is the most powerful, usually followed by the Wilcoxon test and finally the randomization test.
+
+
+
+# Matched Pairs
+## Data:
+Another useful configuration is when $X$ and $Y$ are paired:
+$$
+  \left( X_{1}, Y_{1} \right), \left( X_{2}, Y_{2} \right), \dots, \left( X_{n'}, Y_{n'} \right)
+$$
+
+
+## Test Statistic:
+And then only look at the $n$ pairs who have non zero differences. Let:
+$$
+  D_{i} = 
+  Y_{i} - X_{i}, i = 1, 2, \dots, n
+$$
+$$
+  T_{2} =
+  \sum_{i=1}^{n}D_{i}, \forall D_{i} > 0
+$$
+
+
+## Distribution:
+Then if we consider $|D_{i}|$, there are $2^{n}$ ways of assigning a $+$ or $-$ symbol to each of the $n$ $D_{i}$s. Then we can define $\omega_{\frac{\alpha}{2}}$ as:
+$$
+  \frac{\alpha}{2}-quantile = 
+  2^{n}\frac{\alpha}{2}
+$$
+This functions similarly to the sign test, but instead of looking at the signs directly, we randomly assign them to the existing differences.
+
+Let:
+$$
+  \omega_{\frac{\alpha}{2}} =
+  T_{2}^{\left( 2^{n}\frac{\alpha}{2} \right)}
+$$
+$$
+  \omega_{1 - \frac{\alpha}{2}} =
+  \sum_{i=1}^{n}|D_{i}| - \omega_{\frac{\alpha}{2}}
+$$
+Which forms the basis for the rejection region.
+
+The p-value for this test is:
+$$
+  2\frac{\min\{ \text{\# of }T_{2} \leq \text{the observed}, \text{\# of }T_{2} \geq \text{the observed} \}}{2^{n}}
+$$
+
+
+## Example:
+The code for the function `permPT` can be found in Appendix D.
+
+### Proof of Concept
+```{r PoCTS, echo=TRUE}
+set.seed(5609)
+alpha <- 0.05
+n_prime <- 20
+# Random sample with n' = 10
+z_PoC <- sample(-5:5, size = n_prime, replace = TRUE)
+z_PoC
+
+# First n'/2 numbers are assigned to x, second n'/2 to y
+x_PoC <- z_PoC[1:(n_prime/2)]
+y_PoC <- z_PoC[(n_prime/2 + 1):n_prime]
+
+results <- permPT(x_PoC, y_PoC, alpha)
+cat(
+  "\n",
+  "T_2:", results$T_2, "\n",
+  "Lower Bound:", results$RR[1], "\n",
+  "Upper Bound:", results$RR[2], "\n",
+  "P-Value:", results$p.value
+)
+```
+
+Since $T_{2}=8\in[2, 26]$, and equivalently, the p-value$=0.40625>\alpha=0.05$, we fail to reject the null hypothesis of equal means based on the sample.
+
+### Normal Distribution
+Let:
+$$
+  X_{1, j} \sim \mathcal{N}(0, 1),
+  X_{2, j} \sim \mathcal{N}(0, 2),
+  X_{3, j} \sim \mathcal{N}(1, 1),
+  X_{4. j} \sim \mathcal{N}(1, 2),
+  j = 1, 2, \dots, 10
+$$
+```{r PTEXND}
+set.seed(323643)
+normal_data <-
+  1:10 %>% 
+  tibble(
+    x_1 = rnorm(n = ., mean = 0, sd = 1)
+    ,x_2 = rnorm(n = ., mean = 0, sd = 2)
+    ,x_3 = rnorm(n = ., mean = 1, sd = 1)
+    ,x_4 = rnorm(n = ., mean = 1, sd = 2)
+  ) %>% 
+  rename(j = !!".")
+
+ptexnd_results <-
+  1:4 %>% 
+  combn(m = 2) %>% 
+  t() %>% 
+  as.tibble() %>% 
+  rename(X = V1, Y = V2) %>% 
+  cbind(
+    tibble(
+      `Population Mean 1` = 
+        c(
+          0
+          ,0
+          ,0
+          ,0
+          ,0
+          ,1
+        )
+      ,`Population Mean 2` =
+        c(
+          0
+          ,1
+          ,1
+          ,1
+          ,1
+          ,1
+        )
+      ,`Randomization Test` =
+        c(
+          permPT(x = normal_data$x_1, y = normal_data$x_2, alpha = 0.05)$p.value
+          ,permPT(x = normal_data$x_1, y = normal_data$x_3, alpha = 0.05)$p.value
+          ,permPT(x = normal_data$x_1, y = normal_data$x_4, alpha = 0.05)$p.value
+          ,permPT(x = normal_data$x_2, y = normal_data$x_3, alpha = 0.05)$p.value
+          ,permPT(x = normal_data$x_2, y = normal_data$x_4, alpha = 0.05)$p.value
+          ,permPT(x = normal_data$x_3, y = normal_data$x_4, alpha = 0.05)$p.value
+        )
+      ,`t-test` =
+        c(
+          t.test(x = normal_data$x_1, y = normal_data$x_2, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = normal_data$x_1, y = normal_data$x_3, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = normal_data$x_1, y = normal_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = normal_data$x_2, y = normal_data$x_3, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = normal_data$x_2, y = normal_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = normal_data$x_3, y = normal_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+        )
+      ,`Wilcoxon test` = 
+        c(
+          wilcox.test(x = normal_data$x_1, y = normal_data$x_2, paired = TRUE)$p.value
+          ,wilcox.test(x = normal_data$x_1, y = normal_data$x_3, paired = TRUE)$p.value
+          ,wilcox.test(x = normal_data$x_1, y = normal_data$x_4, paired = TRUE)$p.value
+          ,wilcox.test(x = normal_data$x_2, y = normal_data$x_3, paired = TRUE)$p.value
+          ,wilcox.test(x = normal_data$x_2, y = normal_data$x_4, paired = TRUE)$p.value
+          ,wilcox.test(x = normal_data$x_3, y = normal_data$x_4, paired = TRUE)$p.value
+        )
+    )
+  ) %>% 
+  as.tibble()
+
+ptexnd_results %>% 
+  kable(format = "latex", booktabs = T) %>% 
+  kable_styling()
+```
+
+For the most part, both the randomization test and the t-test compute very similar p-values. It is important to note that none of the tests detected a significant difference at a level of $\alpha=0.05$, however this may be due to small sample sizes. The reason for dropping the sample size to $n=10$ for this, is that the `permPT` function can't handle data much larger than that, before the internal variables balloon in size.
+
+### Weibull Distribution
+$$
+  X_{1, j} \sim Wei(\lambda = 1, k = 1),
+  X_{2, j} \sim Wei(\lambda = 2, k = 1),
+$$
+$$
+  X_{3, j} \sim Wei\left( \lambda = \frac{1}{\Gamma\left(1+\frac{1}{2}\right)}, k = 2 \right),
+  X_{4, j} \sim Wei\left( \lambda = \frac{2}{\Gamma\left(1+\frac{1}{2}\right)}, k = 2 \right),
+  j = 1, 2, \dots, 10
+$$
+```{r PTEXWD}
+set.seed(323643)
+wei_data <-
+  1:10 %>% 
+  tibble(
+    x_1 = rweibull(n = ., scale = 1, shape = 1)
+    ,x_2 = rweibull(n = ., scale = 2, shape = 1)
+    ,x_3 = rweibull(n = ., scale = 1/gamma(1+1/2), shape = 2)
+    ,x_4 = rweibull(n = ., scale = 2/gamma(1+1/2), shape = 2)
+  ) %>% 
+  rename(j = !!".")
+
+ptexwd_results <-
+  1:4 %>% 
+  combn(m = 2) %>% 
+  t() %>% 
+  as.tibble() %>% 
+  rename(X = V1, Y = V2) %>% 
+  cbind(
+    tibble(
+      `Population Mean 1` = 
+        c(
+          0
+          ,0
+          ,0
+          ,0
+          ,0
+          ,1
+        )
+      ,`Population Mean 2` =
+        c(
+          0
+          ,1
+          ,1
+          ,1
+          ,1
+          ,1
+        )
+      ,`Randomization Test` =
+        c(
+          permPT(x = wei_data$x_1, y = wei_data$x_2, alpha = 0.05)$p.value
+          ,permPT(x = wei_data$x_1, y = wei_data$x_3, alpha = 0.05)$p.value
+          ,permPT(x = wei_data$x_1, y = wei_data$x_4, alpha = 0.05)$p.value
+          ,permPT(x = wei_data$x_2, y = wei_data$x_3, alpha = 0.05)$p.value
+          ,permPT(x = wei_data$x_2, y = wei_data$x_4, alpha = 0.05)$p.value
+          ,permPT(x = wei_data$x_3, y = wei_data$x_4, alpha = 0.05)$p.value
+        )
+      ,`t-test` =
+        c(
+          t.test(x = wei_data$x_1, y = wei_data$x_2, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = wei_data$x_1, y = wei_data$x_3, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = wei_data$x_1, y = wei_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = wei_data$x_2, y = wei_data$x_3, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = wei_data$x_2, y = wei_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = wei_data$x_3, y = wei_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+        )
+      ,`Wilcoxon test` = 
+        c(
+          wilcox.test(x = wei_data$x_1, y = wei_data$x_2, paired = TRUE)$p.value
+          ,wilcox.test(x = wei_data$x_1, y = wei_data$x_3, paired = TRUE)$p.value
+          ,wilcox.test(x = wei_data$x_1, y = wei_data$x_4, paired = TRUE)$p.value
+          ,wilcox.test(x = wei_data$x_2, y = wei_data$x_3, paired = TRUE)$p.value
+          ,wilcox.test(x = wei_data$x_2, y = wei_data$x_4, paired = TRUE)$p.value
+          ,wilcox.test(x = wei_data$x_3, y = wei_data$x_4, paired = TRUE)$p.value
+        )
+    )
+  ) %>% 
+  as.tibble()
+
+ptexwd_results %>% 
+  kable(format = "latex", booktabs = T) %>% 
+  kable_styling()
+```
+
+From this table, it appears that the power of the randomization test lies somewhere between the Wilcoxon Paired test, and the paired t-test. This would make sense for a heavier tailed distribution, as the Wilcoxon test should be the most powerful of the 3. As well, we also see some statistically significant results among the tests, and improvement over he results in the normal distribution.
+
+### Uniform Distribution
+$$
+  X_{1, j} \sim \mathcal{U}(-1, 1),
+  X_{2, j} \sim \mathcal{U}(-2, 2),
+  X_{3, j} \sim \mathcal{U}(0, 2),
+  X_{4, j} \sim \mathcal{U}(-1, 3),
+  j = 1, 2, \dots, 10
+$$
+```{r PTEXUD}
+set.seed(323643)
+unif_data <-
+  1:10 %>% 
+  tibble(
+    x_1 = runif(n = ., min = -1, max = 1)
+    ,x_2 = runif(n = ., min = -2, max = 2)
+    ,x_3 = runif(n = ., min = 0, max = 2)
+    ,x_4 = runif(n = ., min = -1, max = 3)
+  ) %>% 
+  rename(j = !!".")
+
+ptexnd_results <-
+  1:4 %>% 
+  combn(m = 2) %>% 
+  t() %>% 
+  as.tibble() %>% 
+  rename(X = V1, Y = V2) %>% 
+  cbind(
+    tibble(
+      `Population Mean 1` = 
+        c(
+          0
+          ,0
+          ,0
+          ,0
+          ,0
+          ,1
+        )
+      ,`Population Mean 2` =
+        c(
+          0
+          ,1
+          ,1
+          ,1
+          ,1
+          ,1
+        )
+      ,`Randomization Test` =
+        c(
+          permPT(x = unif_data$x_1, y = unif_data$x_2, alpha = 0.05)$p.value
+          ,permPT(x = unif_data$x_1, y = unif_data$x_3, alpha = 0.05)$p.value
+          ,permPT(x = unif_data$x_1, y = unif_data$x_4, alpha = 0.05)$p.value
+          ,permPT(x = unif_data$x_2, y = unif_data$x_3, alpha = 0.05)$p.value
+          ,permPT(x = unif_data$x_2, y = unif_data$x_4, alpha = 0.05)$p.value
+          ,permPT(x = unif_data$x_3, y = unif_data$x_4, alpha = 0.05)$p.value
+        )
+      ,`t-test` =
+        c(
+          t.test(x = unif_data$x_1, y = unif_data$x_2, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = unif_data$x_1, y = unif_data$x_3, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = unif_data$x_1, y = unif_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = unif_data$x_2, y = unif_data$x_3, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = unif_data$x_2, y = unif_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+          ,t.test(x = unif_data$x_3, y = unif_data$x_4, var.equal = FALSE, paired = TRUE)$p.value
+        )
+      ,`Wilcoxon test` = 
+        c(
+          wilcox.test(x = unif_data$x_1, y = unif_data$x_2, paired = TRUE)$p.value
+          ,wilcox.test(x = unif_data$x_1, y = unif_data$x_3, paired = TRUE)$p.value
+          ,wilcox.test(x = unif_data$x_1, y = unif_data$x_4, paired = TRUE)$p.value
+          ,wilcox.test(x = unif_data$x_2, y = unif_data$x_3, paired = TRUE)$p.value
+          ,wilcox.test(x = unif_data$x_2, y = unif_data$x_4, paired = TRUE)$p.value
+          ,wilcox.test(x = unif_data$x_3, y = unif_data$x_4, paired = TRUE)$p.value
+        )
+    )
+  ) %>% 
+  as.tibble()
+
+ptexnd_results %>% 
+  kable(format = "latex", booktabs = T) %>% 
+  kable_styling()
+```
+
+The Uniform Distribution being a lighter tailed distribution, it'd be expected that the paired t-test would be the most powerful, followed by the randomization test, and finally the paired Wilcoxon test. This generally seems to hold true based on these results, which is encouraging in that regard.
+
+
+
+# Conclusion
+Randomization tests provide statisticians with another tool for the hypothesis testing. The primary advantage of this class of tests, is that it effectively allows you to test a hypothesis involving nearly any statistic, without the need to derive an underlying distribution. By freeing oneself of this need, the assumptions for running such a test are relaxed. Take for example a t-test, this test requires $X\&Y\stackrel{i.i.d.}{\sim}\mathcal{N}$. This relaxes in a randomization test, as no underlying distribution is assumed, and the distribution of the test statistic is derived from the data, which may not be a theoretically friendly distribution. 
+
+This can be especially helpful for cases with $n<20$, as when examining the mean, the Central Limit Theorem may not have kicked in yet. If the distribution of the population is not known, it may not be accurate to use a t-test. If instead a Wilcoxon test is done, information is lost in the conversion of observations to rank. This can be mitigated through the careful selection of scores representing the data, but that requires making additional assumptions regarding the data.  By instead choosing to use the data itself as a score, information is not lost in favor of not being able to generate nice tables or being able to state the sampling distribution.
+
+A drawback of this method is it is typically not the optimal solution in most cases. Going back to the example with the means, usually either the t-test or Wilcoxon test was deemed optimal, with the Randomization test coming in second or sometimes third. However this does allow for it to be applicable in many situations, where the analyst may be unsure which of the other two tests is more appropriate. As well, unless carefully written, Randomization tests can be quite computationally intensive. As an example, consider the `permPT` function written for this paper:
+
+```{r permPT Timing, cache=TRUE}
+permPT_time(15) %>% 
+  ggplot(
+    aes(
+      x = n
+      ,y = Time
+    )
+  ) +
+  geom_smooth(
+    method = "lm"
+    ,formula = y ~ exp(x)
+    ,se = FALSE
+  ) +
+  geom_point() +
+  labs(y = "Time (s)")
+```
+
+Even with a small sample size of 15, the time it takes to complete the function grows at an exponential rate. Obviously this isn't the most efficient means of implementing this test, but it does highlight the difficulties of implementation.
+
+The biggest advantage to using a Randomization test is the freedom choose what statistic you wish to test, and the direction you wish to test it. This makes this class of tests especially friendly to those with little theoretical statistical knowledge, as it allows them to go about their data analysis without stopping to figure out every test they might need to run, and the requisite assumptions and interpretations.
+
+\pagebreak
+
+# References
+Conover, W. J. (1999). Practical nonparametric statistics (3rd ed.). John Wiley & Sons.
+
+Fay, M. (2010, July 29). Perm: Exact or Asymptotic permutation tests. Retrieved November 29, 2017, from https://cran.r-project.org/package=perm
+
+
+
+# Appendices
+## Appendix A
+```{r Appendix A}
+set.seed(323643)
+
+1:1000 %>% 
+  tibble(
+    x_1 = rnorm(n = ., mean = 0, sd = 1)
+    ,x_2 = rnorm(n = ., mean = 0, sd = 2)
+    ,x_3 = rnorm(n = ., mean = 1, sd = 1)
+    ,x_4 = rnorm(n = ., mean = 1, sd = 2)
+  ) %>% 
+  rename(j = !!".") %>% 
+  four_facet_hist() +
+  labs(title = "Normal Distribution")
+```
+
+
+## Appendix B
+```{r Appendix B}
+set.seed(323643)
+
+1:1000 %>% 
+  tibble(
+    x_1 = rweibull(n = ., scale = 1, shape = 1)
+    ,x_2 = rweibull(n = ., scale = 2, shape = 1)
+    ,x_3 = rweibull(n = ., scale = 1/gamma(1+1/2), shape = 2)
+    ,x_4 = rweibull(n = ., scale = 2/gamma(1+1/2), shape = 2)
+  ) %>% 
+  rename(j = !!".") %>% 
+  four_facet_hist() +
+  labs(title = "Weibull Distribution")
+```
+
+
+## Appendix C
+```{r Appendix C}
+set.seed(323643)
+
+1:1000 %>% 
+  tibble(
+    x_1 = runif(n = ., min = -1, max = 1)
+    ,x_2 = runif(n = ., min = -2, max = 2)
+    ,x_3 = runif(n = ., min = 0, max = 2)
+    ,x_4 = runif(n = ., min = -1, max = 3)
+  ) %>% 
+  rename(j = !!".") %>% 
+  four_facet_hist() +
+  labs(title = "Uniform Distribution")
+```
+
+
+## Appendix D
+```{r Appendix D, echo=TRUE, eval=FALSE}
+permPT <- function(x, y, alpha){
+  # D_i is their difference
+  D_i <- y - x
+
+  # Remove any 0s
+  D_i <- D_i[D_i != 0]
+  n <- length(D_i)
+  
+  # Test Statistic
+  T_2 <- sum(D_i[D_i > 0])
+  
+  # Quantiles
+  lower_quantile <- ceiling(2^n * alpha / 2)
+  
+  # Orders the D_i from smallest to largest
+  D_i <- D_i[order(D_i)]
+  
+  # Creates a matrix of size n, 2^n
+  all_possible_combs <- t(expand.grid(lapply(numeric(n), function(x) c(-1, 1))))
+  all_possible_combs <- all_possible_combs * D_i
+  
+  # Anything <= 0, we set to 0, so we don't sum them when finding T_2
+  for (i in 1:n){
+    for(j in 1:(2^n)){
+      all_possible_combs[i, j] <- ifelse(all_possible_combs[i, j] > 0, all_possible_combs[i, j], 0)
+    }
+  }
+  
+  # Finds the column sums, orders them and prints out the required ones
+  all_possible_col_sums <- colSums(all_possible_combs)
+  all_possible_col_sums <- all_possible_col_sums[order(all_possible_col_sums)]
+  
+  # Rejection Region
+  w_lower <- all_possible_col_sums[lower_quantile]
+  w_upper <- sum(abs(D_i)) - w_lower
+  RR <- c(w_lower, w_upper)
+  
+  # P-Value
+  num_leq_T_2 <- length(all_possible_col_sums[all_possible_col_sums <= T_2])
+  num_geq_T_2 <- length(all_possible_col_sums[all_possible_col_sums >= T_2])
+  p.value = 2 * (min(num_leq_T_2, num_geq_T_2) / 2^(n))
+  
+  # Results List
+  results <- 
+    list(
+      T_2 = T_2
+      ,RR = RR
+      ,p.value = p.value
+    )
+  results
+}
+```
+

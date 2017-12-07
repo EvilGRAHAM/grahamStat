@@ -1,0 +1,495 @@
+---
+title: "Randomization Test"
+author: "Scott Graham"
+date: "December 06, 2017"
+header-includes:
+   - \usepackage{mathtools}
+   - \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+   - \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+output:
+  ioslides_presentation:
+    smaller: true
+    logo: ../../../images/logo/GrahamStat-emblem-black.png
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
+library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+library(perm, warn.conflicts = FALSE, quietly = TRUE)
+library(coin, warn.conflicts = FALSE, quietly = TRUE)
+library(knitr, warn.conflicts = FALSE, quietly = TRUE)
+library(kableExtra, warn.conflicts = FALSE, quietly = TRUE)
+
+theme_minimal2 <- theme_minimal() %>%  theme_set()
+theme_minimal2 <-
+  theme_update(
+    panel.border = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+    ,strip.background = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+  )
+
+four_facet_hist <- function(data){
+  data %>%
+    gather(key = X_i, value = Observation, -j) %>%
+    ggplot(
+      aes(
+        x = Observation,
+        colour = X_i
+      )
+    ) +
+    geom_density(size = 1) +
+    facet_wrap(
+      ~ X_i
+      ,ncol = 1
+    ) +
+    scale_colour_brewer(
+      type = "qual"
+      ,name = "X_i"
+      ,palette = "Set2"
+    )
+}
+
+permPT <- function(x, y, alpha){
+  # D_i is their difference
+  D_i <- y - x
+
+  # Remove any 0s
+  D_i <- D_i[D_i != 0]
+  n <- length(D_i)
+  
+  # Test Statistic
+  T_2 <- sum(D_i[D_i > 0])
+  
+  # Quantiles
+  lower_quantile <- ceiling(2^n * alpha / 2)
+  
+  # Orders the D_i from smallest to largest
+  D_i <- D_i[order(D_i)]
+  
+  # Creates a matrix of size n, 2^n
+  all_possible_combs <- t(expand.grid(lapply(numeric(n), function(x) c(-1, 1))))
+  all_possible_combs <- all_possible_combs * D_i
+  
+  # Anything <= 0, we set to 0, so we don't sum them when finding T_2
+  for (i in 1:n){
+    for(j in 1:(2^n)){
+      all_possible_combs[i, j] <- ifelse(all_possible_combs[i, j] > 0, all_possible_combs[i, j], 0)
+    }
+  }
+  
+  # Finds the column sums, orders them and prints out the required ones
+  all_possible_col_sums <- colSums(all_possible_combs)
+  all_possible_col_sums <- all_possible_col_sums[order(all_possible_col_sums)]
+  
+  # Rejection Region
+  w_lower <- all_possible_col_sums[lower_quantile]
+  w_upper <- sum(abs(D_i)) - w_lower
+  RR <- c(w_lower, w_upper)
+  
+  # P-Value
+  num_leq_T_2 <- length(all_possible_col_sums[all_possible_col_sums <= T_2])
+  num_geq_T_2 <- length(all_possible_col_sums[all_possible_col_sums >= T_2])
+  p.value = 2 * (min(num_leq_T_2, num_geq_T_2) / 2^(n))
+  
+  # Results List
+  results <- 
+    list(
+      T_2 = T_2
+      ,RR = RR
+      ,p.value = p.value
+    )
+  results
+}
+
+permPT_time <- function(iterations){
+  function_time_df <- 
+    tibble(
+      n = as.numeric(NA)
+      ,Time = as.numeric(NA)
+    )
+  for(i in 2:iterations){
+    x <- rnorm(n = i, mean = 0, sd = 1)
+    y <- rnorm(n = i, mean = 1, sd = 1)
+    function_time_df[i-1, ] <- 
+      cbind(
+        i
+        ,as.numeric(system.time(expr = permPT(x, y, alpha = 0.05))["elapsed"])
+      )
+  }
+  rownames(function_time_df) <- NULL
+  function_time_df
+}
+```
+\[
+  \newcommand{\Prob}{\operatorname{P}}
+  \newcommand{\E}{\operatorname{E}}
+  \newcommand{\Var}{\operatorname{Var}}
+  \newcommand{\Cov}{\operatorname{Cov}}
+  \newcommand{\se}{\operatorname{se}}
+  \newcommand{\re}{\operatorname{re}}
+  \newcommand{\ybar}{{\overline{Y}}}
+  \newcommand{\phat}{{\hat{p}}}
+  \newcommand{\that}{{\hat{T}}}
+  \newcommand{\med}{{\tilde{Y}}}
+\]
+
+# Theory
+## Motivation:
+- Hard to determine underlying distribution of data and statistics
+
+- Lose relative efficiency with Ranks
+
+- Can we use the observations?
+
+- Created by Fisher in 1935
+
+- Also known as Permutation Tests
+
+$$
+  H_{0}: \theta(X) = \theta(Y)
+$$
+$$
+  H_{1}: \theta(X) \neq \theta(Y)
+$$
+
+- $\theta$ can be any number of statistics, with either known, or unknown underlying distributions.
+
+
+
+# Independent Samples
+## Data:
+- Consider two independent simple random samples:
+$$
+  X_{i}, i = 1, 2, \dots, n
+$$
+$$
+  Y_{j}, j = 1, 2, \dots, m
+$$
+
+- Where:
+$$
+  X_{i} \stackrel{i.i.d.}{\sim} f(x) \forall i = 1, 2, \dots, n
+$$
+$$
+  Y_{j} \stackrel{i.i.d.}{\sim} g(y) \forall j = 1, 2, \dots, m
+$$
+
+- Both $X$ and $Y$ are at least an interval scale
+
+- We then pool the data into one large random sample $Z$
+$$
+  Z = 
+  \{X_{i}, Y_{j}\} \forall i,j \implies
+  Z = 
+  \{X_{1}, X_{2}, \dots, X_{n}, Y_{1}, Y_{2}, \dots, Y_{m}\}
+$$
+
+
+## Test Statistic:
+Let:
+$$
+  T_{1} =
+  \sum_{i = 1}^{n} X_{i}
+$$
+
+
+## Distribution:
+- We consider all ways to choose $n$ observations from $Z$, of which there are $n+m$ entries
+
+- We have exactly ${{n+m}\choose{n}}$ possible combinations
+
+- Then we find the arrangement of $X$ and $Y$ that yield the smallest $T_{1}$
+
+- Order them from smallest to largest, we use:
+$$
+  p^{th}-quantile =
+  \left\lceil {{n+m}\choose{n}}p \right\rceil
+$$
+
+- This number is the index of the value of $T_{1}$ we wish to assign to $\omega_{p}$
+
+
+## Distribution:
+- Let $T_{1}^{(i)}$ be the $i^{\text{th}}$ largest possible value for $T_{1}$, by rearranging which values in $Z$ are considered as $X$s or $Y$s
+
+- Then we have the pth-quantile of $T_{1}$:
+$$
+  \omega_{p} =
+  T_{1}^{\left( \left\lceil {{n+m}\choose{n}}p \right\rceil \right)}
+$$
+
+- Under the null hypothesis, approximately $p$ percent of $T_{1}$s should be less than $T_{1}^{(\omega_{p})}$
+
+
+## Testing:
+- Rejection Region:
+    - $\omega_{\frac{\alpha}{2}}$
+    - $\omega_{1-\frac{\alpha}{2}}$
+    - See if $T_{1}$ falls outside of these two numbers.
+
+- P-Value:
+    - Find the proportion of possible values for $T_{1}$, less than what we observed
+    - Multiply it by 2 if we are considering the two-tailed version.
+
+
+## Proof of Concept (Manual):
+$$
+  X = \{5, 1, 2\},
+  Y = \{6, 5, 5, 4\} \implies
+  Z = \{1, 2, 4, 5, 5, 5, 6\}
+$$
+$$
+  H_{0}: \E(X) = \E(Y)
+$$
+$$
+  H_{1}: \E(X) \neq \E(Y)
+$$
+$$
+  \omega_{\frac{\alpha}{2}} =
+  \left\lceil {{3+4}\choose{3}}\frac{0.05}{2} \right\rceil =
+  \left\lceil 0.875 \right\rceil =
+  1
+$$
+$$
+  \omega_{1-\frac{\alpha}{2}} =
+  \left\lceil {{3+4}\choose{3}}\left( 1-\frac{0.05}{2} \right) \right\rceil =
+  \left\lceil 34.25 \right\rceil =
+  35
+$$
+
+
+## Possible Combinations:
+|    (i)   |     1    |     2    |     4    |     5    |     5    |     5    |     6    |     T    |
+|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
+|    (1)   |     X    |     X    |     X    |     Y    |     Y    |     Y    |     Y    |     7    |
+|    (2)   |     X    |     X    |     Y    |     X    |     Y    |     Y    |     Y    |     8    |
+|    (3)   |     X    |     X    |     Y    |     Y    |     X    |     Y    |     X    |     8    |
+| $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ |
+|   (34)   |     Y    |     Y    |     Y    |     X    |     Y    |     X    |     X    |    16    |
+|   (35)   |     Y    |     Y    |     Y    |     Y    |     X    |     X    |     X    |    16    |
+
+$$
+  T_{1} =
+  \sum_{i=1}^{3}X_{i} =
+  5 + 1 + 2 =
+  13
+$$
+
+## Results:
+- Therefore we fail to reject the null hypothesis based on the sample.
+$$
+  p-value =
+  2\frac{4}{35} =
+  \frac{8}{35} =
+  0.2286
+$$
+
+- We use 4 in the numerator, as there are 4 possible values for $T_{1}\leq13$.
+
+## Proof of Concept (R):
+- This is equivalent to doing the following:
+- `library(perm)`
+- the function `permTS`
+
+```{r PoCIS, echo=TRUE}
+set.seed(5609)
+x_PoC <- sample(1:5, size = 3, replace = TRUE)
+y_PoC <- sample(3:8, size = 4, replace = TRUE)
+perm::permTS(x = x_PoC, y = y_PoC, alternative = "two.sided", exact = TRUE)
+```
+
+
+
+# Matched Pairs
+## Data:
+- Another useful configuration is when $X$ and $Y$ are paired:
+$$
+  \left( X_{1}, Y_{1} \right), \left( X_{2}, Y_{2} \right), \dots, \left( X_{n'}, Y_{n'} \right)
+$$
+
+
+## Test Statistic:
+- Only look at the $n$ pairs who have non zero differences. Let:
+$$
+  D_{i} = 
+  Y_{i} - X_{i}, i = 1, 2, \dots, n
+$$
+$$
+  T_{2} =
+  \sum_{i=1}^{n}D_{i}, \forall D_{i} > 0
+$$
+
+- Considering $|D_{i}|$, there are $2^{n}$ ways of assigning a $+$ or $-$ symbol to each of the $n$ $D_{i}$s
+
+- Follow a similar procedure to the independent sample method
+
+
+## Distribution:
+- We can define $\omega_{\frac{\alpha}{2}}$ as:
+$$
+  \frac{\alpha}{2}-quantile = 
+  2^{n}\frac{\alpha}{2}
+$$
+
+- Let:
+$$
+  \omega_{\frac{\alpha}{2}} =
+  T_{2}^{\left( 2^{n}\frac{\alpha}{2} \right)}
+$$
+$$
+  \omega_{1 - \frac{\alpha}{2}} =
+  \sum_{i=1}^{n}|D_{i}| - \omega_{\frac{\alpha}{2}}
+$$
+
+- Which forms the basis for the rejection region.
+
+- The p-value for this test is:
+$$
+  2\frac{\min\{ \text{\# of }T_{2} \leq \text{the observed}, \text{\# of }T_{2} \geq \text{the observed} \}}{2^{n}}
+$$
+
+
+## Proof of Concept (Code):
+```{r permPT Code 01, echo=TRUE, eval=FALSE}
+permPT <- function(x, y, alpha){
+  # D_i is their difference
+  D_i <- y - x
+
+  # Remove any 0s
+  D_i <- D_i[D_i != 0]
+  n <- length(D_i)
+  
+  # Test Statistic
+  T_2 <- sum(D_i[D_i > 0])
+  
+  # Quantiles
+  lower_quantile <- ceiling(2^n * alpha / 2)
+  
+  # Orders the D_i from smallest to largest
+  D_i <- D_i[order(D_i)]
+  
+  # Creates a matrix of size n, 2^n
+  all_possible_combs <- t(expand.grid(lapply(numeric(n), function(x) c(-1, 1))))
+  all_possible_combs <- all_possible_combs * D_i
+```
+
+
+## Proof of Concept (Code):
+```{r permPT Code 02, echo=TRUE, eval=FALSE}
+  # Anything <= 0, we set to 0, so we don't sum them when finding T_2
+  for (i in 1:n){
+    for(j in 1:(2^n)){
+      all_possible_combs[i, j] <- 
+        ifelse(all_possible_combs[i, j] > 0, all_possible_combs[i, j], 0)
+    }
+  }
+  
+  # Finds the column sums, orders them and prints out the required ones
+  all_possible_col_sums <- colSums(all_possible_combs)
+  all_possible_col_sums <- all_possible_col_sums[order(all_possible_col_sums)]
+  
+  # Rejection Region
+  w_lower <- all_possible_col_sums[lower_quantile]
+  w_upper <- sum(abs(D_i)) - w_lower
+  RR <- c(w_lower, w_upper)
+  
+  # P-Value
+  num_leq_T_2 <- length(all_possible_col_sums[all_possible_col_sums <= T_2])
+  num_geq_T_2 <- length(all_possible_col_sums[all_possible_col_sums >= T_2])
+  p.value = 2 * (min(num_leq_T_2, num_geq_T_2) / 2^(n))
+```
+
+
+## Proof of Concept (Code):
+```{r permPT Code 03, echo=TRUE, eval=FALSE}
+  # Results List
+  results <- 
+    list(
+      T_2 = T_2
+      ,RR = RR
+      ,p.value = p.value
+    )
+  results
+}
+```
+
+
+## Proof of Concept (R):
+### Data:
+```{r PoCTS 01, echo=TRUE}
+set.seed(5609)
+alpha <- 0.05
+n_prime <- 20
+# Random sample with n' = 10
+z_PoC <- sample(-5:5, size = n_prime, replace = TRUE)
+z_PoC
+
+# First n'/2 numbers are assigned to x, second n'/2 to y
+x_PoC <- z_PoC[1:(n_prime/2)]
+y_PoC <- z_PoC[(n_prime/2 + 1):n_prime]
+
+results <- permPT(x_PoC, y_PoC, alpha)
+```
+
+
+## Proof of Concept (R):
+### Results:
+```{r PoCTS 02}
+cat(
+  "\n",
+  "T_2:", results$T_2, "\n",
+  "Lower Bound:", results$RR[1], "\n",
+  "Upper Bound:", results$RR[2], "\n",
+  "P-Value:", results$p.value
+)
+```
+
+- Since $T_{2}=8\in[2, 26]$, and equivalently, the p-value$=0.40625>\alpha=0.05$, we fail to reject the null hypothesis of equal means based on the sample.
+
+
+## Time to Run:
+```{r permPT Timing, cache=TRUE}
+permPT_time(15) %>% 
+  ggplot(
+    aes(
+      x = n
+      ,y = Time
+    )
+  ) +
+  geom_smooth(
+    method = "lm"
+    ,formula = y ~ exp(x)
+    ,se = FALSE
+  ) +
+  geom_point() +
+  labs(y = "Time (s)")
+```
+
+
+
+# Conclusion:
+## Results:
+- Effectively allows you to test a hypothesis involving nearly any statistic, without the need to derive an underlying distribution
+
+- By freeing oneself of this need, the assumptions for running such a test are relaxed
+    - This can be especially helpful for cases with $n<20$, as when examining the mean, the Central Limit Theorem may not have kicked in yet
+
+- A drawback of this method is it is typically not the optimal solution in most cases
+
+- Unless carefully written, Randomization tests can be quite computationally intensive 
+    - `permPT`
+
+
+## References
+Conover, W. J. (1999). Practical nonparametric statistics (3rd ed.). John Wiley & Sons.
+
+Fay, M. (2010, July 29). Perm: Exact or Asymptotic permutation tests. Retrieved November 29, 2017, from https://cran.r-project.org/package=perm
