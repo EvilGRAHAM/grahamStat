@@ -1,5 +1,5 @@
 ---
-title: "Chris Sale Splits"
+title: "Why it may be Wrong to Assume Chris Sale Falls Off at the End of the Season"
 author: "Scott Graham"
 date: "December 16, 2017"
 output:
@@ -46,7 +46,7 @@ This is written in response to [this reddit post](https://www.reddit.com/r/baseb
 ## Data
 ```{r Data, include=FALSE}
 sale_splits <-
-  "http://grahamst.at/blog/2017_12_15_Chris_Sale/data/Chris_Sale_Splits.csv" %>% 
+  "http://grahamst.at/blog/2017_12_16_Chris_Sale/data/Chris_Sale_Splits.csv" %>% 
   read_csv() %>% 
   mutate(
     Season = as.factor(Season)

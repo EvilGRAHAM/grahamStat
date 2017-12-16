@@ -9,7 +9,7 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						2017-12-16: Chris Sale Splits
+						2017-12-16: Why it may be Wrong to Assume Chris Sale Falls Off at the End of the Season
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
