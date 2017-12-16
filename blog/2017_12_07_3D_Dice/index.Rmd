@@ -1,0 +1,85 @@
+---
+title: "3D Printed Dice"
+author: "Scott Graham"
+date: "December 07, 2017"
+output:
+  html_document:
+    theme: lumen
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+set.seed(5609)
+
+library(knitr, warn.conflicts = FALSE, quietly = TRUE)
+library(kableExtra, warn.conflicts = FALSE, quietly = TRUE)
+library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
+library(plotly, warn.conflicts = FALSE, quietly = TRUE)
+library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
+
+theme_minimal2 <- theme_minimal() %>%  theme_set()
+theme_minimal2 <-
+  theme_update(
+    panel.border = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+    ,strip.background = element_rect(
+      linetype = "solid"
+      ,colour = "grey92"
+      ,fill = NA
+    )
+  )
+```
+
+# Introduction
+
+## Data
+```{r Data}
+dice_data <- 
+  "data/3D_Dice_Data.csv" %>% 
+  read_csv()
+
+dice_data %>% 
+  kable(format = "html") %>% 
+  kable_styling(bootstrap_options = "bordered") %>%
+  scroll_box(height = "400px")
+```
+
+## Proportions
+```{r Proportions}
+dice_data %>%
+  gather(
+    key = Dice
+    ,value = Result
+    ,-Roll
+  ) %>% 
+  group_by(
+    Dice
+    ,Result
+  ) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(
+    Dice = as.factor(Dice)
+    ,Result = as.factor(Result)
+  ) %>% 
+  ggplot(
+    aes(
+      x = Result
+      ,y = n
+      ,fill = Dice
+    )
+  ) +
+  geom_col(position = "dodge") +
+  scale_fill_brewer(
+    type = "qual"
+    ,palette = "Set2"
+  )
+```
