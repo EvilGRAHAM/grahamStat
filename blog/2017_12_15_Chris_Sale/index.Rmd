@@ -18,6 +18,8 @@ set.seed(5609)
 
 library(knitr, warn.conflicts = FALSE, quietly = TRUE)
 library(kableExtra, warn.conflicts = FALSE, quietly = TRUE)
+library(xtable, warn.conflicts = FALSE, quietly = TRUE)
+library(pander, warn.conflicts = FALSE, quietly = TRUE)
 library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)
 library(plotly, warn.conflicts = FALSE, quietly = TRUE)
 library(magrittr, warn.conflicts = FALSE, quietly = TRUE)
@@ -39,11 +41,12 @@ theme_minimal2 <-
 ```
 
 # Introduction
+This is written in response to [this reddit post](https://www.reddit.com/r/baseball/comments/7k12ua/why_is_it_controversial_to_point_out_that_chris/), talking about how Chris Sale tends to fall off in later months. When looking at the data, the relationship looked tenuous at best, so I wanted to apply some actual statistical tests to see if such a relationship exists.
 
 ## Data
 ```{r Data, include=FALSE}
 sale_splits <-
-  "data/Chris_Sale_Splits.csv" %>% 
+  "http://grahamst.at/blog/2017_12_15_Chris_Sale/data/Chris_Sale_Splits.csv" %>% 
   read_csv() %>% 
   mutate(
     Season = as.factor(Season)
@@ -65,70 +68,119 @@ sale_splits$Month <-
   )
 ```
 
-The data for this quick bit of analysis can be found [here](http://www.fangraphs.com/leaderssplits.aspx?splitArr=&strgroup=month&statgroup=1&startDate=2001-03-01&endDate=2017-11-01&filter=&position=P&statType=player&autoPt=false&players=10603&sort=20,-1&pg=0). What we're looking at is the monthly splits for Chris Sale from 2010-2017, specifically his ERA, WHIP, and xFIP. Note that Fangraphs combines the months March and April, and September and October together.
+The data for this quick bit of analysis can be found [here](http://www.fangraphs.com/leaderssplits.aspx?splitArr=&strgroup=month&statgroup=1&startDate=2001-03-01&endDate=2017-11-01&filter=&position=P&statType=player&autoPt=false&players=10603&sort=20,-1&pg=0). What we're looking at is the monthly splits for Chris Sale from 2010-2017, specifically his ERA, WHIP, and xFIP. Note that Fangraphs combines the months March and April, and September and October together. As well, the CSV I'm using can be found [here](http://grahamst.at/blog/2017_12_15_Chris_Sale/data/Chris_Sale_Splits.csv).
+
+It's worth describing what each of the 3 stats describes:
+
+- **ERA**: How many earned runs (excludes unearned runs such as errors and whatnot) a pitch gives up on average per 9 innings pitched.
+
+- **WHIP**: How many walks or hits a pitcher gives up per inning pitched.
+
+- **xFIP**: Expected Fielding Independent Pitching, which measures the expected ERA independent of the defense behind the pitcher.
 
 
+
+# Analysis
 ## Visualizations
-```{r Violin Plot}
-sale_splits %>%
+### Timeline
+```{r Timeline}
+sale_splits %>% 
+  select(
+    Season
+    ,Month
+    ,ERA
+    ,WHIP
+    ,`x FIP`
+  ) %>% 
+  gather(
+    key = Statistic
+    ,value = Result
+    ,-Season
+    ,-Month
+  ) %>% 
+  mutate(Statistic = as.factor(Statistic)) %>% 
   ggplot(
     aes(
       x = Month
-      ,y = ERA
-      ,fill = Month
+      ,y = Result
+      ,colour = Statistic
+      ,group = Statistic
     )
   ) +
-  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
-  geom_point() +
-  scale_fill_brewer(
-    type = "qual"
-    ,palette = "Set2"
+  geom_line() +
+  facet_grid(
+    facets = Statistic ~ Season
+    ,scales = "free"
   ) +
-  labs(title = "Chris Sale ERA Violin Plot")
-
-sale_splits %>%
-  ggplot(
-    aes(
-      x = Month
-      ,y = WHIP
-      ,fill = Month
-    )
+  scale_color_brewer(
+    type = "seq"
+    ,palette = "Dark2"
   ) +
-  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
-  geom_point() +
-  scale_fill_brewer(
-    type = "qual"
-    ,palette = "Set2"
-  ) +
-  labs(title = "Chris Sale WHIP Violin Plot")
-
-sale_splits %>%
-  ggplot(
-    aes(
-      x = Month
-      ,y = `x FIP`
-      ,fill = Month
-    )
-  ) +
-  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
-  geom_point() +
-  scale_fill_brewer(
-    type = "qual"
-    ,palette = "Set2"
-  ) +
-  labs(title = "Chris Sale xFIP Violin Plot")
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Chris Sale Timeline")
 ```
 
+So here I've plotted ERA, WHIP, a xFIP over time, to see if any cyclical trends can be found. Again I'd say the relationship of Sale's stats worsening throughout the season is tenuous at best, as ERA is the only one that generally shows an increase each year.
+
+### Violin Plots
+I'm a big fan of using Violin Plots instead of basic Box Plots to represent categorical data. The advantage of them is that it not only shows the IQR, but also displays the kernel density estimate, so we get a better idea of the shape of the underlying data.
+```{r Violin Plot}
+sale_splits %>% 
+  select(
+    Season
+    ,Month
+    ,ERA
+    ,WHIP
+    ,`x FIP`
+  ) %>% 
+  gather(
+    key = Statistic
+    ,value = Result
+    ,-Season
+    ,-Month
+  ) %>% 
+  mutate(Statistic = as.factor(Statistic)) %>% 
+  ggplot(
+    aes(
+      x = Month
+      ,y = Result
+      ,fill = Month
+    )
+  ) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  geom_point() +
+  facet_wrap(facets = ~ Statistic) +
+  scale_fill_brewer(
+    type = "qual"
+    ,palette = "Set2"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Chris Sale ERA Violin Plot")
+```
+
+What's worth noting here is that none of the results appear to be approximately normally distributed, and the variance tends to increase over time, resulting in possible heteroscedasticity. As well, again we see ERA being the only possible candidate for showing a worsening performance is the season goes on.
 
 ## Kruskal-Wallis Test
+As shown above, we probably don't satisfy the normality assumptions for using a proper ANOVA (and because I don't fee like checking them...), I'm using a Kruskal-Wallis Test to see if the means are the same for each month. That is:
+$$
+  H_{0}: \mu_{\text{Mar/Apr}} = \mu_{\text{June}} = \mu_{\text{July}} = \mu_{\text{August}} = \mu_{\text{Sept/Oct}}
+$$
+$$
+  H_{1}: \text{At least one of the mean results differ}
+$$
 ```{r K-W Test}
 kruskal.test(ERA ~ Month, data = sale_splits)
 kruskal.test(WHIP ~ Month, data = sale_splits)
 kruskal.test(`x FIP` ~ Month, data = sale_splits)
 ```
 
+For transparency's sake, I'm using $\alpha=0.05$ for everything, just to make life easy. As we can see, all 3 of the K-W tests failed to reject the null hypothesis based on the sample. As such, there is a lack of evidence to suggest that for each of the 3 statistics, the average for a given month may differ from another month.
 
-# Linear Regression
+## Linear Regression
+For these regression, I'm going to be looking at this in two different ways:
+
+1. Does month play a role a all? To do so, Month is set to a factor, so R will then treat it as a series of dummy variables
+2. Is there evidence to show that the statistic is a linear function of the integer representations of the months? That being, as the season goes on, does Sale get linearly better or worse?
 ```{r Regression}
 sale_splits %>% 
   lm(
@@ -136,6 +188,7 @@ sale_splits %>%
     ,data = .
   ) %>% 
   summary()
+
 sale_splits %>% 
   mutate(Month = as.integer(Month)) %>% 
   lm(
@@ -144,12 +197,14 @@ sale_splits %>%
   ) %>% 
   summary()
 
+
 sale_splits %>% 
   lm(
     WHIP ~ Month
     ,data = .
   ) %>% 
   summary()
+
 sale_splits %>% 
   mutate(Month = as.integer(Month)) %>% 
   lm(
@@ -158,12 +213,14 @@ sale_splits %>%
   ) %>% 
   summary()
 
+
 sale_splits %>% 
   lm(
     `x FIP` ~ Month
     ,data = .
   ) %>% 
   summary()
+
 sale_splits %>% 
   mutate(Month = as.integer(Month)) %>% 
   lm(
@@ -171,4 +228,6 @@ sale_splits %>%
     ,data = .
   ) %>% 
   summary()
-```
+````
+
+I'm not going to go through each model individually, but the gist of it is, regardless if you treat month as an integer, or as a factor, it isn't a significant (or particularly good) predictor for any of these statistics.
