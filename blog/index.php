@@ -9,7 +9,7 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Chris Sale Splits
+						2017-12-16: Chris Sale Splits
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
@@ -18,7 +18,7 @@
 				<div class="mdl-card__actions mdl-card--border">
 					<a 
 						class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
-						href = "2017_12_15_Chris_Sale"
+						href = "2017_12_16_Chris_Sale"
 						target = "_blank"
 					>
 						Go
