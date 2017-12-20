@@ -2,7 +2,7 @@
 <html>
 	<head>
 	    <title>
-			GrahamSt.at
+			Résumé
 		</title>
 		<?php include("../header.html");?>
 		
