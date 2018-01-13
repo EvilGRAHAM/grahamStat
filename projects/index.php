@@ -46,12 +46,32 @@
 						</h2>
 					</div>
 					<div class="mdl-card__supporting-text">
-						Dashboard for analysing securities.
+						Dashboard for analyzing securities.
 					</div>
 					<div class="mdl-card__actions mdl-card--border">
 						<a 
 							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
 							href = "http://grahamst.at/shiny-server/Finance_Dashboard/"
+							target = "_blank"
+						>
+							Get Started
+						</a>
+					</div>
+				</div>
+				
+				<div class="mdl-card mdl-shadow--2dp mdl-cell">
+					<div class="mdl-card__title">
+						<h2 class="mdl-card__title-text">
+							D&D Insult Generator
+						</h2>
+					</div>
+					<div class="mdl-card__supporting-text">
+						A small shiny app that generates D&D themed insults.
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a 
+							class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect" 
+							href = "http://grahamst.at/shiny-server/DnD_Insults/"
 							target = "_blank"
 						>
 							Get Started
