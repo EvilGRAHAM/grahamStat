@@ -26,7 +26,8 @@
         usePrettify: true,
         enableSlideAreas: true,
         enableTouch: true,
-                      },
+                        favIcon: '..\..\..\images\logo\GrahamStat-emblem-black.png',
+              },
 
       // Author information
       presenters: [
@@ -79,6 +80,21 @@
       opacity: 0;
     }
 
+    slides > slide:not(.nobackground):before {
+      font-size: 12pt;
+      content: "";
+      position: absolute;
+      bottom: 20px;
+      left: 60px;
+      background: url(..\..\..\images\logo\GrahamStat-emblem-black.png) no-repeat 0 50%;
+      -webkit-background-size: 30px 30px;
+      -moz-background-size: 30px 30px;
+      -o-background-size: 30px 30px;
+      background-size: 30px 30px;
+      padding-left: 40px;
+      height: 30px;
+      line-height: 1.9;
+    }
   </style>
 
 
@@ -89,6 +105,7 @@
 <slides>
 
   <slide class="title-slide segue nobackground">
+        <aside class="gdbar"><img src="data:image/png;base64,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"></aside>
         <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
     <hgroup class="auto-fadein">
       <h1 data-config-title><!-- populated from slide_config.json --></h1>

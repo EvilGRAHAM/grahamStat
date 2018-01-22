@@ -10,7 +10,6 @@ output:
   ioslides_presentation:
     smaller: true
     logo: ../../../images/logo/GrahamStat-emblem-black.png
-
 ---
 
 ```{r setup, include=FALSE}
