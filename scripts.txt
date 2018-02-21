@@ -1,0 +1,12 @@
+cd /srv/shiny-server/
+sudo git pull origin master
+
+cd /var/www/html/grahamStat/
+sudo git pull origin master
+
+sudo su - -c "R -e \"install.packages('', repos='http://cran.rstudio.com/')\""
+
+sudo su - -c "R -e \"update.packages(ask = FALSE, repos='http://cran.rstudio.com/')\""
+
+sudo apt-get update
+sudo reboot
