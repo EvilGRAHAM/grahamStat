@@ -19,3 +19,4 @@ Matrix
 foreach
 glmnet
 bindrcpp
+plotly

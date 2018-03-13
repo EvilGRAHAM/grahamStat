@@ -818,30 +818,50 @@ The first output is estimating coefficients using $\lambda_{1se}$, and the latte
 ```{r LASSO Repeated, cache=TRUE}
 reps <- 100
 
-hockey_lasso_res_01 <- matrix(nrow = length(ind_var_01) + 1, ncol = reps)
-rownames(hockey_lasso_res_01) <- c("(Intercept)", ind_var_01)
+# hockey_lasso_res_01 <- matrix(nrow = length(ind_var_01) + 1, ncol = reps)
+# rownames(hockey_lasso_res_01) <- c("(Intercept)", ind_var_01)
+# 
+# hockey_lasso_lambda_01 <- tibble(Min = as.numeric(NA), SE = as.numeric(NA))
+# 
+# for(i in 1:reps){
+#   hockey_lasso_cvfit_rep <- 
+#     cv.glmnet(
+#       x = hockey_lasso_ind_01
+#       ,y = hockey_lasso_dep
+#       ,family = "binomial"
+#       ,alpha = 1
+#     )
+#   
+#   hockey_lasso_coef_rep_min <- 
+#     hockey_lasso_cvfit_rep %>% 
+#     coef(s = "lambda.min", exact = TRUE) %>% 
+#     as.matrix()
+#   hockey_lasso_res_01[, i] <- hockey_lasso_coef_rep_min
+#   hockey_lasso_lambda_01[i, "Min"] <- hockey_lasso_cvfit_rep$lambda.min
+#   hockey_lasso_lambda_01[i, "SE"] <- hockey_lasso_cvfit_rep$lambda.1se
+# }
+# 
+# apply(X = hockey_lasso_res_01, MARGIN = 1, FUN = mean)
 
-hockey_lasso_lambda_01 <- tibble(Min = as.numeric(NA), SE = as.numeric(NA))
-
-for(i in 1:reps){
-  hockey_lasso_cvfit_rep <- 
-    cv.glmnet(
-      x = hockey_lasso_ind_01
-      ,y = hockey_lasso_dep
-      ,family = "binomial"
-      ,alpha = 1
-    )
-  
-  hockey_lasso_coef_rep_min <- 
-    hockey_lasso_cvfit_rep %>% 
-    coef(s = "lambda.min", exact = TRUE) %>% 
-    as.matrix()
-  hockey_lasso_res_01[, i] <- hockey_lasso_coef_rep_min
-  hockey_lasso_lambda_01[i, "Min"] <- hockey_lasso_cvfit_rep$lambda.min
-  hockey_lasso_lambda_01[i, "SE"] <- hockey_lasso_cvfit_rep$lambda.1se
-}
-
-apply(X = hockey_lasso_res_01, MARGIN = 1, FUN = mean)
+hockey_lasso_lambda_01 <- 
+  1:reps %>%
+  map_df(
+    .f = function(x){
+      hockey_lasso_cvfit_rep <- 
+        cv.glmnet(
+          x = hockey_lasso_ind_01
+          ,y = hockey_lasso_dep
+          ,family = "binomial"
+          ,alpha = 1
+        )
+      
+      list(
+        "lambda.min" = hockey_lasso_cvfit_rep$lambda.min
+        ,"lambda.1se" = hockey_lasso_cvfit_rep$lambda.1se
+      )
+    }
+    ,.id = "Iteration"
+  )
 
 hockey_lasso_avg_lambda <- 
   cv.glmnet(
@@ -850,7 +870,7 @@ hockey_lasso_avg_lambda <-
   ,family = "binomial"
   ,alpha = 1
 ) %>% 
-  coef(s = mean(hockey_lasso_lambda_01$Min))
+  coef(s = mean(hockey_lasso_lambda_01$lambda.min))
 hockey_lasso_avg_lambda
 ```
 
