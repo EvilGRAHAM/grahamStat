@@ -30,6 +30,9 @@
 						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
 					</p>
 				</div>
+				<div class="mdl-card__actions mdl-card--border">
+					Lorem Ipsum. (n.d.). Retrieved March 29, 2018, from https://www.lipsum.com/
+				</div>
 			</div>
 				
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
