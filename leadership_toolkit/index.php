@@ -10,24 +10,16 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Point 1
+						Tool 1
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. In vestibulum placerat lorem vitae pretium.
-					</p>
-					<p>
-						Suspendisse potenti. Proin vestibulum at sapien et molestie. Mauris iaculis nisi id purus tristique blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus elementum nisi magna, ut lobortis magna commodo vel. Suspendisse venenatis, nisl ut mollis aliquet, velit risus dapibus turpis, sed lacinia lectus tellus sed leo. Praesent a leo dui. Vivamus condimentum, metus eget scelerisque dictum, mauris magna ornare ipsum, id maximus est mauris sed libero.
-					</p>
-					<p>
-						Duis posuere odio nibh, ac molestie ante pulvinar vitae. Sed sodales tellus vitae nisi tempus mattis. Fusce vel fringilla mauris. Aenean maximus tortor enim, eget mollis velit cursus in. Etiam quis ante nibh. Pellentesque nunc lacus, consequat eu rutrum sed, sagittis a lacus. Ut placerat velit vitae convallis accumsan. Curabitur venenatis scelerisque metus a suscipit. Proin sagittis, erat volutpat efficitur bibendum, metus dolor vehicula libero, in commodo tortor erat sit amet mi. Praesent auctor ante nibh, non accumsan tortor vehicula sed. Aliquam tristique iaculis commodo. Curabitur lacinia sollicitudin rhoncus. Integer at lectus at nunc convallis consequat.
-					</p>
-					<p>
-						Praesent in feugiat dolor. Proin velit elit, placerat eu arcu eu, scelerisque vestibulum massa. Vestibulum malesuada non eros eget rutrum. Duis velit nibh, hendrerit sit amet massa tincidunt, porta auctor tellus. Mauris quis pulvinar elit. Aenean vestibulum ac arcu eget scelerisque. Maecenas in luctus justo, ac suscipit odio. Vestibulum congue tempor lacinia. Donec condimentum enim eu efficitur scelerisque. Curabitur quis porta lacus, nec vulputate augue.
-					</p>
-					<p>
-						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
+						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
+						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
+						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
+						In vestibulum placerat lorem vitae pretium.
 					</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
@@ -38,24 +30,16 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Point 2
+						Tool 2
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. In vestibulum placerat lorem vitae pretium.
-					</p>
-					<p>
-						Suspendisse potenti. Proin vestibulum at sapien et molestie. Mauris iaculis nisi id purus tristique blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus elementum nisi magna, ut lobortis magna commodo vel. Suspendisse venenatis, nisl ut mollis aliquet, velit risus dapibus turpis, sed lacinia lectus tellus sed leo. Praesent a leo dui. Vivamus condimentum, metus eget scelerisque dictum, mauris magna ornare ipsum, id maximus est mauris sed libero.
-					</p>
-					<p>
-						Duis posuere odio nibh, ac molestie ante pulvinar vitae. Sed sodales tellus vitae nisi tempus mattis. Fusce vel fringilla mauris. Aenean maximus tortor enim, eget mollis velit cursus in. Etiam quis ante nibh. Pellentesque nunc lacus, consequat eu rutrum sed, sagittis a lacus. Ut placerat velit vitae convallis accumsan. Curabitur venenatis scelerisque metus a suscipit. Proin sagittis, erat volutpat efficitur bibendum, metus dolor vehicula libero, in commodo tortor erat sit amet mi. Praesent auctor ante nibh, non accumsan tortor vehicula sed. Aliquam tristique iaculis commodo. Curabitur lacinia sollicitudin rhoncus. Integer at lectus at nunc convallis consequat.
-					</p>
-					<p>
-						Praesent in feugiat dolor. Proin velit elit, placerat eu arcu eu, scelerisque vestibulum massa. Vestibulum malesuada non eros eget rutrum. Duis velit nibh, hendrerit sit amet massa tincidunt, porta auctor tellus. Mauris quis pulvinar elit. Aenean vestibulum ac arcu eget scelerisque. Maecenas in luctus justo, ac suscipit odio. Vestibulum congue tempor lacinia. Donec condimentum enim eu efficitur scelerisque. Curabitur quis porta lacus, nec vulputate augue.
-					</p>
-					<p>
-						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
+						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
+						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
+						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
+						In vestibulum placerat lorem vitae pretium.
 					</p>
 				</div>
 			</div>
@@ -63,24 +47,16 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Point 3
+						Tool 3
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. In vestibulum placerat lorem vitae pretium.
-					</p>
-					<p>
-						Suspendisse potenti. Proin vestibulum at sapien et molestie. Mauris iaculis nisi id purus tristique blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus elementum nisi magna, ut lobortis magna commodo vel. Suspendisse venenatis, nisl ut mollis aliquet, velit risus dapibus turpis, sed lacinia lectus tellus sed leo. Praesent a leo dui. Vivamus condimentum, metus eget scelerisque dictum, mauris magna ornare ipsum, id maximus est mauris sed libero.
-					</p>
-					<p>
-						Duis posuere odio nibh, ac molestie ante pulvinar vitae. Sed sodales tellus vitae nisi tempus mattis. Fusce vel fringilla mauris. Aenean maximus tortor enim, eget mollis velit cursus in. Etiam quis ante nibh. Pellentesque nunc lacus, consequat eu rutrum sed, sagittis a lacus. Ut placerat velit vitae convallis accumsan. Curabitur venenatis scelerisque metus a suscipit. Proin sagittis, erat volutpat efficitur bibendum, metus dolor vehicula libero, in commodo tortor erat sit amet mi. Praesent auctor ante nibh, non accumsan tortor vehicula sed. Aliquam tristique iaculis commodo. Curabitur lacinia sollicitudin rhoncus. Integer at lectus at nunc convallis consequat.
-					</p>
-					<p>
-						Praesent in feugiat dolor. Proin velit elit, placerat eu arcu eu, scelerisque vestibulum massa. Vestibulum malesuada non eros eget rutrum. Duis velit nibh, hendrerit sit amet massa tincidunt, porta auctor tellus. Mauris quis pulvinar elit. Aenean vestibulum ac arcu eget scelerisque. Maecenas in luctus justo, ac suscipit odio. Vestibulum congue tempor lacinia. Donec condimentum enim eu efficitur scelerisque. Curabitur quis porta lacus, nec vulputate augue.
-					</p>
-					<p>
-						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
+						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
+						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
+						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
+						In vestibulum placerat lorem vitae pretium.
 					</p>
 				</div>
 			</div>
@@ -88,24 +64,16 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Point 4
+						Tool 4
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. In vestibulum placerat lorem vitae pretium.
-					</p>
-					<p>
-						Suspendisse potenti. Proin vestibulum at sapien et molestie. Mauris iaculis nisi id purus tristique blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus elementum nisi magna, ut lobortis magna commodo vel. Suspendisse venenatis, nisl ut mollis aliquet, velit risus dapibus turpis, sed lacinia lectus tellus sed leo. Praesent a leo dui. Vivamus condimentum, metus eget scelerisque dictum, mauris magna ornare ipsum, id maximus est mauris sed libero.
-					</p>
-					<p>
-						Duis posuere odio nibh, ac molestie ante pulvinar vitae. Sed sodales tellus vitae nisi tempus mattis. Fusce vel fringilla mauris. Aenean maximus tortor enim, eget mollis velit cursus in. Etiam quis ante nibh. Pellentesque nunc lacus, consequat eu rutrum sed, sagittis a lacus. Ut placerat velit vitae convallis accumsan. Curabitur venenatis scelerisque metus a suscipit. Proin sagittis, erat volutpat efficitur bibendum, metus dolor vehicula libero, in commodo tortor erat sit amet mi. Praesent auctor ante nibh, non accumsan tortor vehicula sed. Aliquam tristique iaculis commodo. Curabitur lacinia sollicitudin rhoncus. Integer at lectus at nunc convallis consequat.
-					</p>
-					<p>
-						Praesent in feugiat dolor. Proin velit elit, placerat eu arcu eu, scelerisque vestibulum massa. Vestibulum malesuada non eros eget rutrum. Duis velit nibh, hendrerit sit amet massa tincidunt, porta auctor tellus. Mauris quis pulvinar elit. Aenean vestibulum ac arcu eget scelerisque. Maecenas in luctus justo, ac suscipit odio. Vestibulum congue tempor lacinia. Donec condimentum enim eu efficitur scelerisque. Curabitur quis porta lacus, nec vulputate augue.
-					</p>
-					<p>
-						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
+						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
+						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
+						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
+						In vestibulum placerat lorem vitae pretium.
 					</p>
 				</div>
 			</div>
@@ -113,24 +81,16 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Point 5
+						Tool 5
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. In vestibulum placerat lorem vitae pretium.
-					</p>
-					<p>
-						Suspendisse potenti. Proin vestibulum at sapien et molestie. Mauris iaculis nisi id purus tristique blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus elementum nisi magna, ut lobortis magna commodo vel. Suspendisse venenatis, nisl ut mollis aliquet, velit risus dapibus turpis, sed lacinia lectus tellus sed leo. Praesent a leo dui. Vivamus condimentum, metus eget scelerisque dictum, mauris magna ornare ipsum, id maximus est mauris sed libero.
-					</p>
-					<p>
-						Duis posuere odio nibh, ac molestie ante pulvinar vitae. Sed sodales tellus vitae nisi tempus mattis. Fusce vel fringilla mauris. Aenean maximus tortor enim, eget mollis velit cursus in. Etiam quis ante nibh. Pellentesque nunc lacus, consequat eu rutrum sed, sagittis a lacus. Ut placerat velit vitae convallis accumsan. Curabitur venenatis scelerisque metus a suscipit. Proin sagittis, erat volutpat efficitur bibendum, metus dolor vehicula libero, in commodo tortor erat sit amet mi. Praesent auctor ante nibh, non accumsan tortor vehicula sed. Aliquam tristique iaculis commodo. Curabitur lacinia sollicitudin rhoncus. Integer at lectus at nunc convallis consequat.
-					</p>
-					<p>
-						Praesent in feugiat dolor. Proin velit elit, placerat eu arcu eu, scelerisque vestibulum massa. Vestibulum malesuada non eros eget rutrum. Duis velit nibh, hendrerit sit amet massa tincidunt, porta auctor tellus. Mauris quis pulvinar elit. Aenean vestibulum ac arcu eget scelerisque. Maecenas in luctus justo, ac suscipit odio. Vestibulum congue tempor lacinia. Donec condimentum enim eu efficitur scelerisque. Curabitur quis porta lacus, nec vulputate augue.
-					</p>
-					<p>
-						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
+						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
+						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
+						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
+						In vestibulum placerat lorem vitae pretium.
 					</p>
 				</div>
 			</div>
@@ -138,24 +98,16 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Point 6
+						Tool 6
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. In vestibulum placerat lorem vitae pretium.
-					</p>
-					<p>
-						Suspendisse potenti. Proin vestibulum at sapien et molestie. Mauris iaculis nisi id purus tristique blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus elementum nisi magna, ut lobortis magna commodo vel. Suspendisse venenatis, nisl ut mollis aliquet, velit risus dapibus turpis, sed lacinia lectus tellus sed leo. Praesent a leo dui. Vivamus condimentum, metus eget scelerisque dictum, mauris magna ornare ipsum, id maximus est mauris sed libero.
-					</p>
-					<p>
-						Duis posuere odio nibh, ac molestie ante pulvinar vitae. Sed sodales tellus vitae nisi tempus mattis. Fusce vel fringilla mauris. Aenean maximus tortor enim, eget mollis velit cursus in. Etiam quis ante nibh. Pellentesque nunc lacus, consequat eu rutrum sed, sagittis a lacus. Ut placerat velit vitae convallis accumsan. Curabitur venenatis scelerisque metus a suscipit. Proin sagittis, erat volutpat efficitur bibendum, metus dolor vehicula libero, in commodo tortor erat sit amet mi. Praesent auctor ante nibh, non accumsan tortor vehicula sed. Aliquam tristique iaculis commodo. Curabitur lacinia sollicitudin rhoncus. Integer at lectus at nunc convallis consequat.
-					</p>
-					<p>
-						Praesent in feugiat dolor. Proin velit elit, placerat eu arcu eu, scelerisque vestibulum massa. Vestibulum malesuada non eros eget rutrum. Duis velit nibh, hendrerit sit amet massa tincidunt, porta auctor tellus. Mauris quis pulvinar elit. Aenean vestibulum ac arcu eget scelerisque. Maecenas in luctus justo, ac suscipit odio. Vestibulum congue tempor lacinia. Donec condimentum enim eu efficitur scelerisque. Curabitur quis porta lacus, nec vulputate augue.
-					</p>
-					<p>
-						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
+						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
+						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
+						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
+						In vestibulum placerat lorem vitae pretium.
 					</p>
 				</div>
 			</div>
@@ -163,50 +115,81 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Point 7
+						Tool 7: Deontology
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. In vestibulum placerat lorem vitae pretium.
+						I'm personally a fan of the moral philosophy of Deontology, or as it is better known; Kantianism. Kantian ethics is founded on the
+						idea that it is the intent of an action that is important, not the consequence of said action. This leads to the idea of the 
+						maxim which states: "In <i>x</i>, I will do <i>y</i>, in order to achieve <i>z</i>." That is, for a given situation <i>x</i>, I will do
+						the action <i>y</i>, with the intention of achieving <i>z</i>. Kant states the categorical imperative, the central tenant of this philosophy as,
+						"Act only according to that maxim whereby you can, at the same time, will that it should become a universal law" (Kant, 1785). From this Kant created
+						3 formulations that a maxim must pass in order to be moral.
 					</p>
-					<p>
-						Suspendisse potenti. Proin vestibulum at sapien et molestie. Mauris iaculis nisi id purus tristique blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus elementum nisi magna, ut lobortis magna commodo vel. Suspendisse venenatis, nisl ut mollis aliquet, velit risus dapibus turpis, sed lacinia lectus tellus sed leo. Praesent a leo dui. Vivamus condimentum, metus eget scelerisque dictum, mauris magna ornare ipsum, id maximus est mauris sed libero.
-					</p>
-					<p>
-						Duis posuere odio nibh, ac molestie ante pulvinar vitae. Sed sodales tellus vitae nisi tempus mattis. Fusce vel fringilla mauris. Aenean maximus tortor enim, eget mollis velit cursus in. Etiam quis ante nibh. Pellentesque nunc lacus, consequat eu rutrum sed, sagittis a lacus. Ut placerat velit vitae convallis accumsan. Curabitur venenatis scelerisque metus a suscipit. Proin sagittis, erat volutpat efficitur bibendum, metus dolor vehicula libero, in commodo tortor erat sit amet mi. Praesent auctor ante nibh, non accumsan tortor vehicula sed. Aliquam tristique iaculis commodo. Curabitur lacinia sollicitudin rhoncus. Integer at lectus at nunc convallis consequat.
-					</p>
-					<p>
-						Praesent in feugiat dolor. Proin velit elit, placerat eu arcu eu, scelerisque vestibulum massa. Vestibulum malesuada non eros eget rutrum. Duis velit nibh, hendrerit sit amet massa tincidunt, porta auctor tellus. Mauris quis pulvinar elit. Aenean vestibulum ac arcu eget scelerisque. Maecenas in luctus justo, ac suscipit odio. Vestibulum congue tempor lacinia. Donec condimentum enim eu efficitur scelerisque. Curabitur quis porta lacus, nec vulputate augue.
-					</p>
-					<p>
-						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
-					</p>
+					<ol>
+						<li>Formula of Universality and the Law of Nature</li>
+						<ul>
+							<li>
+								Take your maxim and apply it to the world so that is functions as a universal law.
+							</li>
+							<li>
+								Everybody when they are in those circumstances does your maxim, and see what happens.
+							</li>
+							<li>
+								We are not checking the consequences of the universal law, but are checking the fundamental consistency of the maxim.
+							</li>
+							<li>
+								Ways to fail:
+								<ul>
+									<li>
+										Contradiction in Conception: We can't image said world, or would never want to live in it.
+										This generates perfect duties, stating we can never do that maxim.
+									</li>
+									<li>
+										Contradiction in the Will: We wished ourselves into said world, but our will causes a contradiction.
+										We end up finding ourselves wishing that others wouldn't abide by the maxim. 
+										This generates imperfect duties, stating we don’t always fail/refuse to do that maxim.
+									</li>
+								</ul>
+							</li>
+							<li>
+								Lies are something that always fail this formulation.
+							</li>
+						</ul>
+						<li>The Formula of Humanity</li>
+						<ul>
+							<li>
+								All actions you take have to respect humanity as an end themselves, and not a means
+							</li>
+							<li>
+								This formulation is built on the idea of consent. If you have consent/permission to use someone as a means,
+								you may do so.
+							</li>
+						</ul>
+						<li>The Formula of Autonomy</li>
+						<ul>
+							<li>
+								I find this best expressed using the example of the "Kingdom of Ends"
+								<ul>
+									<li>
+										Always act such that your maxim acts as if you were legislating a kingdom of ends. 
+										This kingdom is bound by a pre-agreed set of laws.
+									</li>
+									<li>
+										Original Position: We are all rational beings, but we are behind a veil of ignorance,
+										where we have no idea about who we are, or what we look like. We only now we are rational
+									</li>
+									<li>
+										If said kingdom of ends is acceptable for everyone, the maxim passes this formulation.
+									</li>
+								</ul>
+							</li>
+						</ul
+					</ol>
 				</div>
-			</div>
-			
-			<div class="mdl-card mdl-shadow--2dp mdl-cell">
-				<div class="mdl-card__title">
-					<h2 class="mdl-card__title-text">
-						Point 8
-					</h2>
-				</div>
-				<div class="mdl-card__supporting-text">
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. In vestibulum placerat lorem vitae pretium.
-					</p>
-					<p>
-						Suspendisse potenti. Proin vestibulum at sapien et molestie. Mauris iaculis nisi id purus tristique blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus elementum nisi magna, ut lobortis magna commodo vel. Suspendisse venenatis, nisl ut mollis aliquet, velit risus dapibus turpis, sed lacinia lectus tellus sed leo. Praesent a leo dui. Vivamus condimentum, metus eget scelerisque dictum, mauris magna ornare ipsum, id maximus est mauris sed libero.
-					</p>
-					<p>
-						Duis posuere odio nibh, ac molestie ante pulvinar vitae. Sed sodales tellus vitae nisi tempus mattis. Fusce vel fringilla mauris. Aenean maximus tortor enim, eget mollis velit cursus in. Etiam quis ante nibh. Pellentesque nunc lacus, consequat eu rutrum sed, sagittis a lacus. Ut placerat velit vitae convallis accumsan. Curabitur venenatis scelerisque metus a suscipit. Proin sagittis, erat volutpat efficitur bibendum, metus dolor vehicula libero, in commodo tortor erat sit amet mi. Praesent auctor ante nibh, non accumsan tortor vehicula sed. Aliquam tristique iaculis commodo. Curabitur lacinia sollicitudin rhoncus. Integer at lectus at nunc convallis consequat.
-					</p>
-					<p>
-						Praesent in feugiat dolor. Proin velit elit, placerat eu arcu eu, scelerisque vestibulum massa. Vestibulum malesuada non eros eget rutrum. Duis velit nibh, hendrerit sit amet massa tincidunt, porta auctor tellus. Mauris quis pulvinar elit. Aenean vestibulum ac arcu eget scelerisque. Maecenas in luctus justo, ac suscipit odio. Vestibulum congue tempor lacinia. Donec condimentum enim eu efficitur scelerisque. Curabitur quis porta lacus, nec vulputate augue.
-					</p>
-					<p>
-						Cras non est leo. Suspendisse faucibus ipsum quis consequat maximus. Nullam sed erat nibh. Maecenas euismod lobortis augue id volutpat. Pellentesque risus purus, pulvinar vel dictum eget, sodales vel nibh. In accumsan scelerisque interdum. Mauris non pretium nunc. Sed gravida vitae odio ac venenatis. Curabitur a enim dictum nibh cursus commodo vestibulum et lorem. Nunc congue, tellus at pharetra fermentum, dui nisl aliquet ex, at semper nisi massa nec tellus. Cras volutpat egestas diam id cursus. Morbi et scelerisque sapien. Nullam tempus vulputate velit nec dapibus. Fusce non lobortis est. Cras ornare ante et dui auctor finibus. Proin eu dui vel ante viverra congue lobortis sit amet purus.
-					</p>
+				<div class="mdl-card__actions mdl-card--border">
+					<p>Kant, I. (1785). Grounding for the metaphysics of morals.</p>
 				</div>
 			</div>
 			
