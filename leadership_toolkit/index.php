@@ -10,27 +10,22 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Tool 1
+						Scarcity
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
-						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
-						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
-						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
-						In vestibulum placerat lorem vitae pretium.
+						The idea of scarcity, and how it can override one's decision making processes represents a strong tool for any leader.
 					</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
-					Lorem Ipsum. (n.d.). Retrieved March 29, 2018, from https://www.lipsum.com/
 				</div>
 			</div>
 				
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Tool 2
+						Golden Rule
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
@@ -187,6 +182,16 @@
 							</li>
 						</ul
 					</ol>
+					<p>
+						The formula of humanity is one of the key reasons why Deontology is a strong choice of moral framework for leaders. 
+						It helps prevent unethical leaders and profiteers, by ensuring that followers are never used as a means, but
+						are always respected as an end, and for who they are.
+					</p>
+					<p>
+						This idea fairly easy to implement in ones daily life. The formula of autonomy is one of the easiest questions to 
+						ask ourselves when we make a decision. If I were in the other person's shoes, would I want someone to do this to me?
+						If the answer is no, you shouldn't do the thing.
+					</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
 					<p>Kant, I. (1785). Grounding for the metaphysics of morals.</p>
