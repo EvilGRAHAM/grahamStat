@@ -34,23 +34,30 @@
 						but the principle still holds.
 					</p>
 				</div>
-				<div class="mdl-card__actions mdl-card--border">
-				</div>
 			</div>
 				
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Golden Rule
+						Reciprocation
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
-						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
-						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
-						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
-						In vestibulum placerat lorem vitae pretium.
+						Reciprocation is a tool that should be in any leader’s toolkit. It serves as a powerful means of directing followers towards a cause 
+						and improving how one appears to those around them. While this tool requires some effort on the part of the leader, it is also one of 
+						the more powerful tools leaders have at their disposal. 
+					</p>
+					<p>
+						It is important to recognize that reciprocation can be used both ethically or unethically. When used to take advantage of followers, 
+						by doing small favours in exchange for much larger ones, or by creating a false sense of obligation, leaders can get what they want out of followers.
+						However, these leaders lose out on the opportunity to be able to build mutually beneficial, long term partnerships with their followers.
+					</p>
+					<p>
+						Instead, ethical leaders should ensure that followers are an end to themselves, and not merely a means (see Deontology below). 
+						By abstaining from the activities described previously, leaders can start to build effect, and mutually beneficial long-term partnerships, 
+						allowing both the leader and the follower to grow and benefit. Through this, leaders and followers can move towards a common goal, 
+						with both parties feeling that they had benefited from this endeavor.
 					</p>
 				</div>
 			</div>
@@ -58,17 +65,46 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Tool 3
+						Trust
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
-						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
-						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
-						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
-						In vestibulum placerat lorem vitae pretium.
+						Trust is something that is seriously lacking from todays workplace. Without it, followers waste their time politicking, 
+						and struggle to work together to achieve a common goal. If followers can’t trust their leaders, it becomes increasingly difficult to gain compliance, 
+						and provide directions and feedback, as the followers become increasingly worried about their own wellbeing within the group. 
+						This isn’t to say we should be entirely trusting of others, as this is a recipe to be taken advantage of, but we shouldn’t disregard it entirely.
 					</p>
+					<p>
+						There are plenty of stories in the media of leaders bring in their mentors to help, only to get screwed over by said mentor, 
+						and kicked to the curb. This story is all to common in Silicon Valley, Steve Jobs was pushed out in in 1985, a man who in 1976 had underreported 
+						the value of a contract he had made with Atari to his business partner Steve Wozniak (Weinberger, 2017) (Warman, 2011). Elon Musk was ousted from PayPal in 2002, 
+						and then ousted Martin Eberhard in 2007 from Tesla, the company he founded (Klebnikov, 2017) (Baer, 2014). This provides strong evidence to why we should remain skeptical, 
+						even to those we trust, however to create strong, functional groups, a culture of distrust may backfire.
+					</p>
+					<p>
+						In the 1950’s, scientists at the RAND corporation conceived the idea of the prisoner’s dilemma, which was formulized by Princeton mathematician Albert Tucker 
+						(Dixit, n.d.). The idea is that two players who play by their own utility maximizing strategy can result in an outcome than makes them both worse off than if 
+						they had initially cooperated. This holds true with groups, where if members spend time disagreeing, and playing politics, instead of working towards their goal, 
+						this may be beneficial if for a member if all other members abstain from this but makes the group worse off due to wasted time. Instead by encouraging all members 
+						to work together, and be transparent in their actions, time can be better spent towards achieving the common goal.
+					</p>
+					<p>
+						Leaders should encourage transparency within the group, as this is an effective means of building trust among members. By being transparent, 
+						members are given little reason to squabble and waste valuable resources to move up the hierarchy that governs the group, but instead use them towards achieving a common goal. 
+						By expanding a leader’s inner circle to include as many members as possible, trust is encouraged, as this removes the perception of preferential treatment. 
+					</p>
+				</div>
+				<div class="mdl-card__actions mdl-card--border">
+					<p>Baer, D. (2014, November 18). Tesla's Original CEO Reveals What It's Like To Get Fired By Elon Musk. 
+					sRetrieved April 09, 2018, from http://www.businessinsider.com/how-elon-musk-fired-tesla-ceo-2014-11</p>
+					<p>Dixit, A. (n.d.). Prisoners' Dilemma. Retrieved April 09, 2018, from http://www.econlib.org/library/Enc/PrisonersDilemma.html</p>
+					<p>Klebnikov, S. (2017, August 08). How Elon Musk Made Money Before Tesla | Money. Retrieved April 09, 2018, 
+					from http://time.com/money/4883868/8-innovative-ways-elon-musk-made-money-before-he-was-a-billionaire/</p>
+					<p>Warman, M. (2011, December 15). Steve Wozniak on Breakout, Atari and Steve Jobs. Retrieved April 09, 2018, 
+					from https://www.telegraph.co.uk/technology/news/8958170/Steve-Wozniak-on-Breakout-Atari-and-Steve-Jobs.html</p>
+					<p>Weinberger, M. (2017, July 31). This is why Steve Jobs got fired from Apple - and how he came back to save the company. 
+					Retrieved April 09, 2018, from http://www.businessinsider.com/steve-jobs-apple-fired-returned-2017-7</p>
 				</div>
 			</div>
 			
