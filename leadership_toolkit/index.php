@@ -15,7 +15,23 @@
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						The idea of scarcity, and how it can override one's decision making processes represents a strong tool for any leader.
+						The idea of scarcity, and how it can override one's decision making processes represents a strong tool for any leader. 
+						Scarcity can work in a leader’s favour in one of two possible ways. 
+					</p>
+					<p>
+						The first way is by removing scarcity, leaders can remove conflict. Because we value things that are scarce, 
+						conflict can arise from this, when multiple people value something. By removing the scarcity around this thing, 
+						by allowing people to share it, or creating more of it, conflict can be more easily resolved. Job rotations of preferable work or shifts, 
+						creating an open office environment with no offices both rely on this idea, that by removing scarcity in the workplace, 
+						leaders can help reduce conflict among followers.
+					</p>
+					<p>
+						The second means of using scarcity is by creating it. This increase value in people’s eyes, 
+						as we recognize that we might not be able not be able to necessarily attain it. This can then be used to direct follower’s 
+						efforts into tasks leaders deem more important. Things such as employee of the month programs, corner offices, promotions and 
+						raises all work on this idea. These ideas may be artificially scarce (you could have more than one employee of the month, 
+						or give smaller raises out to more people), or physically scarce (most offices only have as many corner offices as they have corners), 
+						but the principle still holds.
 					</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
