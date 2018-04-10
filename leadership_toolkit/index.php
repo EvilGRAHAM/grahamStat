@@ -171,7 +171,7 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Tool 7: Deontology
+						Deontology
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
@@ -243,6 +243,7 @@
 							</li>
 						</ul
 					</ol>
+					
 					<p>
 						The formula of humanity is one of the key reasons why Deontology is a strong choice of moral framework for leaders. 
 						It helps prevent unethical leaders and profiteers, by ensuring that followers are never used as a means, but
