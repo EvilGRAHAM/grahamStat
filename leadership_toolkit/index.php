@@ -99,16 +99,21 @@
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
 					<p>Baer, D. (2014, November 18). Tesla's Original CEO Reveals What It's Like To Get Fired By Elon Musk. 
-					sRetrieved April 09, 2018, from <a href="http://www.businessinsider.com/how-elon-musk-fired-tesla-ceo-2014-11" target="_blank"></a></p>
-					<p>Dixit, A. (n.d.). Prisoners' Dilemma. Retrieved April 09, 2018, from <a href="http://www.econlib.org/library/Enc/PrisonersDilemma.html" target="_blank"></a></p>
+					sRetrieved April 09, 2018, from 
+					<a href="http://www.businessinsider.com/how-elon-musk-fired-tesla-ceo-2014-11" target="_blank">http://www.businessinsider.com/how-elon-musk-fired-tesla-ceo-2014-11</a></p>
+					<p>Dixit, A. (n.d.). Prisoners' Dilemma. Retrieved April 09, 2018, from 
+					<a href="http://www.econlib.org/library/Enc/PrisonersDilemma.html" target="_blank">http://www.econlib.org/library/Enc/PrisonersDilemma.html</a></p>
 					<p>Klebnikov, S. (2017, August 08). How Elon Musk Made Money Before Tesla | Money. Retrieved April 09, 2018, 
-					from <a href="http://time.com/money/4883868/8-innovative-ways-elon-musk-made-money-before-he-was-a-billionaire/" target="_blank"></a></p>
+					from <a href="http://time.com/money/4883868/8-innovative-ways-elon-musk-made-money-before-he-was-a-billionaire/" target="_blank">
+					http://time.com/money/4883868/8-innovative-ways-elon-musk-made-money-before-he-was-a-billionaire/</a></p>
 					<p>The Fresh Prince of Bel-Air [Video file]. (1995). United States: NBC Productions. Retrieved April 10, 2018, 
-					from <a href="https://www.dailymotion.com/video/x4qvti8" target="_blank"></a></p>
+					from <a href="https://www.dailymotion.com/video/x4qvti8" target="_blank">https://www.dailymotion.com/video/x4qvti8</a></p>
 					<p>Warman, M. (2011, December 15). Steve Wozniak on Breakout, Atari and Steve Jobs. Retrieved April 09, 2018, 
-					from <a href="https://www.telegraph.co.uk/technology/news/8958170/Steve-Wozniak-on-Breakout-Atari-and-Steve-Jobs.html" target="_blank"></a></p>
+					from <a href="https://www.telegraph.co.uk/technology/news/8958170/Steve-Wozniak-on-Breakout-Atari-and-Steve-Jobs.html" target="_blank">
+					https://www.telegraph.co.uk/technology/news/8958170/Steve-Wozniak-on-Breakout-Atari-and-Steve-Jobs.html</a></p>
 					<p>Weinberger, M. (2017, July 31). This is why Steve Jobs got fired from Apple - and how he came back to save the company. 
-					Retrieved April 09, 2018, from <a href="http://www.businessinsider.com/steve-jobs-apple-fired-returned-2017-7" target="_blank"></a></p>
+					Retrieved April 09, 2018, from <a href="http://www.businessinsider.com/steve-jobs-apple-fired-returned-2017-7" target="_blank">
+					http://www.businessinsider.com/steve-jobs-apple-fired-returned-2017-7</a></p>
 				</div>
 			</div>
 			
