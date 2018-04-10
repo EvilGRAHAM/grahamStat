@@ -103,6 +103,8 @@
 					<p>Dixit, A. (n.d.). Prisoners' Dilemma. Retrieved April 09, 2018, from http://www.econlib.org/library/Enc/PrisonersDilemma.html</p>
 					<p>Klebnikov, S. (2017, August 08). How Elon Musk Made Money Before Tesla | Money. Retrieved April 09, 2018, 
 					from http://time.com/money/4883868/8-innovative-ways-elon-musk-made-money-before-he-was-a-billionaire/</p>
+					<p>The Fresh Prince of Bel-Air [Video file]. (1995). United States: NBC Productions. Retrieved April 10, 2018, 
+					from https://www.dailymotion.com/video/x4qvti8</p>
 					<p>Warman, M. (2011, December 15). Steve Wozniak on Breakout, Atari and Steve Jobs. Retrieved April 09, 2018, 
 					from https://www.telegraph.co.uk/technology/news/8958170/Steve-Wozniak-on-Breakout-Atari-and-Steve-Jobs.html</p>
 					<p>Weinberger, M. (2017, July 31). This is why Steve Jobs got fired from Apple - and how he came back to save the company. 
