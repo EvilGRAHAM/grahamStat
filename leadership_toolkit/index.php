@@ -80,8 +80,10 @@
 						and kicked to the curb. This story is all to common in Silicon Valley, Steve Jobs was pushed out in in 1985, a man who in 1976 had underreported 
 						the value of a contract he had made with Atari to his business partner Steve Wozniak (Weinberger, 2017) (Warman, 2011). Elon Musk was ousted from PayPal in 2002, 
 						and then ousted Martin Eberhard in 2007 from Tesla, the company he founded (Klebnikov, 2017) (Baer, 2014). This provides strong evidence to why we should remain skeptical, 
-						even to those we trust, however to create strong, functional groups, a culture of distrust may backfire.
+						even to those we trust, however to create strong, functional groups, a culture of distrust may backfire. My favourite example of this comes from "The Fresh Prince of Bel-Air" 
+						Season 5, Episode 2, when Will Smith is fired as the manager of his cousin Ashley, after discovering her.
 					</p>
+					<iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/x4qvti8" allowfullscreen allow="autoplay"></iframe>
 					<p>
 						In the 1950’s, scientists at the RAND corporation conceived the idea of the prisoner’s dilemma, which was formulized by Princeton mathematician Albert Tucker 
 						(Dixit, n.d.). The idea is that two players who play by their own utility maximizing strategy can result in an outcome than makes them both worse off than if 
