@@ -99,7 +99,7 @@
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
 					<p>Baer, D. (2014, November 18). Tesla's Original CEO Reveals What It's Like To Get Fired By Elon Musk. 
-					sRetrieved April 09, 2018, from 
+					Retrieved April 09, 2018, from 
 					<a href="http://www.businessinsider.com/how-elon-musk-fired-tesla-ceo-2014-11" target="_blank">http://www.businessinsider.com/how-elon-musk-fired-tesla-ceo-2014-11</a></p>
 					<p>Dixit, A. (n.d.). Prisoners' Dilemma. Retrieved April 09, 2018, from 
 					<a href="http://www.econlib.org/library/Enc/PrisonersDilemma.html" target="_blank">http://www.econlib.org/library/Enc/PrisonersDilemma.html</a></p>
