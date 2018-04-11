@@ -244,7 +244,7 @@
 							say it is 70%.
 						</li>
 						<li>
-							What is the probability of them buying a factory, given that they are not going to enter the cell phone market (P(<b>B</b>|<b>A</b><sup>C</sup>))?
+							What is the probability of them buying a factory, given that they are not going to enter the cell phone market (P(<b>B</b>|<b>A</b><sup>c</sup>))?
 							Let's say it is 1%.
 						</li>
 						<li>
@@ -257,14 +257,20 @@
 						cell phone market, given they have already purchased a factory.
 					</p>
 					<p><center>
-						P(<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>) + P(<b>B</b>|<b>A</b><sup>C</sup>)P(<b>A</b><sup>C</sup>)
+						P(<b>Factory</b>) = P(<b>Factory</b>|<b>Enter</b>)P(<b>Enter</b>) + P(<b>Factory</b>|<b>Enter</b><sup>c</sup>)P(<b>Enter</b><sup>c</sup>)
 					</p></center>
 					<p><center>
-						0.70(0.05) + 0.01(1-0.05) = 4.45%
+						= 0.70(0.05) + 0.01(1-0.05) = 4.45%
 					</p></center>
 					<p><center>
-						P(<b>A</b>|<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>)/P(<b>B</b>) = 0.70(0.05)/0.0445 = 78.65%
+						P(<b>Enter</b>|<b>Factory</b>) = P(<b>Factory</b>|<b>Enter</b>)P(<b>Enter</b>)/P(<b>Factory</b>) 
 					</p></center>
+					<p><center>
+						= 0.70(0.05)/0.0445 = 78.65%
+					</p></center>
+				<p>
+					Using nothing more than simple algebra, we are able to revise are estimate 
+				</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
 					<p><a href="" target="_blank"></a></p>
