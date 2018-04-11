@@ -153,29 +153,47 @@
 					</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
-				<p>Plagianos, I., & Greenwald, K. (2017, December 11). Mario Batali Steps Away From Restaurant Empire Following Sexual Misconduct Allegations. 
-				Retrieved April 11, 2018, from <a href="https://ny.eater.com/2017/12/11/16759540/mario-batali-sexual-misconduct-allegations" 
-				target="_blank">https://ny.eater.com/2017/12/11/16759540/mario-batali-sexual-misconduct-allegations</a></p>
-				<p>Yan, H., Zdanowicz, C., & Grinberg, E. (2017, April 10). Backlash erupts after United passenger gets yanked off overbooked flight. 
-				Retrieved April 11, 2018, from <a href="https://www.cnn.com/2017/04/11/travel/united-customer-dragged-off-overbooked-flight/index.html"
-				target="_blank">https://www.cnn.com/2017/04/11/travel/united-customer-dragged-off-overbooked-flight/index.html</a></p>
+					<p>Plagianos, I., & Greenwald, K. (2017, December 11). Mario Batali Steps Away From Restaurant Empire Following Sexual Misconduct Allegations. 
+					Retrieved April 11, 2018, from <a href="https://ny.eater.com/2017/12/11/16759540/mario-batali-sexual-misconduct-allegations" 
+					target="_blank">https://ny.eater.com/2017/12/11/16759540/mario-batali-sexual-misconduct-allegations</a></p>
+					<p>Yan, H., Zdanowicz, C., & Grinberg, E. (2017, April 10). Backlash erupts after United passenger gets yanked off overbooked flight. 
+					Retrieved April 11, 2018, from <a href="https://www.cnn.com/2017/04/11/travel/united-customer-dragged-off-overbooked-flight/index.html"
+					target="_blank">https://www.cnn.com/2017/04/11/travel/united-customer-dragged-off-overbooked-flight/index.html</a></p>
 				</div>
 			</div>
 			
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Tool 5
+						Strategy
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
-						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
-						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
-						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
-						In vestibulum placerat lorem vitae pretium.
+						It's important for leaders to have a strong strategic mindset if they want to become successful. In fact, it is probably one of the 
+						defining factors for being a leader. Being able to look into the future, and engage in contingent planning is one of the most important
+						things a leader can do to ensure the health and wellbeing of their group. From this, it is important to look at some of the leaders who 
+						have excelled in this type of thought.
 					</p>
+					<p>
+						Lee Iacocca is one of the most celebrated business men in history, with concepts such as the Ford Mustang, the Chrysler K-car, and the minivan.
+						His time at Chrysler from 1979-1992 is perhaps one of the best example of strong strategic thinking. After being fired from Ford in 1978, Lee went 
+						to work for Chysler, and secured a bail out loan in 1979 from the US Congress (Kurylko, 2003). In 1979, while amidst a global energy crisis, Lee 
+						introduced K-car line, a modular design which reduced costs, and allowed for the design of smaller compact cars, and larger family friendly minivans.
+						This practically turned Chrysler around, allowing them to post their first profit in 2 years. This sort of strategic thinking saved Chrysler from 
+						financial ruin, and the jobs of many blue collared workers.(1984)
+					</p>
+					<iframe width="854" height="480" src="https://www.youtube.com/embed/Tu18idKitlU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+					<p>
+					
+					</p>
+				</div>
+				<div class="mdl-card__actions mdl-card--border">
+					<p>Kurylko, D. T. (2003, June 16). Henry II ends Iacocca's quest for the top spot at Ford Motor. Retrieved April 11, 2018, from 
+					<a href="http://www.autonews.com/article/20030616/SUB/306160775/henry-ii-ends-iacoccas-quest-for-the-top-spot-at-ford-motor" target="_blank">
+					http://www.autonews.com/article/20030616/SUB/306160775/henry-ii-ends-iacoccas-quest-for-the-top-spot-at-ford-motor</a></p>
+					<p><a href="" target="_blank"></a></p>
+					<p><a href="" target="_blank"></a></p>
 				</div>
 			</div>
 			
