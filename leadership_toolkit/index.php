@@ -221,12 +221,17 @@
 						to do so is futile, instead we should take a more bayesian approach to how we view the future.
 					</p>
 					<p>
-						Stated simply, imagine to events <b>A</b> and <b>B</b>. Each event has a non-zero probability of occuring, and they are considered random events.
+						Stated simply, imagine two events <b>A</b> and <b>B</b>. Each event has a non-zero probability of occuring, and they are considered random events.
 						As well, we know some relationship exists between the two of them, where if 1 occurs, the other is more or less likely to occur. That is:
 					</p>
 					<p><center>
-						P(<b>A</b>|<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>)<hr>P(<b>B</b>)
+						P(<b>A</b>|<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>)/P(<b>B</b>)
 					</p></center>
+					<p>
+						What this states is that the probability of event <b>A</b> happening given that event <b>B</b> has already occured (posterior belief) equals
+						the probability of event <b>B</b> happening given that event <b>A</b> has already occured divided by the probability that event <b>b</b>
+						has occured (the support <b>B</b> provides for the occurence of <b>A</b>) times the probability that <b>A</b> occurs (prior belief).
+					</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
 					<p><a href="" target="_blank"></a></p>
