@@ -204,17 +204,33 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Tool 6
+						Future Oriented
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
-						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
-						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
-						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
-						In vestibulum placerat lorem vitae pretium.
+						It is important for leaders to have a short memory. What is meant by this is that leaders should learn to put mistakes they've made
+						or others have made behind them, and be able to move on by not dwelling on them. This isn't to say that leaders shouldn't remember the mistakes
+						they've made, but they should take the lesson learned from it, and be able to move past it. By doing so leaders can become more future oriented,
+						by looking to see what exists on the horizon, and begin to make plans to deal with it.
 					</p>
+					<p>
+						This is closely related to the idea of strategic thinking, but more so has to do with how we deal with the past, and how we can look towards the future.
+						Strategic thinking is an activity that we undergoe, where as being future oriented is more of a state of mind, something that we do constantly. However
+						we must not spend all our time looking forward, as this prevents us from dealing with the present. As well, we can't consider every outcome, so any attempt
+						to do so is futile, instead we should take a more bayesian approach to how we view the future.
+					</p>
+					<p>
+						Stated simply, imagine to events <b>A</b> and <b>B</b>. Each event has a non-zero probability of occuring, and they are considered random events.
+						As well, we know some relationship exists between the two of them, where if 1 occurs, the other is more or less likely to occur. That is:
+					</p>
+					<p><center>
+						P(<b>A</b>|<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>)<hr>P(<b>B</b>)
+					</p></center>
+				</div>
+				<div class="mdl-card__actions mdl-card--border">
+					<p><a href="" target="_blank"></a></p>
+					<p><a href="" target="_blank"></a></p>
 				</div>
 			</div>
 			
