@@ -120,17 +120,45 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Tool 4
+						Empathy & Apologies
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue dolor, commodo eget neque ut, iaculis blandit neque. 
-						Pellentesque iaculis malesuada nulla eget eleifend. Morbi ornare diam quis sapien accumsan faucibus. Donec congue viverra augue nec tincidunt. 
-						Sed pulvinar lorem pulvinar mi malesuada, cursus blandit turpis lobortis. Pellentesque facilisis consequat bibendum. 
-						Duis mattis velit eget lacus sodales venenatis sit amet eget ex. Proin mollis luctus luctus. Nam imperdiet a elit ut fringilla. 
-						In vestibulum placerat lorem vitae pretium.
+						Empathy may be one of the most important skills for a leader to develope, if they want to build a real relationship with
+						their followers. Without it, leaders become quickly resented, and insubordination is soon to follow. Even worse, if the
+						leader is a public figure, this can lead to gaffes in times of crisis (that may be caused by said lack of empathy) that
+						result from an inability to empahize with others. In fact, we can find numerous examples from the last year that show this.
 					</p>
+					<p>
+						United Airlines CEO Oscar Munoz "aplogized" for "having to accomodate these customers", after security guards forcibly 
+						removed Dr. David Dao from a flight at O'Hare. It took 2 full days for Munoz to issue a proper apology to Dao, after 
+						having emails praising the crew come to light.(Yan, 2017) This describes a clear lack of empathy on the part of Munoz, 
+						as he was unable to see why there might be issue with how the security guards treated a passenger. If he had been able to
+						empathize with Dao, this scandal wouldn't have lasted 3 days, and could have been easily brushed aside. The same could
+						be said for the security guards, as their actions were incredibly innapropriate, and could have been prevented with 
+						a degree of empathy.
+					</p>
+					<p>
+						How about Mario Batali, who after allegations of sexual assault arose, dismissed them as mistakes. To make matters worse
+						he included a recipe for pizza dough cinnamon rolls at the bottom of the apology, a sure recipe for disaster.(Plagianos, 2017) 
+						This describes a clear lack of empathy on his part, as it is highly innapropriate to do so, especially with the seriousness of 
+						the allegations.
+					</p>
+					<p>
+						It's clear that when leaders lack empathy, they become prone to make rather embarassing and costlty mistakes. By being able to look through
+						the eyes of the person who feels wronged, leaders can begin to understand why they feel the way they do, and see how they can help rectify the
+						situation. More importantly, they can use this to avoid making mistakes in the first place. Sexual harrasment in the work place could be
+						easily avoided if we could become more empathetic, and see through the potential victim's eyes, and see how our actions hurt them.
+					</p>
+				</div>
+				<div class="mdl-card__actions mdl-card--border">
+				<p>Plagianos, I., & Greenwald, K. (2017, December 11). Mario Batali Steps Away From Restaurant Empire Following Sexual Misconduct Allegations. 
+				Retrieved April 11, 2018, from <a href="https://ny.eater.com/2017/12/11/16759540/mario-batali-sexual-misconduct-allegations" 
+				target="_blank">https://ny.eater.com/2017/12/11/16759540/mario-batali-sexual-misconduct-allegations</a></p>
+				<p>Yan, H., Zdanowicz, C., & Grinberg, E. (2017, April 10). Backlash erupts after United passenger gets yanked off overbooked flight. 
+				Retrieved April 11, 2018, from <a href="https://www.cnn.com/2017/04/11/travel/united-customer-dragged-off-overbooked-flight/index.html"
+				target="_blank">https://www.cnn.com/2017/04/11/travel/united-customer-dragged-off-overbooked-flight/index.html</a></p>
 				</div>
 			</div>
 			
