@@ -257,10 +257,13 @@
 						cell phone market, given they have already purchased a factory.
 					</p>
 					<p><center>
-						P(<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>) + P(<b>B</b>|<b>A</b><sup>C</sup>)P(<b>A</b><sup>C</sup>) = 0.70·0.05 + 0.01·(1-0.05) = 4.45%
+						P(<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>) + P(<b>B</b>|<b>A</b><sup>C</sup>)P(<b>A</b><sup>C</sup>)
 					</p></center>
 					<p><center>
-						P(<b>A</b>|<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>)/P(<b>B</b>) = 0.70·0.05/0.0445 = 78.65%
+						0.70(0.05) + 0.01(1-0.05) = 4.45%
+					</p></center>
+					<p><center>
+						P(<b>A</b>|<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>)/P(<b>B</b>) = 0.70(0.05)/0.0445 = 78.65%
 					</p></center>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
