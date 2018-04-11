@@ -204,7 +204,7 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Future Oriented
+						Future Orientation and Bayesian Thinking
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
@@ -230,8 +230,38 @@
 					<p>
 						What this states is that the probability of event <b>A</b> happening given that event <b>B</b> has already occured (posterior belief) equals
 						the probability of event <b>B</b> happening given that event <b>A</b> has already occured divided by the probability that event <b>b</b>
-						has occured (the support <b>B</b> provides for the occurence of <b>A</b>) times the probability that <b>A</b> occurs (prior belief).
+						has occured (the support <b>B</b> provides for the occurence of <b>A</b>) times the probability that <b>A</b> occurs (prior belief). This is 
+						best understood through the use of an example.
 					</p>
+					<p>
+						Imagine you're the CEO of a major technology company who is in the business of selling cell phones. You hear that one of your major competitors
+						has bought a factory, and you're worried that they may be using it to move into your market. Using some simple math, you can come up with a pretty
+						solid estimate for the probability of them entering your market given this new information. 
+					</p>
+					<ol>
+						<li>
+							What is the probability of them buying a factory, given that they are going to enter the cell phone market (P(<b>B</b>|<b>A</b>))? Let's
+							say it is 70%.
+						</li>
+						<li>
+							What is the probability of them buying a factory, given that they are not going to enter the cell phone market (P(<b>B</b>|<b>A</b><sup>C</sup>))?
+							Let's say it is 1%.
+						</li>
+						<li>
+							What is the probability of them entering the cell phone market before you heard about this new factory (P(<b>A</b>))? This is what is called the prior
+							probability, as it is the probabilty assigned to the event prior to the new information being presented to us. Let's use 5%.
+						</li>
+					</ol>
+					<p>
+						You can then use these 3 numbers to come up with an estimate for the posterior probability. This is the probability of them entering the 
+						cell phone market, given they have already purchased a factory.
+					</p>
+					<p><center>
+						P(<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>) + P(<b>B</b>|<b>A</b><sup>C</sup>)P(<b>A</b><sup>C</sup>) = 0.70·0.05 + 0.01·(1-0.05) = 4.45%
+					</p></center>
+					<p><center>
+						P(<b>A</b>|<b>B</b>) = P(<b>B</b>|<b>A</b>)P(<b>A</b>)/P(<b>B</b>) = 0.70·0.05/0.0445 = 78.65%
+					</p></center>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
 					<p><a href="" target="_blank"></a></p>
