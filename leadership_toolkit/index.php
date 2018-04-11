@@ -185,7 +185,11 @@
 					</p>
 					<iframe width="854" height="480" src="https://www.youtube.com/embed/Tu18idKitlU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 					<p>
-					
+						By employing strategic thinking, leaders can learn to adapt to their surroundings, and make better decisions for the future. When coupled with empathy
+						this provides a powerful tool that strong leaders can take advantage of. This allows leaders to make decisions that not only benefit themselves, but 
+						those around them, which in turn makes the group better off. As well, the leader can better adapt to conflict between followers, and between followers and themself.
+						Said leader can better predict what the followers will do, because they can see through their eyes, and understand the reasoning for their position, and 
+						adapt to best handle the situation.
 					</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
