@@ -223,7 +223,7 @@
 					</p></center>
 					<p>
 						What this states is that the probability of event <b>A</b> happening given that event <b>B</b> has already occured (posterior belief) equals
-						the probability of event <b>B</b> happening given that event <b>A</b> has already occured divided by the probability that event <b>b</b>
+						the probability of event <b>B</b> happening given that event <b>A</b> has already occured divided by the probability that event <b>B</b>
 						has occured (the support <b>B</b> provides for the occurence of <b>A</b>) times the probability that <b>A</b> occurs (prior belief). This is 
 						best understood through the use of an example.
 					</p>
