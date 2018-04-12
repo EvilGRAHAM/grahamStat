@@ -204,21 +204,15 @@
 			<div class="mdl-card mdl-shadow--2dp mdl-cell">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">
-						Future Orientation and Bayesian Thinking
+						Bayesian Thinking
 					</h2>
 				</div>
 				<div class="mdl-card__supporting-text">
 					<p>
-						It is important for leaders to have a short memory. What is meant by this is that leaders should learn to put mistakes they've made
-						or others have made behind them, and be able to move on by not dwelling on them. This isn't to say that leaders shouldn't remember the mistakes
-						they've made, but they should take the lesson learned from it, and be able to move past it. By doing so leaders can become more future oriented,
-						by looking to see what exists on the horizon, and begin to make plans to deal with it.
-					</p>
-					<p>
-						This is closely related to the idea of strategic thinking, but more so has to do with how we deal with the past, and how we can look towards the future.
-						Strategic thinking is an activity that we undergoe, where as being future oriented is more of a state of mind, something that we do constantly. However
-						we must not spend all our time looking forward, as this prevents us from dealing with the present. As well, we can't consider every outcome, so any attempt
-						to do so is futile, instead we should take a more bayesian approach to how we view the future.
+						Everyday, we are flooded with new information about what is going on around us, and as a result of this we need an efficient means of processing it.
+						Typically this new information is linked to something we think might happen in the future, or may have already occured, but we are are unsure of 
+						if it has occured. We can use this new information, as well as some simple statistics and algebra to develop an elegant solution to figure out what the
+						probability is of an event occuring, given some new information. This is better known as Bayes' Theorem (Weisstein, n.d)
 					</p>
 					<p>
 						Stated simply, imagine two events <b>A</b> and <b>B</b>. Each event has a non-zero probability of occuring, and they are considered random events.
@@ -268,13 +262,20 @@
 					<p><center>
 						= 0.70(0.05)/0.0445 = 78.65%
 					</p></center>
-				<p>
-					Using nothing more than simple algebra, we are able to revise are estimate 
-				</p>
+					<p>
+						Using nothing more than simple algebra, you are able to revise your estimate from 70% to 78.65%. What's elegant about Bayes Theorem, is we can
+						continuosly apply it as more information becomes available. Say the competitor hires a Marketing Agency, you could further revise your estimate
+						by using the 78.65% as your prior probability, and go through steps 1 & 2 again with this new information, and then calculate your new posterior
+						probability.
+					</p>
+					<p>
+						By applying this idea to everyday life, leaders can better predict what will happen, or has happened in the world around them. This allows leaders 
+						to better react to changes, and make smarter, forward looking decisions.
+					</p>
 				</div>
 				<div class="mdl-card__actions mdl-card--border">
-					<p><a href="" target="_blank"></a></p>
-					<p><a href="" target="_blank"></a></p>
+					<p>Weisstein, E. W. (n.d.). Bayes' Theorem. Retrieved April 11, 2018, from 
+					<a href="http://mathworld.wolfram.com/BayesTheorem.html" target="_blank">http://mathworld.wolfram.com/BayesTheorem.html</a></p>
 				</div>
 			</div>
 			
